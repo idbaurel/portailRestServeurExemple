@@ -7,10 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class StubDataProvider {
@@ -178,11 +182,11 @@ public class StubDataProvider {
 
     /**
      * Récupère les aides liées à un bénéficiaire.
-     * @param user SocialExtUser à l'origine de l'appel
+     * @param userId Id de l'utilisateur à l'origine de l'appel
      * @param index Id du bénéficiaire
      * @return Un objet SocialExtBeneficiary contenant le détail des aides.
      */
-    public SocialExtBeneficiary getSocialFileMeasures(SocialExtUser user, String index) {
+    public SocialExtBeneficiary getSocialFileMeasures(String userId, String index) {
 
         SocialExtBeneficiary res = new SocialExtBeneficiary();
         res.setLastName("DUPONT");
@@ -217,7 +221,7 @@ public class StubDataProvider {
      * @param user Représentation d'un utilisateur
      * @return Set de profils d'un utilisateur
      */
-    public Set<String> getProfiles(SocialExtUser user) {
+    public Set<String> getProfiles(String user) {
         Set<String> res = new HashSet<>();
         res.add("Administrateur");
         return res;
@@ -406,50 +410,25 @@ public class StubDataProvider {
 //        return results;
 //    }
 //
-//    @Override
-//    public SocialExtDataIterator<SocialExtUser> findAllUser() {
-//
-//        // TODO Données Zippées
-//        // Liste finale de résultats
-//        List<SocialExtUser> toReturn = new ArrayList<SocialExtUser>();
-//
-//        // Première requête
-//        if (LOGGER.isDebugEnabled()) {
-//            LOGGER.debug("Requête de recherche no 1 ...");
-//        }
-//        UserSearchResultDTO results = findUsers(DEFAULT_PAGE_SIZE, 1);
-//
-//        // Ajout de ces résultats à la liste finale
-//        toReturn.addAll(results.getUsers());
-//
-//        // Récupération des informations sur le nombre total de résultats
-//        int totalResultsSize = results.getTotalNumber();
-//        if (totalResultsSize == -1) {
-//            throw new InvalidDataReceivedException("Le nombre total de résultat n'a pas été renseigné par l'envrironnement");
-//        }
-//        if (LOGGER.isDebugEnabled()) {
-//            LOGGER.debug("Nombre total de résultats : " + totalResultsSize);
-//        }
-//
-//        // Calcul du nombre total de pages (donc de requêtes)
-//        int nbPagesTotal = totalResultsSize / DEFAULT_PAGE_SIZE;
-//        if (totalResultsSize % DEFAULT_PAGE_SIZE != 0) {
-//            nbPagesTotal++;
-//        }
-//
-//        // Requêtes suivantes
-//        if (nbPagesTotal > 1) {
-//            for (int p = 2; p <= nbPagesTotal; p++) {
-//                if (LOGGER.isDebugEnabled()) {
-//                    LOGGER.debug("Requête de recherche individus no " + p + "...");
-//                }
-//                results = findUsers(DEFAULT_PAGE_SIZE, p);
-//                toReturn.addAll(results.getUsers());
-//            }
-//        }
-//
-//        return new SimpleSocialExtDataIterator<SocialExtUser>(toReturn.size(), toReturn.iterator());
-//    }
+
+    /**
+     * Récupérer tous les utilisateurs. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
+     *
+     * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
+     * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
+     * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
+     */
+    public UserSearchResultDTO findAllUser(int pageSize, int pageNumber) {
+        UserSearchResultDTO results = new UserSearchResultDTO();
+        results.setPageNumber(pageNumber);
+        results.setPageSize(pageSize);
+        results.setTotalNumber(1);
+
+        List<SocialExtUser> users = new ArrayList<>();
+        users.add(findSocialExtUser("123"));
+        results.setUsers(users);
+        return results;
+    }
 //
 //    /**
 //     * Recherche de users
@@ -468,49 +447,37 @@ public class StubDataProvider {
 //    }
 //
 //    @Override
-//    public SocialExtDataIterator<SocialExtWorker> findAllSocialWorkers() {
-//        // TODO Données Zippées
-//
-//        // Liste finale de résultats
-//        List<SocialExtWorker> toReturn = new ArrayList<SocialExtWorker>();
-//
-//        // Première requête
-//        if (LOGGER.isDebugEnabled()) {
-//            LOGGER.debug("Requête de recherche no 1 ...");
-//        }
-//        SocialWorkerSearchResultDTO results = findSocialWorkers(DEFAULT_PAGE_SIZE, 1);
-//
-//        // Ajout de ces résultats à la liste finale
-//        toReturn.addAll(results.getWorkers());
-//
-//        // Récupération des informations sur le nombre total de résultats
-//        int totalResultsSize = results.getTotalNumber();
-//        if (totalResultsSize == -1) {
-//            throw new InvalidDataReceivedException("Le nombre total de résultat n'a pas été renseigné par l'envrironnement");
-//        }
-//        if (LOGGER.isDebugEnabled()) {
-//            LOGGER.debug("Nombre total de résultats : " + totalResultsSize);
-//        }
-//
-//        // Calcul du nombre total de pages (donc de requêtes)
-//        int nbPagesTotal = totalResultsSize / DEFAULT_PAGE_SIZE;
-//        if (totalResultsSize % DEFAULT_PAGE_SIZE != 0) {
-//            nbPagesTotal++;
-//        }
-//
-//        // Requêtes suivantes
-//        if (nbPagesTotal > 1) {
-//            for (int p = 2; p <= nbPagesTotal; p++) {
-//                if (LOGGER.isDebugEnabled()) {
-//                    LOGGER.debug("Requête de recherche individus no " + p + "...");
-//                }
-//                results = findSocialWorkers(DEFAULT_PAGE_SIZE, p);
-//                toReturn.addAll(results.getWorkers());
-//            }
-//        }
-//
-//        return new SimpleSocialExtDataIterator<SocialExtWorker>(toReturn.size(), toReturn.iterator());
-//    }
+
+    /**
+     * Récupérer tous les travailleurs sociaux.
+     * <p>
+     * Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
+     *
+     * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
+     * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
+     * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
+     */
+    public SocialWorkerSearchResultDTO findAllSocialWorkers(int pageSize, int pageNumber) {
+
+        List<SocialExtWorker> workers = new ArrayList<SocialExtWorker>();
+
+        workers.add(findSocialWorker("123"));
+
+        SocialWorkerSearchResultDTO workersDTO = new SocialWorkerSearchResultDTO();
+        workersDTO.setPageNumber(pageNumber);
+        workersDTO.setPageSize(pageSize);
+        workersDTO.setTotalNumber(workers.size());
+
+        for (int i = 0; i < pageSize; i++) {
+            // Condition d'arrêt : nb total d'enregistrement atteint
+            if ((pageNumber - 1) * pageSize + i >= workersDTO.getTotalNumber()) {
+                break;
+            }
+            workersDTO.getWorkers().add(workers.get((pageNumber * pageSize + i) % workers.size()));
+        }
+
+        return workersDTO;
+    }
 //
 //    /**
 //     * Recherche de social workers
@@ -533,49 +500,34 @@ public class StubDataProvider {
 //     * unes après les autres jusqu'à avoir la totalité des éléments.
 //     */
 //    @Override
-//    public SocialExtDataIterator<SocialExtBeneficiary> findAllIndividuals() {
-//        // TODO Données Zippées
-//
-//        // Liste finale de résultats
-//        List<SocialExtBeneficiary> individus = new ArrayList<SocialExtBeneficiary>();
-//
-//        // Première requête
-//        if (LOGGER.isDebugEnabled()) {
-//            LOGGER.debug("Requête de recherche individus no 1 ...");
-//        }
-//        BeneficiarySearchResultDTO results = findIndividuals(DEFAULT_PAGE_SIZE, 1);
-//
-//        // Ajout de ces résultats à la liste finale
-//        individus.addAll(results.getBeneficiaries());
-//
-//        // Récupération des informations sur le nombre total de résultats
-//        int totalResultsSize = results.getTotalNumber();
-//        if (totalResultsSize == -1) {
-//            throw new InvalidDataReceivedException("Le nombre total de résultat n'a pas été renseigné par l'envrironnement");
-//        }
-//        if (LOGGER.isDebugEnabled()) {
-//            LOGGER.debug("Recherche individus, nombre total de résultats : " + totalResultsSize);
-//        }
-//
-//        // Calcul du nombre total de pages (donc de requêtes)
-//        int nbPagesTotal = totalResultsSize / DEFAULT_PAGE_SIZE;
-//        if (totalResultsSize % DEFAULT_PAGE_SIZE != 0) {
-//            nbPagesTotal++;
-//        }
-//
-//        // Requêtes suivantes
-//        if (nbPagesTotal > 1) {
-//            for (int p = 2; p <= nbPagesTotal; p++) {
-//                if (LOGGER.isDebugEnabled()) {
-//                    LOGGER.debug("Requête de recherche individus no " + p + "...");
-//                }
-//                results = findIndividuals(DEFAULT_PAGE_SIZE, p);
-//                individus.addAll(results.getBeneficiaries());
-//            }
-//        }
-//
-//        return new SimpleSocialExtDataIterator<SocialExtBeneficiary>(individus.size(), individus.iterator());
-//    }
+
+    /**
+     * Récupérer tous les individus. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
+     *
+     * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
+     * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
+     * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
+     */
+    public BeneficiarySearchResultDTO findAllIndividuals(int pageSize, int pageNumber) {
+        List<SocialExtBeneficiary> beneficiaries = new ArrayList<>();
+        beneficiaries.add(findBeneficiary("123"));
+
+        BeneficiarySearchResultDTO bsrdto = new BeneficiarySearchResultDTO();
+        bsrdto.setTotalNumber(beneficiaries.size());
+
+        for (int i = 0; i < pageSize; i++) {
+            // Condition d'arrêt : nb total d'enregistrement atteint
+            if ((pageNumber - 1) * pageSize + i >= bsrdto.getTotalNumber()) {
+                break;
+            }
+            bsrdto.getBeneficiaries().add(beneficiaries.get((pageNumber * pageSize + i) % beneficiaries.size()));
+        }
+
+        bsrdto.setPageNumber(pageNumber);
+        bsrdto.setPageSize(pageSize);
+
+        return bsrdto;
+    }
 //
 //    /**
 //     * Recherche d'individus
@@ -603,16 +555,45 @@ public class StubDataProvider {
 //    }
 //
 //    @Override
-//    public SocialExtUser findSocialExtUser(String externalId) {
-//
-//        return restTemplate.getForObject(url + RESTURL_FIND_SOCIAL_EXT_USER, SocialExtUser.class, externalId);
-//    }
+
+    /**
+     * Récupérer un utilisateur à partir de son id.
+     *
+     * @param externalId Id de l'utilisateur.
+     * @return Un objet SocialExtUser correspondant à l'utilisateur recherché.
+     */
+    public SocialExtUser findSocialExtUser(String externalId) {
+        SocialExtUser res = new SocialExtUser();
+        res.setId(externalId);
+        res.setUsername("amelie.durand");
+        res.setFirstName("DURAND");
+        res.setLastName("Amélie");
+        res.setLinkedWithSocialWorker(true);
+        res.setSector("PAU");
+        res.setSectorList(new ArrayList<String>() {{
+            add("PAU");
+            add("secteur 1");
+            add("secteur 2");
+        }});
+        res.setSocialWorkerId("sw-123456");
+        return res;
+    }
 //
 //    @Override
-//    public SocialExtBeneficiary findBeneficiary(String externalId) {
-//
-//        return restTemplate.getForObject(url + RESTURL_FIND_BENEFICIARY, SocialExtBeneficiary.class, externalId);
-//    }
+
+    /**
+     * Récupérer un bénéficiaire à partir de son id.
+     * @param externalId Identifiant du bénéficiaire.
+     * @return Un objet SocialExtBeneficiary.
+     */
+    public SocialExtBeneficiary findBeneficiary(String externalId) {
+        SocialExtBeneficiary res = new SocialExtBeneficiary();
+        res.setLastName("DUPONT");
+        res.setFirstName("Marie Hélène");
+        res.setBirthDate(localDateToDate(LocalDate.of(1980, Month.APRIL, 24)));
+
+        return res;
+    }
 //
 //    /**
 //     * Crée un header avec l'id d'un utilisateur du portail.
@@ -658,54 +639,79 @@ public class StubDataProvider {
 //    }
 //
 //    @Override
-//    public Set<SocialModule> getAvailableSocialModules() {
-//        return restTemplate.exchange(url + RESTURL_GET_SOCIAL_MODULES, HttpMethod.GET, null, new ParameterizedTypeReference<Set<SocialModule>>() {
-//        }).getBody();
-//    }
+    /**
+     * Retourner les modules sociaux disponibles dans l'environnement courant.
+     *
+     * @return Un Set de SocialModule.
+     */
+    public Set<SocialModule> getAvailableSocialModules() {
+        return Arrays.stream(SocialModule.values())
+                .filter(v-> v.getName().startsWith("A"))
+                .collect(Collectors.toSet());
+    }
 //
 //    @Override
-//    public NewsList getNews(SocialWorkerUser user) throws SocialExtException {
-//
-//        // Construction de l'url avec paramètre
-//        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + RESTURL_GET_NEWS)
-//                .queryParam(QUERYPARAM_SWUSERID, user.getSocialWorkerId());
-//
-//        return restTemplate.getForObject(builder.build().toUri(), NewsList.class);
-//    }
-//
-//    @Override
-//    public Map<SocialModuleScreen, String> getLinks(Set<SocialModuleScreen> screens, SocialExtUser user, String indexIndividual, String token) throws SocialExtException {
-//
-//        // Construction de l'url avec paramètre
-//        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + RESTURL_GET_LINKS)
-//                .queryParam(QUERYPARAM_USERID, user.getId())
-//                .queryParam(QUERYPARAM_INDIVIDUALID, indexIndividual);
-//        for (SocialModuleScreen smc : screens) {
-//            builder.queryParam(QUERYPARAM_SCREEN, smc);
-//        }
-//
-//        return restTemplate.exchange(builder.build().toUri(), HttpMethod.GET, createAuthTokenHeader(token), new ParameterizedTypeReference<Map<SocialModuleScreen, String>>() {
-//        }).getBody();
-//    }
+
+    /**
+     * Récupérer les news relatives à un travailleur social.
+     *
+     * @param userId Id du travailleur social concerné.
+     * @return Un objet NewsList, qui contient une liste de News. L'objet News contient une date et une liste de lignes de contenu (type String).
+     */
+    public NewsList getNews(String userId) {
+        NewsList res = new NewsList();
+        res.setNewsList(new ArrayList<>());
+        News news = new News(new Date(), "information 1");
+        res.getNewsList().add(news);
+        return res;
+    }
 //
 //    @Override
-//    public Map<SocialModule, String> getHomePages(Set<SocialModule> modules, SocialExtUser user, String token) throws SocialExtException {
+
+    /**
+     * Récupérer les liens de débranchement vers les écrans de Solis.
+     *
+     * @param screens Ensemble d'écrans.
+     * @param user Utilisateur du portail
+     * @param indexIndividual Id de l'individu concerné
+     * @param token Token d'authentification.
+     * @return Une Map avec en clé une enum correspondant aux écrans et en valeur une String contenant le lien
+     * @throws SocialExtException
+     */
+    public Map<SocialModuleScreen, String> getLinks(Set<SocialModuleScreen> screens, String user, String indexIndividual, String token) {
+        Map<SocialModuleScreen, String> res = new HashMap<>();
+        if (screens != null) {
+            for (SocialModuleScreen screen : screens) {
+                res.put(screen, "http://host:8080/applicationMetier/" + screen.getName());
+            }
+        }
+        return res;
+    }
 //
-//        // Construction de l'url avec paramètre
-//        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + RESTURL_GET_HOME_PAGES)
-//                .queryParam(QUERYPARAM_USERID, user.getId());
-//        for (SocialModule sm : modules) {
-//            builder.queryParam(QUERYPARAM_SOCIALMODULE, sm);
-//        }
-//
-//        return restTemplate.exchange(builder.build().toUri(), HttpMethod.GET, createAuthTokenHeader(token), new ParameterizedTypeReference<Map<SocialModule, String>>() {
-//        }).getBody();
-//    }
+//    @Override
+
+    /**
+     * Récupérer les liens vers les pages d'accueil des modules sociaux
+     *
+     * @param modules Ensemble de modules.
+     * @param user    Utilisateur du portail
+     * @param token   Token d'authentification
+     * @return Une Map avec en clé une enum correspondant aux modules et en valeur une String contenant le lien.
+     */
+    public Map<SocialModule, String> getHomePages(Set<SocialModule> modules, String user, String token) {
+        Map<SocialModule, String> res = new HashMap<>();
+        if (modules != null) {
+            for (SocialModule module : modules) {
+                res.put(module, "http://host:8080/applicationMetier/" + module.getName());
+            }
+        }
+        return res;
+    }
 //
 //    @Override
     public String getLink(SolisLinkType linkType, String token, SocialExtUser user) throws SocialExtException {
 
-        return "http://host:8080/context/businessuri?param1=123&param2=test";
+        return "http://host:8080/applicationMetier/businessuri?param1=123&param2=test";
     }
 //
 //    @Override
@@ -744,14 +750,19 @@ public class StubDataProvider {
 //    }
 //
 //    @Override
-//    public List<SocialExtMunicipality> suggestMunicipalities(String token) throws SocialExtException {
-//
-//        // Construction de l'url avec paramètre
-//        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + RESTURL_SUGGEST_MUNICIPALITIES)
-//                .queryParam(QUERYPARAM_SUGGESTTOKEN, token);
-//        return restTemplate.exchange(builder.build().toUri(), HttpMethod.GET, null, new ParameterizedTypeReference<List<SocialExtMunicipality>>() {
-//        }).getBody();
-//    }
+
+    /**
+     * Récupérer des valeurs à suggérer à l'utilisateur pour la complétion des municipalités.
+     *
+     * @param token Contient les premiers caractères de la municipalité.
+     * @return Liste de SocialExtMunicipalities.
+     */
+    public List<SocialExtMunicipality> suggestMunicipalities(String token) {
+        List<SocialExtMunicipality> res = new ArrayList<>();
+        SocialExtMunicipality socialExtMunicipality = new SocialExtMunicipality(1, 64, "PAU", "64000");
+        res.add(socialExtMunicipality);
+        return res;
+    }
 //
 //    @Override
 
@@ -770,19 +781,35 @@ public class StubDataProvider {
     }
 //
 //    @Override
-//    public Set<SocialModule> getAvailableSocialModulesForLifeLine() {
-//        return restTemplate.exchange(url + RESTURL_GET_SOCIAL_MODULES_FOR_LIFE_LINE, HttpMethod.GET, null, new ParameterizedTypeReference<Set<SocialModule>>() {
-//        }).getBody();
-//    }
+
+    /**
+     * Récupérer les modules sociaux disponibles pour affichage dans une ligne de vie.
+     *
+     * @return Un Set de SocialModule.
+     */
+    public Set<SocialModule> getAvailableSocialModulesForLifeLine() {
+        //renvoie ceux commençant par "A"
+        return Arrays.stream(SocialModule.values())
+                .filter(v-> v.getName().startsWith("A"))
+                .collect(Collectors.toSet());
+    }
 //
 //    @Override
-//    public AuthenticationResult authenticate(SocialExtUser user, String password) throws SocialExtException {
-//
-//        UserAndPwdDTO updto = new UserAndPwdDTO();
-//        updto.setPassword(password);
-//        updto.setUser(user);
-//        return restTemplate.postForObject(url + RESTURL_AUTHENTICATE, updto, AuthenticationResult.class);
-//    }
+
+    /**
+     * Authentifier un utilisateur.
+     *
+     * @param updto Représentation d'un utilisateur avec mot de passe
+     * @return Résultat de l'authentification (enum correspondant aux différents statuts possibles
+     */
+    public AuthenticationResult authenticate(UserAndPwdDTO updto) {
+        SocialExtUser user = updto.getUser();
+        String password = updto.getPassword();
+        if (user == null || password == null) {
+            return AuthenticationResult.KO;
+        }
+        return "amelie.durand".equals(user.getUsername()) ? AuthenticationResult.OK : AuthenticationResult.KO;
+    }
 //
 //    @Override
 
@@ -803,54 +830,95 @@ public class StubDataProvider {
     }
 //
 //    @Override
-//    public List<SocialExtRendezVous> getIndividualRendezVous(String externalId) throws SocialExtException {
-//
-//        return restTemplate.exchange(url + RESTURL_GET_INDIVIDUAL_RENDEZ_VOUS, HttpMethod.GET, null, new ParameterizedTypeReference<List<SocialExtRendezVous>>() {
-//        }, externalId).getBody();
-//    }
+    /**
+     * fixme erreur de serialisation SocialExtRendezVous
+     * Rechercher dans les rendez-vous des individus.
+     *
+     * @param externalId Clé de l'individu
+     * @return Une liste de SocialExtRendezVous.
+     */
+    public List<SocialExtRendezVous> getIndividualRendezVous(String externalId) {
+        List<SocialExtRendezVous> res = new ArrayList<>();
+        SocialExtRendezVous socialExtRendezVous = new SocialExtRendezVous();
+        socialExtRendezVous.setLabel("rendez vous 1");
+        socialExtRendezVous.setType(SocialExtRendezVousType.CIRCO);
+        res.add(socialExtRendezVous);
+        return res;
+    }
 //
 //    @Override
-//    public Set<SocialExtRendezVous> getSocialWorkerRendezVous(SocialExtUser user, String externalId, Date startDate, Date endDate) throws SocialExtException {
-//
-//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-//
-//        // Construction de l'url avec paramètre
-//        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url + RESTURL_GET_SOCIAL_WORKER_RENDEZ_VOUS)
-//                .queryParam(QUERYPARAM_DATEDEBUT, df.format(startDate))
-//                .queryParam(QUERYPARAM_DATEFIN, df.format(endDate));
-//
-//        Set<SocialExtRendezVous> lstRdv = restTemplate.exchange(builder.buildAndExpand(externalId).toUri(), HttpMethod.GET, createUserHeader(user), new ParameterizedTypeReference<Set<SocialExtRendezVous>>() {
-//        }).getBody();
-//
-//        // Renseigne l'environnement dans chaque SocialExtConcerned.
-//        for (SocialExtRendezVous rdv : lstRdv) {
-//            if (rdv != null && rdv.getConcernedIndividuals() != null) {
-//                for (SocialExtConcerned concernedIndividual : rdv.getConcernedIndividuals()) {
-//                    if (concernedIndividual != null && concernedIndividual.getPortalExtIndividual() != null) {
-//                        concernedIndividual.getPortalExtIndividual().setEnvironment(env);
-//                    }
-//                }
-//            }
-//        }
-//
-//        return lstRdv;
-//    }
+    /**
+     * fixme erreur de serialisation SocialExtRendezVous
+     * Rechercher dans les rendez-vous des travailleurs sociaux.
+     *
+     * @param userId         Id de l'utilisateur portail à l'origine de l'appel
+     * @param socialWorkerId Id du travailleur social
+     * @param startDate      Date de début de la période de recherche, format yyyy-MM-ddTHH:mm:ss
+     * @param endDate        Date de fin de la période de recherche, format yyyy-MM-ddTHH:mm:ss
+     * @return Un Set de SocialExtRendezVous.
+     * @throws SocialExtException Si les dates ne sont pas correctes
+     */
+    public Set<SocialExtRendezVous> getSocialWorkerRendezVous(String userId, String socialWorkerId, String startDate, String endDate) {
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        Date start;
+        Date end;
+        try {
+            start = df.parse(startDate);
+            end = df.parse(endDate);
+        } catch (ParseException e) {
+            throw new SocialExtException("Erreur de parsing de date", e);
+        }
+
+        Set<SocialExtRendezVous> res = new HashSet<>();
+//        SocialExtRendezVous socialExtRendezVous = new SocialExtRendezVous();
+//        socialExtRendezVous.setLabel("rendez vous 1");
+//        socialExtRendezVous.setType(SocialExtRendezVousType.CIRCO);
+//        res.add(socialExtRendezVous);
+//        res.add(socialExtRendezVous);
+
+
+        //************************************************************
+        SocialExtRendezVous rdv = new SocialExtRendezVous();
+        Random random = new Random();
+        rdv.setId(String.valueOf(random.nextInt()));
+        Calendar calendar = Calendar.getInstance();
+        rdv.setStartDate(calendar.getTime());
+        calendar.add(Calendar.HOUR_OF_DAY, 1);
+        rdv.setEndDate(calendar.getTime());
+        rdv.setFullDay(false);
+        rdv.setType(SocialExtRendezVousType.COMMISSION);
+//        rdv.setIndividual(findBeneficiary("200"));
+        rdv.setLabel("Objectif : Evaluation - Etat : Prévu");
+        rdv.setComment("comment");
+
+        res.add(rdv);
+        //************************************************************
+
+
+
+
+        return res;
+    }
 //
 //    //---------------- pas optimisés ---------------------
 //    @Override
-//    public TypeAndIdRendezvous createSocialWorkerRendezVous(SocialExtRendezVous rendezVous) throws SocialExtException {
-//
-//        return restTemplate.postForObject(url + RESTURL_CREATE_SOCIAL_WORKER_RENDEZ_VOUS, rendezVous, TypeAndIdRendezvous.class);
-//    }
+    public String createSocialWorkerRendezVous(SocialExtRendezVous rendezVous) {
+        TypeAndIdRendezvous typeAndIdRendezvous = new TypeAndIdRendezvous(123, TypeRendezVous.RENDEZ_VOUS_CENTRALISE);
+        return typeAndIdRendezvous.getId() + ":" + typeAndIdRendezvous.getType().name();
+    }
 //
 //    @Override
-//    public String getRedirectionToken(SocialExtUser user, Map<String, String> params) {
-//
-//        UserAndParamsDTO updto = new UserAndParamsDTO();
-//        updto.setParams(params);
-//        updto.setUser(user);
-//        return restTemplate.postForObject(url + RESTURL_GET_REDIRECTION_TOKEN, updto, StringWrapperDTO.class).getString();
-//    }
+
+    /**
+     * Récupérer un token de redirection.
+     *
+     * @param updto Wrapper autour d'un SocialExtUSer (habilitation) et une map de paramètres.
+     * @return Token de redirection.
+     */
+    public String getRedirectionToken(UserAndParamsDTO updto) {
+        return "stub_token";
+    }
 //
 //    @Override
 //    public void saveForm(SocialWorkerUser user, String formName, FormNodeList formNodeList) throws SocialExtException {
@@ -944,10 +1012,44 @@ public class StubDataProvider {
 //    }
 //
 //    @Override
-//    public SocialExtWorker findSocialWorker(String socialWorkerId) {
-//        return restTemplate.getForObject(url + RESTURL_FIND_SOCIAL_WORKER, SocialExtWorker.class, socialWorkerId);
-//    }
-//
+
+    /**
+     * Récupérer un intervenant social à partir de son id.
+     * @param socialWorkerId Id de l'intervenant social.
+     * @return
+     */
+    public SocialExtWorker findSocialWorker(String socialWorkerId) {
+        SocialExtWorker res = new SocialExtWorker();
+        res.setComment("no comment");
+        res.setFirstName("Amélie");
+        res.setLastName("DURAND");
+        res.setMail("amelie.durand@emailprovider.fr");
+        PortalSocialExtWorker portalSocialExtWorker = new PortalSocialExtWorker();
+        portalSocialExtWorker.setEnvironment(getStubEnvironment());
+        portalSocialExtWorker.setIdExt(socialWorkerId);
+        res.setPortalExtWorker(portalSocialExtWorker);
+        res.setRendezVous(null);
+        res.setSector("PAU");
+        res.setSectorList(new ArrayList<String>() {{
+            add("PAU");
+            add("secteur 1");
+            add("secteur 2");
+        }});
+        res.setTelephone("0501020304");
+        res.setTitle("");
+        Set<SocialExtUser> users;
+        res.setUsers(new HashSet<>());
+        final SocialExtUser socialExtUser = findSocialExtUser("123");
+        socialExtUser.setSocialWorkerId(socialWorkerId);
+        res.getUsers().add(socialExtUser);
+        return res;
+    }
+
+    private Environment getStubEnvironment() {
+        Environment environment = new Environment("application64", "Application 64", "Application de gestion des aides sociales du CD64");
+        return environment;
+    }
+    //
 //    @Override
 //    public List<SocialExtMunicipality> findMunicipalitiesByZipCode(String zipCode) {
 //        // TODO Auto-generated method stub
@@ -992,5 +1094,18 @@ public class StubDataProvider {
         redto.setParentRef(rdto.getId());
         redto.setValue(referential + "1");
         return rdto;
+    }
+
+    /**
+     * "Rechercher dans les individus.
+     *
+     * @param searchCriteria Set de critères de recherche. Chaque critère contient un type, une classe et une valeur.
+     * @return Une liste d'individus correspondant aux critères.
+     * @see SearchCriterionDTO
+     */
+    public List<SocialExtBeneficiary> findAllIndividuals(Set<SearchCriterionDTO> searchCriteria) {
+        List<SocialExtBeneficiary> res = new ArrayList<>();
+        res.add(findBeneficiary("123"));
+        return res;
     }
 }

@@ -1,5 +1,8 @@
 package fr.infodb.exemples.portail.rest.serveur.dto.externalsocialbusiness;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -54,6 +57,7 @@ public class SocialExtWorker {
     private String mail;
 
     @XmlElement(name = "RendezVous")
+    @JsonIgnore
     private Set<SocialExtRendezVous> rendezVous = new HashSet<SocialExtRendezVous>();
 
     @XmlElement(name = "PortalExtWorker", namespace = "http://www.infodb.fr/solis/portail/extsocial")

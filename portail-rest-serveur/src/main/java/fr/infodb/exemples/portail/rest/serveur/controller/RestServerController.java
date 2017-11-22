@@ -1,30 +1,5 @@
 package fr.infodb.exemples.portail.rest.serveur.controller;
 
-//import fr.infodb.portail.spi.api.RestDataProvider;
-//import fr.infodb.portail.spi.api.StubDataProvider;
-//import fr.infodb.portail.spi.api.rest.RestSocialExtDataProvider;
-//import fr.infodb.portail.spi.api.rest.dto.*;
-//import fr.infodb.portail.spi.impl.StubEnvironmentResourceProvider;
-//import fr.infodb.portail.spi.model.SocialWorkerUser;
-//import fr.infodb.portail.spi.model.externalsocialbusiness.*;
-//import fr.infodb.portail.spi.model.portalconfig.*;
-//import fr.infodb.portail.spi.model.referential.Referential;
-//import org.apache.commons.lang.CharEncoding;
-//import org.apache.cxf.jaxrs.ext.xml.XMLName;
-//import org.apache.cxf.jaxrs.model.wadl.Description;
-//import org.apache.cxf.jaxrs.model.wadl.Descriptions;
-//import org.apache.cxf.jaxrs.model.wadl.DocTarget;
-//
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//
-//import javax.ws.rs.*;
-//import javax.ws.rs.core.MediaType;
-//import java.text.DateFormat;
-//import java.text.ParseException;
-//import java.text.SimpleDateFormat;
-//import java.util.*;
-
 import fr.infodb.exemples.portail.rest.serveur.dto.externalsocialbusiness.*;
 import fr.infodb.exemples.portail.rest.serveur.dto.ws.*;
 import fr.infodb.exemples.portail.rest.serveur.exceptions.SocialExtException;
@@ -36,14 +11,16 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
- * Services Rest exposés
+ * Web services REST exposés
  */
 @RestController
-@RequestMapping("/portail/spi")
+@RequestMapping(value="/portail/spi" /*, produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE}*/)
 @Api(tags="InfoDB, services rest Portail Agent", value="Concernant la gestion des erreurs : les conventions classiques REST sont appliquées, côté client seules les erreurs 404 seront remontées de façon différente.")
 public class RestServerController /*implements RestSocialExtDataProvider*/ {
 
@@ -57,75 +34,47 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
     }
 
 
-//
-//	/** Permet de récupérer les données de test. */
-//	private StubDataProvider sdp;
-//
-//	/** Logger slf4j. */
-//	private static final Logger LOGGER = LoggerFactory.getLogger(RestServerResource.class);
-//
-//	public RestServerResource(Environment env, StubEnvironmentResourceProvider resourceProvider) {
-//    	sdp = new StubDataProvider(env, resourceProvider);
-//    }
-//
-//    @Override
-//    @GET
-//    @Path(RestDataProvider.RESTURL_GET_NUMBER_SIRH_EVENTS)
-//    @Descriptions({
-//		@Description(target=DocTarget.METHOD, value="Retourne, pour l'utilisateur spécifié, le nombre d'évènements en attente de traitement issus du SIRH."),
-//		@Description(target=DocTarget.RETURN, value="Le nombre d'évènements.")
-//	})
-//    public Long getNumberSirhEvents(@Description("Identifiant de l'utilisateur") @PathParam("userId") String userId) {
-//    	return sdp.getNumberSirhEvents(userId);
-//    }
 
-//
+
+    /**
+     * Retourner, pour l'utilisateur spécifié, le nombre d'évènements en attente de traitement issus du SIRH.
+     *
+     * @param userId Identifiant de l'utilisateur
+     * @return Le nombre d'évènements.
+     */
         @GetMapping(RestDataProvider.RESTURL_GET_NUMBER_SIRH_EVENTS)
-        @ApiOperation("Retourne, pour l'utilisateur spécifié, le nombre d'évènements en attente de traitement issus du SIRH.")
+        @ApiOperation("Retourner, pour l'utilisateur spécifié, le nombre d'évènements en attente de traitement issus du SIRH.")
         public Long getNumberSirhEvents(@ApiParam("Identifiant de l'utilisateur") @PathVariable("userId") String userId) {
         	return sdp.getNumberSirhEvents(userId);
         }
 
-//
-//    @Override
-//    @GET
-//    @Path(RestDataProvider.RESTURL_GET_BUSINESS_OFFERS)
-//    @Descriptions({
-//		@Description(target=DocTarget.METHOD, value="Recherche les offres de service pour un individu."),
-//		@Description(target=DocTarget.RETURN, value="Une liste d'offres de service.")
-//	})
-//    @XMLName("{http://www.infodb.fr/solis/portail/extsocialbusiness}BusinessOffer")
-//	public List<BusinessOffer> getBusinessOffers(
-//			@Description("Clé de l'individu") @PathParam(RestDataProvider.PATHPARAM_BENEFICIARYID) String individualId) {
-//
-//		return sdp.getBusinessOffers(individualId);
-//	}
-    @GetMapping(RestDataProvider.RESTURL_GET_BUSINESS_OFFERS)
-    @ApiOperation("Recherche les offres de service pour un individu.")
-    public List<BusinessOffer> getBusinessOffers(
-            @PathVariable(RestDataProvider.PATHPARAM_BENEFICIARYID) String individualId) {
 
+
+    /**
+     * Rechercher les offres de service pour un individu.
+     *
+     * @param individualId Clé de l'individu
+     * @return Une liste d'offres de service.
+     */
+    @GetMapping(RestDataProvider.RESTURL_GET_BUSINESS_OFFERS)
+    @ApiOperation("Rechercher les offres de service pour un individu.")
+    public List<BusinessOffer> getBusinessOffers(
+            @ApiParam("Clé de l'individu") @PathVariable(RestDataProvider.PATHPARAM_BENEFICIARYID) String individualId) {
         return sdp.getBusinessOffers(individualId);
     }
 
-//
-//    @Override
-//    @GET
-//    @Path(RestDataProvider.RESTURL_GET_ALL_LOGIN_HOMEPAGE_MESSAGES)
-//    @Descriptions({
-//		@Description(target=DocTarget.METHOD, value="Recherche les message à afficher sur la page d'authentification."),
-//		@Description(target=DocTarget.RETURN, value="Une liste de messages.")
-//	})
-//    @XMLName("{http://www.infodb.fr/solis/portail/extsocialbusiness}LoginHomepageMessage")
-//	public List<LoginHomepageMessage> getAllLoginHomepageMessages() {
-//		return sdp.getAllLoginHomepageMessages();
-//	}
 
+
+    /**
+     * Rechercher les message à afficher sur la page d'authentification.
+     *
+     * @return Une liste de messages.
+     */
     @GetMapping(RestDataProvider.RESTURL_GET_ALL_LOGIN_HOMEPAGE_MESSAGES)
-    @ApiOperation("Recherche les message à afficher sur la page d'authentification.")
-    	public List<LoginHomepageMessage> getAllLoginHomepageMessages() {
-    		return sdp.getAllLoginHomepageMessages();
-    	}
+    @ApiOperation("Rechercher les message à afficher sur la page d'authentification.")
+    public List<LoginHomepageMessage> getAllLoginHomepageMessages() {
+        return sdp.getAllLoginHomepageMessages();
+    }
 //
 //	@Override
 //    @GET
@@ -333,7 +282,7 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
     public SocialExtBeneficiary getSocialFileMeasures(
             @RequestHeader(RestDataProvider.HEADERNAME_USERID) String userId,
             @PathVariable(RestDataProvider.PATHPARAM_BENEFICIARYID) String beneficiaryId) {
-        return sdp.getSocialFileMeasures(createMockSocialExtUser(userId), beneficiaryId);
+        return sdp.getSocialFileMeasures(userId, beneficiaryId);
     }
 //
 //
@@ -411,27 +360,23 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //    	SocialExtUser seu = createMockSocialExtUser(userId);
 //
 //        return sdp.getProfiles(seu);
-//    }
 
     /**
-     * Retourner les profils d'un utilisateur.
+     * Retourner les profils d'un utilisateur si l'id de l'utilisateur est renseigné.
+     * <p>
+     * Si l'id n'est pas renseigné, retourner la liste de tous les profils.
      *
      * @param userId Id de l'utilisateur.
-     * @return Un Set de String correspondant aux profils utilisateur.
+     * @return Un Set de String correspondant aux profils.
      */
     @GetMapping(RestDataProvider.RESTURL_GET_PROFILES)
-    @ApiOperation("Retourner les profils d'un utilisateur.")
+    @ApiOperation("Retourner les profils d'un utilisateur si l'id de l'utilisateur est renseigné. Si l'id n'est pas renseigné, retourner la liste de tous les profils.")
+
     public Set<String> getProfiles(@RequestParam(value = RestDataProvider.QUERYPARAM_USERID, required = false) String userId) {
-
-        // Si pas de param => getAvailableProfiles
-        if (userId == null) {
-            return sdp.getAvailableProfiles();
-        }
-
-        // Sinon => getProfiles
-        SocialExtUser seu = createMockSocialExtUser(userId);
-        return sdp.getProfiles(seu);
+        return userId == null ? sdp.getAvailableProfiles() : sdp.getProfiles(userId);
     }
+
+//    }
 //
 //    @Override
 //    @GET
@@ -530,8 +475,18 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //
 //		return sdp.suggestMunicipalities(token);
 //	}
-    //@GetMapping()
-//    @ApiOperation()
+
+    /**
+     * Récupérer des valeurs à suggérer à l'utilisateur pour la complétion des municipalités.
+     *
+     * @param token Contient les premiers caractères de la municipalité.
+     * @return Liste de SocialExtMunicipalities.
+     */
+    @GetMapping(RestDataProvider.RESTURL_SUGGEST_MUNICIPALITIES)
+    @ApiOperation("Récupérer des valeurs à suggérer à l'utilisateur pour la complétion des municipalités.")
+    public List<SocialExtMunicipality> suggestMunicipalities(@RequestParam(RestDataProvider.QUERYPARAM_SUGGESTTOKEN) String token) {
+        return sdp.suggestMunicipalities(token);
+    }
 //
 //	@Override
 //    @GET
@@ -550,8 +505,26 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //		SocialExtUser seu = createMockSocialExtUser(userId);
 //		return sdp.getLinks(screens, seu, individualId, token);
 //	}
-    //@GetMapping()
-//    @ApiOperation()
+
+    /**
+     * Récupérer les liens de débranchement vers les écrans de Solis.
+     *
+     * @param token Token d'authentification.
+     * @param screens Ensemble d'écrans.
+     * @param userId Id de l'utilisateur du portail.
+     * @param individualId Id de l'individu concerné.
+     * @return Une Map avec en clé une enum correspondant aux écrans et en valeur une String contenant le lien.
+     * @see SocialModuleScreen
+     */
+    @GetMapping(RestDataProvider.RESTURL_GET_LINKS)
+    @ApiOperation("Récupérer les liens de débranchement vers les écrans de Solis.")
+    public Map<SocialModuleScreen, String> getLinks(
+            @RequestHeader(RestDataProvider.HEADERNAME_AUTH_TOKEN) String token,
+            @RequestParam(RestDataProvider.QUERYPARAM_SCREEN) Set<SocialModuleScreen> screens,
+            @RequestParam(RestDataProvider.QUERYPARAM_USERID) String userId,
+            @RequestParam(RestDataProvider.QUERYPARAM_INDIVIDUALID) String individualId) {
+        return sdp.getLinks(screens, userId, individualId, token);
+    }
 //
 //	@Override
 //    @GET
@@ -568,8 +541,24 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //
 //		return sdp.getHomePages(modules, createMockSocialExtUser(userId), token);
 //	}
-    //@GetMapping()
-//    @ApiOperation()
+
+    /**
+     * Récupérer les liens vers les pages d'accueil des modules sociaux.
+     *
+     * @param token   Token d'authentification.
+     * @param userId  Id de l'utilisateur du portail.
+     * @param modules Ensemble de modules.
+     * @return Une Map avec en clé une enum correspondant aux modules et en valeur une String contenant le lien.
+     * @see SocialModule
+     */
+    @GetMapping(RestDataProvider.RESTURL_GET_HOME_PAGES)
+    @ApiOperation("Récupérer les liens vers les pages d'accueil des modules sociaux.")
+    public Map<SocialModule, String> getHomePages(
+            @RequestHeader(RestDataProvider.HEADERNAME_AUTH_TOKEN) String token,
+            @RequestParam(RestDataProvider.QUERYPARAM_USERID) String userId,
+            @RequestParam(RestDataProvider.QUERYPARAM_SOCIALMODULE) Set<SocialModule> modules) {
+        return sdp.getHomePages(modules, userId, token);
+    }
 //
 //
 //    @Override
@@ -584,8 +573,19 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //
 //        return sdp.findBeneficiary(externalId);
 //    }
-    //@GetMapping()
-//    @ApiOperation()
+
+    /**
+     * Récupérer un bénéficiaire à partir de son id.
+     *
+     * @param externalId Identifiant du bénéficiaire.
+     * @return Un objet SocialExtBeneficiary.
+     */
+    @GetMapping(RestDataProvider.RESTURL_FIND_BENEFICIARY)
+    @ApiOperation("Récupérer un bénéficiaire à partir de son id.")
+    public SocialExtBeneficiary findBeneficiary(
+            @PathVariable(RestDataProvider.PATHPARAM_BENEFICIARYID) String externalId) {
+        return sdp.findBeneficiary(externalId);
+    }
 //
 //    @Override
 //    @GET
@@ -599,8 +599,19 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //
 //        return sdp.findSocialExtUser(externalId);
 //    }
-    //@GetMapping()
-//    @ApiOperation()
+
+    /**
+     * Récupérer un utilisateur à partir de son id.
+     *
+     * @param externalId Id de l'utilisateur.
+     * @return Un objet SocialExtUser correspondant à l'utilisateur recherché.
+     */
+    @GetMapping(RestDataProvider.RESTURL_FIND_SOCIAL_EXT_USER)
+    @ApiOperation("Récupérer un utilisateur à partir de son id.")
+    public SocialExtUser findSocialExtUser(
+            @PathVariable(RestDataProvider.PATHPARAM_USERID) String externalId) {
+        return sdp.findSocialExtUser(externalId);
+    }
 //
 //    @Override
 //    @GET
@@ -614,8 +625,18 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //
 //        return sdp.findSocialWorker(externalId);
 //    }
-    //@GetMapping()
-//    @ApiOperation()
+
+    /**
+     * Récupérer un intervenant social à partir de son id.
+     *
+     * @param externalId Id de l'intervenant social.
+     * @return Un objet SocialExtWorker correspondant à l'intervenant social recherché.
+     */
+    @GetMapping(RestDataProvider.RESTURL_FIND_SOCIAL_WORKER)
+    @ApiOperation("Récupérer un intervenant social à partir de son id.")
+    public SocialExtWorker findSocialWorker(@PathVariable(RestDataProvider.PATHPARAM_SOCIALWORKERID) String externalId) {
+        return sdp.findSocialWorker(externalId);
+    }
 //
 //
 //	@Override
@@ -630,8 +651,18 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //
 //		return sdp.authenticate(updto.getUser(), updto.getPassword());
 //	} // TODO : utilisation de l'enum de spi-portail => à ré-écrire ?
-    //@GetMapping()
-//    @ApiOperation()
+
+    /**
+     * Authentifier un utilisateur.
+     *
+     * @return Résultat de l'authentification (enum correspondant aux différents statuts possibles).
+     * @see AuthenticationResult
+     */
+    @PostMapping(RestDataProvider.RESTURL_AUTHENTICATE)
+    @ApiOperation("Authentifier un utilisateur.")
+    public AuthenticationResult authenticate(UserAndPwdDTO updto) {
+        return sdp.authenticate(updto);
+    }
 //
 //    @Override
 //    @GET
@@ -645,14 +676,22 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //
 //        return sdp.getAvailableSocialModulesForLifeLine();
 //    } // TODO : écrire un dto pour le retour ?
-    //@GetMapping()
-//    @ApiOperation()
+
+    /**
+     * Récupérer les modules sociaux disponibles pour affichage dans une ligne de vie.
+     * @return Un Set de SocialModule.
+     */
+    @GetMapping(RestDataProvider.RESTURL_GET_SOCIAL_MODULES_FOR_LIFE_LINE)
+    @ApiOperation("Récupérer les modules sociaux disponibles pour affichage dans une ligne de vie.")
+    public Set<SocialModule> getAvailableSocialModulesForLifeLine() {
+        return sdp.getAvailableSocialModulesForLifeLine();
+    }
 //
 //	@Override
 //	@GET
 //	@Path(RestDataProvider.RESTURL_FIND_ALL_MUNICIPALITIES)
 //	@Descriptions({
-//		@Description(target=DocTarget.METHOD, value="Récupérer toutes les communes. ***A priori cette méthode n'est pas utilisée.***"),
+//		@Description(target=DocTarget.METHOD, value="Récupérer toutes les communes. fixme***A priori cette méthode n'est pas utilisée.***"),
 //		@Description(target=DocTarget.RETURN, value="Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.")
 //	})
 //	@XMLName("{http://www.infodb.fr/solis/portail/extsocialbusiness}SocialExtMunicipality")
@@ -684,14 +723,13 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //
 //		return municipalitiesDTO;
 //	}
-    //@GetMapping()
-//    @ApiOperation()
+
 //
 //    @Override
 //	@GET
 //	@Path(RestDataProvider.RESTURL_FIND_ALL_PLACES)
 //    @Descriptions({
-//		@Description(target=DocTarget.METHOD, value="Récupération de tous les lieux. ***A priori cette méthode n'est pas utilisée.***"),
+//		@Description(target=DocTarget.METHOD, value="Récupération de tous les lieux. fixme***A priori cette méthode n'est pas utilisée.***"),
 //		@Description(target=DocTarget.RETURN, value="Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.")
 //	})
 //    @XMLName("{http://www.infodb.fr/solis/portail/extsocialbusiness}SocialWorker")
@@ -761,8 +799,23 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //
 //		return workersDTO;
 //	}
-    //@GetMapping()
-//    @ApiOperation()
+
+    /**
+     * Récupérer tous les travailleurs sociaux.
+     * <p>
+     * Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
+     *
+     * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
+     * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
+     * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
+     */
+    @GetMapping(RestDataProvider.RESTURL_FIND_ALL_SOCIAL_WORKERS)
+    @ApiOperation("Récupérer tous les travailleurs sociaux. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.")
+    public SocialWorkerSearchResultDTO findAllSocialWorkers(
+            @RequestParam(RestDataProvider.QUERYPARAM_PAGESIZE) int pageSize,
+            @RequestParam(RestDataProvider.QUERYPARAM_PAGENUMBER) int pageNumber) {
+        return sdp.findAllSocialWorkers(pageSize, pageNumber);
+    }
 //
 //	@Override
 //	@GET
@@ -799,8 +852,21 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //
 //		return usersDTO;
 //	}
-    //@GetMapping()
-//    @ApiOperation()
+
+    /**
+     * Récupérer tous les utilisateurs. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
+     *
+     * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
+     * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
+     * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
+     */
+    @GetMapping(RestDataProvider.RESTURL_FIND_ALL_USER)
+    @ApiOperation("Récupérer tous les utilisateurs. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.")
+    public UserSearchResultDTO findAllUser(
+            @RequestParam(RestDataProvider.QUERYPARAM_PAGESIZE) int pageSize,
+            @RequestParam(RestDataProvider.QUERYPARAM_PAGENUMBER) int pageNumber) {
+        return sdp.findAllUser(pageSize, pageNumber);
+    }
 //
 //
 //	@Override
@@ -840,8 +906,21 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //
 //		return bsrdto;
 //	} // TODO : s'appuie encore sur des objets du spi-portail, on pourrait tout ré-écrire ...
-    //@GetMapping()
-//    @ApiOperation()
+
+    /**
+     * Récupérer tous les individus. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
+     *
+     * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
+     * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
+     * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
+     */
+    @GetMapping(RestDataProvider.RESTURL_FIND_ALL_INDIVIDUALS)
+    @ApiOperation("Récupérer tous les individus. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.")
+    public BeneficiarySearchResultDTO findAllIndividuals(
+            @RequestParam(RestDataProvider.QUERYPARAM_PAGESIZE) int pageSize,
+            @RequestParam(RestDataProvider.QUERYPARAM_PAGENUMBER) int pageNumber) {
+        return sdp.findAllIndividuals(pageSize, pageNumber);
+    }
 //
 //    @Override
 //    @GET
@@ -859,8 +938,18 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //    	user.setId(userId);
 //        return sdp.getNews(user);
 //    } // TODO : voir si on ré-écrit le dto newslist et news
-    //@GetMapping()
-//    @ApiOperation()
+
+    /**
+     * Récupérer les news relatives à un travailleur social.
+     *
+     * @param userId Id du travailleur social concerné.
+     * @return Un objet NewsList, qui contient une liste de News. L'objet News contient une date et une liste de lignes de contenu (type String).
+     */
+    @GetMapping(RestDataProvider.RESTURL_GET_NEWS)
+    @ApiOperation("Récupérer les news relatives à un travailleur social.")
+    public NewsList getNews(@RequestParam(RestDataProvider.QUERYPARAM_SWUSERID) String userId) {
+        return sdp.getNews(userId);
+    }
 //
 //    @Override
 //    @GET
@@ -874,8 +963,18 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //
 //    	return sdp.getAvailableSocialModules();
 //    } // TODO : on pourrait écrire un wrapper List de socialModules
-    //@GetMapping()
-//    @ApiOperation()
+
+    /**
+     * Retourner les modules sociaux disponibles dans l'environnement courant.
+     *
+     * @return Un Set de SocialModule.
+     * @see SocialModule
+     */
+    @GetMapping(RestDataProvider.RESTURL_GET_SOCIAL_MODULES)
+    @ApiOperation("Retourner les modules sociaux disponibles dans l'environnement courant.")
+    public Set<SocialModule> getAvailableSocialModules() {
+        return sdp.getAvailableSocialModules();
+    }
 //
 //	@Override
 //	@POST
@@ -889,8 +988,18 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //
 //		return new StringWrapperDTO(sdp.getRedirectionToken(updto.getUser(), updto.getParams()));
 //	} // TODO : rien de changé, voir si on utilise des query param plutôt que le dto ?
-//    @PostMapping()
-//    @ApiOperation()
+
+    /**
+     * Récupérer un token de redirection.
+     *
+     * @param updto Wrapper autour d'un SocialExtUSer (habilitation) et une map de paramètres.
+     * @return Wrapper de String, token de redirection.
+     */
+    @PostMapping(RestDataProvider.RESTURL_GET_REDIRECTION_TOKEN)
+    @ApiOperation("Récupérer un token de redirection.")
+    public StringWrapperDTO getRedirectionToken(UserAndParamsDTO updto) {
+        return new StringWrapperDTO(sdp.getRedirectionToken(updto));
+    }
 //
 //    @Override
 //    @POST
@@ -939,8 +1048,19 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //		seb.setBeneficiaries(beneficiaries);
 //		return seb.getBeneficiaries();
 //    } // TODO : rien de changé, voir si on passe les critères de recherche en query param ?
-//    @PostMapping(RestDataProvider.RESTURL_SEARCH_INDIVIDUALS)
-//    @ApiOperation("Recherche dans les individus.")
+
+    /**
+     * "Rechercher dans les individus.
+     *
+     * @param searchCriteria Set de critères de recherche. Chaque critère contient un type, une classe et une valeur.
+     * @return Une liste d'individus correspondant aux critères.
+     * @see SearchCriterionDTO
+     */
+    @PostMapping(RestDataProvider.RESTURL_SEARCH_INDIVIDUALS)
+    @ApiOperation("Recherche dans les individus.")
+    public List<SocialExtBeneficiary> searchIndividuals(HashSet<SearchCriterionDTO> searchCriteria) {
+        return sdp.findAllIndividuals(searchCriteria);
+    }
 //
 //    @Override
 //    @GET
@@ -955,8 +1075,19 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //
 //        return sdp.getIndividualRendezVous(externalId);
 //    }
-//    @GetMapping(RestDataProvider.RESTURL_GET_INDIVIDUAL_RENDEZ_VOUS)
-//    @ApiOperation("Recherche dans les rendez-vous des individus.")
+
+    /**
+     * Rechercher dans les rendez-vous des individus.
+     *
+     * @param externalId Clé de l'individu
+     * @return Une liste de SocialExtRendezVous.
+     */
+    @GetMapping(RestDataProvider.RESTURL_GET_INDIVIDUAL_RENDEZ_VOUS)
+    @ApiOperation("Rechercher dans les rendez-vous des individus.")
+    public List<SocialExtRendezVous> getIndividualRendezVous(
+            @PathVariable(RestDataProvider.PATHPARAM_BENEFICIARYID) String externalId) {
+        return sdp.getIndividualRendezVous(externalId);
+    }
 //
 //	@Override
 //	@GET
@@ -986,8 +1117,25 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //
 //		return sdp.getSocialWorkerRendezVous(createMockSocialExtUser(userId), socialWorkerId, start, end);
 //	}
-//    @GetMapping(RestDataProvider.RESTURL_GET_SOCIAL_WORKER_RENDEZ_VOUS)
-//    @ApiOperation("Recherche dans les rendez-vous des travailleurs sociaux.")
+
+    /**
+     * Rechercher dans les rendez-vous des travailleurs sociaux.
+     *
+     * @param userId         Id de l'utilisateur portail à l'origine de l'appel
+     * @param socialWorkerId Id du travailleur social
+     * @param startDate      Date de début de la période de recherche, format yyyy-MM-ddTHH:mm:ss
+     * @param endDate        Date de fin de la période de recherche, format yyyy-MM-ddTHH:mm:ss
+     * @return Un Set de SocialExtRendezVous.
+     */
+    @GetMapping(RestDataProvider.RESTURL_GET_SOCIAL_WORKER_RENDEZ_VOUS)
+    @ApiOperation("Rechercher dans les rendez-vous des travailleurs sociaux.")
+    public Set<SocialExtRendezVous> getSocialWorkerRendezVous(
+            @RequestHeader(RestDataProvider.HEADERNAME_USERID) String userId,
+            @PathVariable(RestDataProvider.PATHPARAM_SOCIALWORKERID) String socialWorkerId,
+            @RequestParam(RestDataProvider.QUERYPARAM_DATEDEBUT) String startDate,
+            @RequestParam(RestDataProvider.QUERYPARAM_DATEFIN) String endDate) {
+        return sdp.getSocialWorkerRendezVous(userId, socialWorkerId, startDate, endDate);
+    }
 //
 //	@Override
 //	@POST
@@ -1002,15 +1150,26 @@ public class RestServerController /*implements RestSocialExtDataProvider*/ {
 //		final TypeAndIdRendezvous typeAndIdRendezvous = sdp.createSocialWorkerRendezVous(rendezVous);
 //		return new StringWrapperDTO(typeAndIdRendezvous.getId() + ":" + typeAndIdRendezvous.getType().name());
 //	}
-//    @PostMapping(RestDataProvider.RESTURL_CREATE_SOCIAL_WORKER_RENDEZ_VOUS)
-//    @ApiOperation("Crée un rendez-vous.")
-//
+
+    /**
+     * Créer un rendez-vous pour un intervenant social.
+     *
+     * @param rendezVous Paramètres du rendez-vous (date, travailleurs sociaux, etc...)
+     * @return L'id du rendez-vous créé.
+     * @see SocialExtRendezVous
+     */
+    @PostMapping(RestDataProvider.RESTURL_CREATE_SOCIAL_WORKER_RENDEZ_VOUS)
+    @ApiOperation("Créer un rendez-vous pour un intervenant social.")
+    public StringWrapperDTO createSocialWorkerRendezVous(SocialExtRendezVous rendezVous) {
+        return new StringWrapperDTO(sdp.createSocialWorkerRendezVous(rendezVous));
+    }
+
+//    private SocialExtUser createMockSocialExtUser(String userId) {
+//        SocialExtUser seu = new SocialExtUser("login" + userId);
+//        seu.setId(userId);
+//        return seu;
+//    }
 
 
-    	private SocialExtUser createMockSocialExtUser(String userId) {
-    		SocialExtUser seu = new SocialExtUser("login" + userId);
-        	seu.setId(userId);
-    		return seu;
-    	}
 
 }
