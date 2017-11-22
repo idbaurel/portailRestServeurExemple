@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class StubDataProvider {
+public class StubDataProvider implements DataProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StubDataProvider.class);
 
@@ -134,6 +134,7 @@ public class StubDataProvider {
      * @param userId Identifiant de l'utilisateur
      * @return Nombre d'événement pour l'utilisateur
      */
+    @Override
     public Long getNumberSirhEvents(String userId) {
 
         return 0L;
@@ -144,6 +145,7 @@ public class StubDataProvider {
      * @param individualId Identifiant du bénéficiaire
      * @return Liste d'offre
      */
+    @Override
     public List<BusinessOffer> getBusinessOffers(String individualId) {
 
         List<BusinessOffer> res = new ArrayList<>();
@@ -166,6 +168,7 @@ public class StubDataProvider {
      * @param externalId Id du user portail à l'origine de l'appel
      * @return
      */
+    @Override
     public String getModuleIdentifier(SocialModule module, ModuleIdentifierType type, String externalId) {
 
 //        // Construction de l'url avec paramètre
@@ -186,6 +189,7 @@ public class StubDataProvider {
      * @param index Id du bénéficiaire
      * @return Un objet SocialExtBeneficiary contenant le détail des aides.
      */
+    @Override
     public SocialExtBeneficiary getSocialFileMeasures(String userId, String index) {
 
         SocialExtBeneficiary res = new SocialExtBeneficiary();
@@ -204,11 +208,13 @@ public class StubDataProvider {
      * @param beneficiary Données de l'individu à créer
      * @return Identifiant de l'individu créer
      */
+    @Override
     public String createIndividuals(SocialExtBeneficiary beneficiary) {
         return "123456";
     }
 //
 //    @Override
+    @Override
     public void updateIndividual(SocialExtBeneficiary beneficiary) {
         LOGGER.info("Mise à jour de l'individu {} {}", beneficiary.getLastName(), beneficiary.getFirstName());
     }
@@ -221,6 +227,7 @@ public class StubDataProvider {
      * @param user Représentation d'un utilisateur
      * @return Set de profils d'un utilisateur
      */
+    @Override
     public Set<String> getProfiles(String user) {
         Set<String> res = new HashSet<>();
         res.add("Administrateur");
@@ -233,6 +240,7 @@ public class StubDataProvider {
      * Retourner tous les profils utilisateurs actifs.
      * @return Un Set de String correspondant aux profils utilisateurs.
      */
+    @Override
     public Set<String> getAvailableProfiles() {
         Set<String> res = new HashSet<>();
         res.add("Administrateur");
@@ -248,6 +256,7 @@ public class StubDataProvider {
      * @return
      * @throws SocialExtException
      */
+    @Override
     public Set<SocialExtPlace> getPlacesByType(SocialExtPlaceType type) {
 
         Set<SocialExtPlace> res = new HashSet<>();
@@ -264,11 +273,13 @@ public class StubDataProvider {
      * @param placeId Identifiant du lieu
      * @return Circonscription liée à un lieu.
      */
+    @Override
     public String getCirco(String placeId) {
         return "Pau-Nord";
     }
 //
 //    @Override
+    @Override
     public SocialExtBeneficiary getFileRecord(SocialExtUser user, String index)  {
         SocialExtBeneficiary res = new SocialExtBeneficiary();
         res.setLastName("DUPONT");
@@ -279,6 +290,7 @@ public class StubDataProvider {
     }
 //
 //    @Override
+    @Override
     public SocialExtBeneficiary getIndividualSynthesis(SocialExtUser user, String index) {
         SocialExtBeneficiary res = new SocialExtBeneficiary();
         res.setLastName("DUPONT");
@@ -418,6 +430,7 @@ public class StubDataProvider {
      * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
      * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
      */
+    @Override
     public UserSearchResultDTO findAllUser(int pageSize, int pageNumber) {
         UserSearchResultDTO results = new UserSearchResultDTO();
         results.setPageNumber(pageNumber);
@@ -457,6 +470,7 @@ public class StubDataProvider {
      * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
      * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
      */
+    @Override
     public SocialWorkerSearchResultDTO findAllSocialWorkers(int pageSize, int pageNumber) {
 
         List<SocialExtWorker> workers = new ArrayList<SocialExtWorker>();
@@ -508,6 +522,7 @@ public class StubDataProvider {
      * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
      * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
      */
+    @Override
     public BeneficiarySearchResultDTO findAllIndividuals(int pageSize, int pageNumber) {
         List<SocialExtBeneficiary> beneficiaries = new ArrayList<>();
         beneficiaries.add(findBeneficiary("123"));
@@ -562,6 +577,7 @@ public class StubDataProvider {
      * @param externalId Id de l'utilisateur.
      * @return Un objet SocialExtUser correspondant à l'utilisateur recherché.
      */
+    @Override
     public SocialExtUser findSocialExtUser(String externalId) {
         SocialExtUser res = new SocialExtUser();
         res.setId(externalId);
@@ -586,6 +602,7 @@ public class StubDataProvider {
      * @param externalId Identifiant du bénéficiaire.
      * @return Un objet SocialExtBeneficiary.
      */
+    @Override
     public SocialExtBeneficiary findBeneficiary(String externalId) {
         SocialExtBeneficiary res = new SocialExtBeneficiary();
         res.setLastName("DUPONT");
@@ -644,6 +661,7 @@ public class StubDataProvider {
      *
      * @return Un Set de SocialModule.
      */
+    @Override
     public Set<SocialModule> getAvailableSocialModules() {
         return Arrays.stream(SocialModule.values())
                 .filter(v-> v.getName().startsWith("A"))
@@ -658,6 +676,7 @@ public class StubDataProvider {
      * @param userId Id du travailleur social concerné.
      * @return Un objet NewsList, qui contient une liste de News. L'objet News contient une date et une liste de lignes de contenu (type String).
      */
+    @Override
     public NewsList getNews(String userId) {
         NewsList res = new NewsList();
         res.setNewsList(new ArrayList<>());
@@ -678,6 +697,7 @@ public class StubDataProvider {
      * @return Une Map avec en clé une enum correspondant aux écrans et en valeur une String contenant le lien
      * @throws SocialExtException
      */
+    @Override
     public Map<SocialModuleScreen, String> getLinks(Set<SocialModuleScreen> screens, String user, String indexIndividual, String token) {
         Map<SocialModuleScreen, String> res = new HashMap<>();
         if (screens != null) {
@@ -698,6 +718,7 @@ public class StubDataProvider {
      * @param token   Token d'authentification
      * @return Une Map avec en clé une enum correspondant aux modules et en valeur une String contenant le lien.
      */
+    @Override
     public Map<SocialModule, String> getHomePages(Set<SocialModule> modules, String user, String token) {
         Map<SocialModule, String> res = new HashMap<>();
         if (modules != null) {
@@ -709,6 +730,7 @@ public class StubDataProvider {
     }
 //
 //    @Override
+    @Override
     public String getLink(SolisLinkType linkType, String token, SocialExtUser user) throws SocialExtException {
 
         return "http://host:8080/applicationMetier/businessuri?param1=123&param2=test";
@@ -757,6 +779,7 @@ public class StubDataProvider {
      * @param token Contient les premiers caractères de la municipalité.
      * @return Liste de SocialExtMunicipalities.
      */
+    @Override
     public List<SocialExtMunicipality> suggestMunicipalities(String token) {
         List<SocialExtMunicipality> res = new ArrayList<>();
         SocialExtMunicipality socialExtMunicipality = new SocialExtMunicipality(1, 64, "PAU", "64000");
@@ -773,6 +796,7 @@ public class StubDataProvider {
      * @param municipalityId Id de la commune.
      * @return Liste de lieux dont le nom contient la portion donnée.
      */
+    @Override
     public List<SocialExtPlace> suggestPlaces(String token, String municipalityId) {
         List<SocialExtPlace> res = new ArrayList<>();
         SocialExtPlace socialExtPlace = new SocialExtPlace("avenue Jean Biray", "", "", "12345", 123, 64, "PAU", "64000", "64");
@@ -787,6 +811,7 @@ public class StubDataProvider {
      *
      * @return Un Set de SocialModule.
      */
+    @Override
     public Set<SocialModule> getAvailableSocialModulesForLifeLine() {
         //renvoie ceux commençant par "A"
         return Arrays.stream(SocialModule.values())
@@ -802,6 +827,7 @@ public class StubDataProvider {
      * @param updto Représentation d'un utilisateur avec mot de passe
      * @return Résultat de l'authentification (enum correspondant aux différents statuts possibles
      */
+    @Override
     public AuthenticationResult authenticate(UserAndPwdDTO updto) {
         SocialExtUser user = updto.getUser();
         String password = updto.getPassword();
@@ -817,6 +843,7 @@ public class StubDataProvider {
      * Recherche les message à afficher sur la page d'authentification.
      * @return Liste des messages
      */
+    @Override
     public List<LoginHomepageMessage> getAllLoginHomepageMessages() {
 //        return restTemplate.exchange(url + RESTURL_GET_ALL_LOGIN_HOMEPAGE_MESSAGES, HttpMethod.GET, null, new ParameterizedTypeReference<List<LoginHomepageMessage>>() {
 //        }).getBody();
@@ -837,6 +864,7 @@ public class StubDataProvider {
      * @param externalId Clé de l'individu
      * @return Une liste de SocialExtRendezVous.
      */
+    @Override
     public List<SocialExtRendezVous> getIndividualRendezVous(String externalId) {
         List<SocialExtRendezVous> res = new ArrayList<>();
         SocialExtRendezVous socialExtRendezVous = new SocialExtRendezVous();
@@ -858,6 +886,7 @@ public class StubDataProvider {
      * @return Un Set de SocialExtRendezVous.
      * @throws SocialExtException Si les dates ne sont pas correctes
      */
+    @Override
     public Set<SocialExtRendezVous> getSocialWorkerRendezVous(String userId, String socialWorkerId, String startDate, String endDate) {
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -903,6 +932,7 @@ public class StubDataProvider {
 //
 //    //---------------- pas optimisés ---------------------
 //    @Override
+    @Override
     public String createSocialWorkerRendezVous(SocialExtRendezVous rendezVous) {
         TypeAndIdRendezvous typeAndIdRendezvous = new TypeAndIdRendezvous(123, TypeRendezVous.RENDEZ_VOUS_CENTRALISE);
         return typeAndIdRendezvous.getId() + ":" + typeAndIdRendezvous.getType().name();
@@ -916,6 +946,7 @@ public class StubDataProvider {
      * @param updto Wrapper autour d'un SocialExtUSer (habilitation) et une map de paramètres.
      * @return Token de redirection.
      */
+    @Override
     public String getRedirectionToken(UserAndParamsDTO updto) {
         return "stub_token";
     }
@@ -1018,6 +1049,7 @@ public class StubDataProvider {
      * @param socialWorkerId Id de l'intervenant social.
      * @return
      */
+    @Override
     public SocialExtWorker findSocialWorker(String socialWorkerId) {
         SocialExtWorker res = new SocialExtWorker();
         res.setComment("no comment");
@@ -1084,6 +1116,7 @@ public class StubDataProvider {
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
+    @Override
     public ReferentialDTO getReferential(String referential, String userId) {
         ReferentialDTO rdto = new ReferentialDTO();
         rdto.setId(Referential.valueOf(referential));
@@ -1103,6 +1136,7 @@ public class StubDataProvider {
      * @return Une liste d'individus correspondant aux critères.
      * @see SearchCriterionDTO
      */
+    @Override
     public List<SocialExtBeneficiary> findAllIndividuals(Set<SearchCriterionDTO> searchCriteria) {
         List<SocialExtBeneficiary> res = new ArrayList<>();
         res.add(findBeneficiary("123"));

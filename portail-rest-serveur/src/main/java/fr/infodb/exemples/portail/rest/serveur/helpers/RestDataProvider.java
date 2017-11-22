@@ -1,4 +1,4 @@
-package fr.infodb.exemples.portail.rest.serveur.services;
+package fr.infodb.exemples.portail.rest.serveur.helpers;
 
 /**
  * @author aurelien
