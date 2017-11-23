@@ -497,13 +497,11 @@ public class StubDataProvider implements DataProvider {
         SocialExtRendezVous rdv = new SocialExtRendezVous();
         Random random = new Random();
         rdv.setId(String.valueOf(random.nextInt()));
-        Calendar calendar = Calendar.getInstance();
-        rdv.setStartDate(calendar.getTime());
-        calendar.add(Calendar.HOUR_OF_DAY, 1);
-        rdv.setEndDate(calendar.getTime());
+        rdv.setStartDate(start);
+        rdv.setEndDate(end);
         rdv.setFullDay(false);
         rdv.setType(SocialExtRendezVousType.COMMISSION);
-//        rdv.setIndividual(findBeneficiary("200"));
+        //        rdv.setIndividual(findBeneficiary("200"));
         rdv.setLabel("Objectif : Evaluation - Etat : Prévu");
         rdv.setComment("comment");
 
