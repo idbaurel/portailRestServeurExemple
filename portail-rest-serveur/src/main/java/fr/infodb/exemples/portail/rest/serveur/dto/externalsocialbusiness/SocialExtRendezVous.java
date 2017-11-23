@@ -63,13 +63,13 @@ public class SocialExtRendezVous {
     /**
      * Intervenants sociaux concernés par le rendez-vous
      */
-//    @XmlElement(name = "SocialWorkers")
-//    private Set<SocialExtWorker> socialWorkers = new HashSet<SocialExtWorker>();
+    @XmlElement(name = "SocialWorkers")
+    private Set<SocialExtWorker> socialWorkers = new HashSet<SocialExtWorker>();
 
     // Exploité uniquement lors de la création d'un rendez-vous.
     // Lors d'une récupération, considérer le champ concernedIndividuals pour obtenir l'ensemble des individus concernés par le rendez-vous.
-//    @XmlElement(name = "Individual")
-//    private SocialExtIndividual individual;
+    @XmlElement(name = "Individual")
+    private SocialExtIndividual individual;
 
     /**
      * Adresse du rendez-vous
@@ -98,8 +98,8 @@ public class SocialExtRendezVous {
     /**
      * Individus concernés par le rendez vous
      */
-//    @XmlElement(name = "ConcernedIndividuals")
-//    private List<SocialExtConcerned> concernedIndividuals;
+    @XmlElement(name = "ConcernedIndividuals")
+    private List<SocialExtConcerned> concernedIndividuals;
 
     /**
      * Statuts des rendez vous sur le parcours usager
@@ -205,21 +205,21 @@ public class SocialExtRendezVous {
         this.address = address;
     }
 
-//    public Set<SocialExtWorker> getSocialWorkers() {
-//        return socialWorkers;
-//    }
+    public Set<SocialExtWorker> getSocialWorkers() {
+        return socialWorkers;
+    }
 
-//    public void setSocialWorkers(Set<SocialExtWorker> socialWorkers) {
-//        this.socialWorkers = socialWorkers;
-//    }
+    public void setSocialWorkers(Set<SocialExtWorker> socialWorkers) {
+        this.socialWorkers = socialWorkers;
+    }
 
-//    public SocialExtIndividual getIndividual() {
-//        return individual;
-//    }
+    public SocialExtIndividual getIndividual() {
+        return individual;
+    }
 
-//    public void setIndividual(SocialExtIndividual individual) {
-//        this.individual = individual;
-//    }
+    public void setIndividual(SocialExtIndividual individual) {
+        this.individual = individual;
+    }
 
     public SocialExtPlaceType getPlaceType() {
         return placeType;
@@ -245,13 +245,13 @@ public class SocialExtRendezVous {
         this.placeTypeLabel = placeTypeLabel;
     }
 
-//    public List<SocialExtConcerned> getConcernedIndividuals() {
-//        return concernedIndividuals;
-//    }
+    public List<SocialExtConcerned> getConcernedIndividuals() {
+        return concernedIndividuals;
+    }
 
-//    public void setConcernedIndividuals(List<SocialExtConcerned> concernedIndividuals) {
-//        this.concernedIndividuals = concernedIndividuals;
-//    }
+    public void setConcernedIndividuals(List<SocialExtConcerned> concernedIndividuals) {
+        this.concernedIndividuals = concernedIndividuals;
+    }
 
     public String getMotif() {
         return motif;

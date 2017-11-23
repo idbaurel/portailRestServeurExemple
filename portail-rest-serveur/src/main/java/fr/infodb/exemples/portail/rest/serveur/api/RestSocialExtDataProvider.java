@@ -4,6 +4,7 @@ import fr.infodb.exemples.portail.rest.serveur.dto.externalsocialbusiness.*;
 import fr.infodb.exemples.portail.rest.serveur.dto.ws.*;
 import fr.infodb.exemples.portail.rest.serveur.exceptions.SocialExtException;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -200,26 +201,6 @@ public interface RestSocialExtDataProvider {
     SocialWorkerSearchResultDTO findAllSocialWorkers(int pageSize, int pageNumber);
 
     /**
-     * Récupère tous les lieux (utilisé pour la reprise de données initiale).
-     * Les requêtes se font de manière paginée.
-     * Attention, cela implique que la recherche doit être ordonnée côté serveur.
-     *
-     * @param pageSize   taille de la page (=nombre d'éléments récupérés par requête)
-     * @param pageNumber numéro de la page récupérée, commençant au numéro 1
-     */
-    PlaceSearchResultDTO findAllPlaces(int pageSize, int pageNumber);
-
-    /**
-     * Récupère toutes les communes (utilisé pour la reprise de données initiale).
-     * Les requêtes se font de manière paginée.
-     * Attention, cela implique que la recherche doit être ordonnée côté serveur.
-     *
-     * @param pageSize   taille de la page (=nombre d'éléments récupérés par requête)
-     * @param pageNumber numéro de la page récupérée, commençant au numéro 1
-     */
-    MunicipalitySearchResultDTO findAllMunicipalities(int pageSize, int pageNumber);
-
-    /**
      * Récupère la liste de news pour un user.
      *
      * @param userId id du user pour lequel on veut la liste de news
@@ -252,7 +233,7 @@ public interface RestSocialExtDataProvider {
      * @return wrapper autour d'une liste de bénéficiaires
      * @throws SocialExtException Exception en cas d'erreur
      */
-    List<SocialExtBeneficiary> searchIndividuals(Set<SearchCriterionDTO> searchCriteria) throws SocialExtException;
+    List<SocialExtBeneficiary> searchIndividuals(HashSet<SearchCriterionDTO> searchCriteria) throws SocialExtException;
 
     /**
      * Récupère les modules sociaux disponibles pour la lifeline.

@@ -14,75 +14,299 @@ import java.util.Set;
  */
 public interface DataProvider {
 
+    /**
+     * Evénement SIRH
+     *
+     * @param userId Identifiant de l'utilisateur
+     * @return Nombre d'événement pour l'utilisateur
+     */
     Long getNumberSirhEvents(String userId);
 
+    /**
+     * Recherche des offres de services
+     *
+     * @param individualId Identifiant du bénéficiaire
+     * @return Liste d'offre
+     */
     List<BusinessOffer> getBusinessOffers(String individualId);
 
+    /**
+     * Récupère la référence du dossier
+     *
+     * @param module     SocialModule concerné.
+     * @param type       Type d'identifiant.
+     * @param externalId Id du user portail à l'origine de l'appel
+     * @return Référence du dossier.
+     */
     String getModuleIdentifier(SocialModule module, ModuleIdentifierType type, String externalId);
 
+    /**
+     * Récupère les aides liées à un bénéficiaire.
+     *
+     * @param userId Id de l'utilisateur à l'origine de l'appel
+     * @param index  Id du bénéficiaire
+     * @return Un objet SocialExtBeneficiary contenant le détail des aides.
+     */
     SocialExtBeneficiary getSocialFileMeasures(String userId, String index);
 
+    /**
+     * Créer un individu.
+     *
+     * @param beneficiary Données de l'individu à créer
+     * @return Identifiant de l'individu créer
+     */
     String createIndividuals(SocialExtBeneficiary beneficiary);
 
+    /**
+     * Modifier un individu.
+     *
+     * @param beneficiary Paramètres de l'individu à modifier.
+     * @see SocialExtBeneficiary
+     */
     void updateIndividual(SocialExtBeneficiary beneficiary);
 
-    Set<String> getProfiles(String user);
+    /**
+     * Retourner les profils d'un utilisateur si l'id de l'utilisateur est renseigné.
+     * <p>
+     * Si l'id n'est pas renseigné, retourner la liste de tous les profils.
+     *
+     * @param userId Id de l'utilisateur.
+     * @return Un Set de String correspondant aux profils.
+     */
+    Set<String> getProfiles(String userId);
 
+    /**
+     * Retourner tous les profils utilisateurs actifs.
+     *
+     * @return Un Set de String correspondant aux profils utilisateurs.
+     */
     Set<String> getAvailableProfiles();
 
+    /**
+     * Retourner un ensemble de lieux en fonction d'un type donné.
+     *
+     * @param type Type de lieu
+     * @return Les lieux correspondant au type de lieu donné.
+     * @see SocialExtPlaceType
+     */
     Set<SocialExtPlace> getPlacesByType(SocialExtPlaceType type);
 
+    /**
+     * Retourner la circonscription liée à un lieu.
+     *
+     * @param placeId Identifiant du lieu
+     * @return Circonscription liée à un lieu.
+     */
     String getCirco(String placeId);
 
+    /**
+     * Retourne le dossier d'un bénéficiaire.
+     *
+     * @param userId Id de l'utilisateur du portail à l'origine de cet appel
+     * @param index  Id du bénéficiaire recherché.
+     * @return Un objet socialExtBeneficiary contenant le détail du bénéficiaire.
+     */
+    SocialExtBeneficiary getFileRecord(String userId, String index);
 
-    SocialExtBeneficiary getFileRecord(SocialExtUser user, String index);
+    /**
+     * Récupère la synthèse d'un individu.
+     *
+     * @param userId Id de l'utilisateur du portail à l'origine de cet appel
+     * @param index  Id du bénéficiaire recherché
+     * @return Un SocialExtBeneficiary, contenant le détail du bénéficiaire.
+     */
+    SocialExtBeneficiary getIndividualSynthesis(String userId, String index);
 
-
-    SocialExtBeneficiary getIndividualSynthesis(SocialExtUser user, String index);
-
+    /**
+     * Récupérer tous les utilisateurs. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
+     *
+     * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
+     * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
+     * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
+     */
     UserSearchResultDTO findAllUser(int pageSize, int pageNumber);
 
+    /**
+     * Récupérer tous les travailleurs sociaux.
+     * <p>
+     * Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
+     *
+     * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
+     * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
+     * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
+     */
     SocialWorkerSearchResultDTO findAllSocialWorkers(int pageSize, int pageNumber);
 
+    /**
+     * Récupérer tous les individus. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
+     *
+     * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
+     * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
+     * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
+     */
     BeneficiarySearchResultDTO findAllIndividuals(int pageSize, int pageNumber);
 
+    /**
+     * Récupérer un utilisateur à partir de son id.
+     *
+     * @param externalId Id de l'utilisateur.
+     * @return Un objet SocialExtUser correspondant à l'utilisateur recherché.
+     */
     SocialExtUser findSocialExtUser(String externalId);
 
+    /**
+     * Récupérer un utilisateur à partir de son id.
+     *
+     * @param externalId Id de l'utilisateur.
+     * @return Un objet SocialExtUser correspondant à l'utilisateur recherché.
+     */
     SocialExtBeneficiary findBeneficiary(String externalId);
 
+    /**
+     * Retourner les modules sociaux disponibles dans l'environnement courant.
+     *
+     * @return Un Set de SocialModule.
+     */
     Set<SocialModule> getAvailableSocialModules();
 
+    /**
+     * Récupérer les news relatives à un travailleur social.
+     *
+     * @param userId Id du travailleur social concerné.
+     * @return Un objet NewsList, qui contient une liste de News. L'objet News contient une date et une liste de lignes de contenu (type String).
+     */
     NewsList getNews(String userId);
 
+    /**
+     * Récupérer les liens de débranchement vers les écrans de Solis.
+     *
+     * @param screens         Ensemble d'écrans.
+     * @param user            Utilisateur du portail
+     * @param indexIndividual Id de l'individu concerné
+     * @param token           Token d'authentification.
+     * @return Une Map avec en clé une enum correspondant aux écrans et en valeur une String contenant le lien
+     */
     Map<SocialModuleScreen, String> getLinks(Set<SocialModuleScreen> screens, String user, String indexIndividual, String token);
 
+    /**
+     * Récupérer les liens vers les pages d'accueil des modules sociaux
+     *
+     * @param modules Ensemble de modules.
+     * @param user    Utilisateur du portail
+     * @param token   Token d'authentification
+     * @return Une Map avec en clé une enum correspondant aux modules et en valeur une String contenant le lien.
+     */
     Map<SocialModule, String> getHomePages(Set<SocialModule> modules, String user, String token);
 
-
+    /**
+     * Retourne un lien de débranchement vers un écran SOLIS indépendant d'un module social.
+     *
+     * @param token    Token d'authentification
+     * @param linkType Type de lien pour débranchement
+     * @return Le lien http.
+     * @see SolisLinkType
+     */
     String getLink(SolisLinkType linkType, String token, SocialExtUser user) throws SocialExtException;
 
+    /**
+     * Récupérer des valeurs à suggérer à l'utilisateur pour la complétion des municipalités.
+     *
+     * @param token Contient les premiers caractères de la municipalité.
+     * @return Liste de SocialExtMunicipalities.
+     */
     List<SocialExtMunicipality> suggestMunicipalities(String token);
 
+    /**
+     * Retourner une liste de lieux correspondant à une portion de nom donnée.
+     *
+     * @param token          Portion du nom du lieu.
+     * @param municipalityId Id de la commune.
+     * @return Liste de lieux dont le nom contient la portion donnée.
+     */
     List<SocialExtPlace> suggestPlaces(String token, String municipalityId);
 
+    /**
+     * Récupérer les modules sociaux disponibles pour affichage dans une ligne de vie.
+     *
+     * @return Un Set de SocialModule.
+     */
     Set<SocialModule> getAvailableSocialModulesForLifeLine();
 
+    /**
+     * Authentifier un utilisateur.
+     *
+     * @param updto Représentation d'un utilisateur avec mot de passe
+     * @return Résultat de l'authentification (enum correspondant aux différents statuts possibles
+     */
     AuthenticationResult authenticate(UserAndPwdDTO updto);
 
+    /**
+     * Recherche les message à afficher sur la page d'authentification.
+     *
+     * @return Liste des messages
+     */
     List<LoginHomepageMessage> getAllLoginHomepageMessages();
 
+    /**
+     * Rechercher dans les rendez-vous des individus.
+     *
+     * @param externalId Clé de l'individu
+     * @return Une liste de SocialExtRendezVous.
+     */
     List<SocialExtRendezVous> getIndividualRendezVous(String externalId);
 
+    /**
+     * Rechercher dans les rendez-vous des travailleurs sociaux.
+     *
+     * @param userId         Id de l'utilisateur portail à l'origine de l'appel
+     * @param socialWorkerId Id du travailleur social
+     * @param startDate      Date de début de la période de recherche, format yyyy-MM-ddTHH:mm:ss
+     * @param endDate        Date de fin de la période de recherche, format yyyy-MM-ddTHH:mm:ss
+     * @return Un Set de SocialExtRendezVous.
+     * @throws SocialExtException Si les dates ne sont pas correctes
+     */
     Set<SocialExtRendezVous> getSocialWorkerRendezVous(String userId, String socialWorkerId, String startDate, String endDate);
 
-
+    /**
+     * Créer un rendez-vous pour un intervenant social.
+     *
+     * @param rendezVous Paramètres du rendez-vous (date, travailleurs sociaux, etc...)
+     * @return L'id du rendez-vous créé.
+     * @see SocialExtRendezVous
+     */
     String createSocialWorkerRendezVous(SocialExtRendezVous rendezVous);
 
+    /**
+     * Récupérer un token de redirection.
+     *
+     * @param updto Wrapper autour d'un SocialExtUSer (habilitation) et une map de paramètres.
+     * @return Token de redirection.
+     */
     String getRedirectionToken(UserAndParamsDTO updto);
 
+    /**
+     * Récupérer un intervenant social à partir de son id.
+     *
+     * @param socialWorkerId Id de l'intervenant social.
+     */
     SocialExtWorker findSocialWorker(String socialWorkerId);
 
+    /**
+     * Récupération des valeurs d'un référentiel (nomenclature).
+     *
+     * @param referential Enum correspondant au type de référentiel voulu.
+     * @param userId      Id du user à l'origine de l'appel
+     * @return Un objet ReferentialDTO qui contient les valeurs du référentiel. Ce DTO contient une liste de ReferentialEntryDTO.
+     * @see Referential
+     */
     ReferentialDTO getReferential(String referential, String userId);
 
+    /**
+     * "Rechercher dans les individus.
+     *
+     * @param searchCriteria Set de critères de recherche. Chaque critère contient un type, une classe et une valeur.
+     * @return Une liste d'individus correspondant aux critères.
+     * @see SearchCriterionDTO
+     */
     List<SocialExtBeneficiary> findAllIndividuals(Set<SearchCriterionDTO> searchCriteria);
 }

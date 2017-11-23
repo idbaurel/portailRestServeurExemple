@@ -4,7 +4,7 @@ package fr.infodb.exemples.portail.rest.serveur.helpers;
  * @author aurelien
  * créé le 20/11/17.
  */
-public abstract class RestDataProvider {
+public abstract class RestUriHelper {
 
     // Headers utilisés
     public static final String HEADERNAME_USERID = "UserId";		// nom du header utilisé pour passer l'id user
