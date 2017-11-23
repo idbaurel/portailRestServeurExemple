@@ -80,6 +80,13 @@
             <version>${swagger.version}</version>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>io.springfox</groupId>-->
+            <!--<artifactId>springfox-data-rest</artifactId>-->
+            <!--<version>${swagger.version}</version>-->
+        <!--</dependency>-->
+
+
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>

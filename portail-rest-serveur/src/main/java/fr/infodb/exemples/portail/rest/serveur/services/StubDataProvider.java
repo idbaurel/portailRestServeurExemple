@@ -503,7 +503,7 @@ public class StubDataProvider implements DataProvider {
         rdv.setEndDate(calendar.getTime());
         rdv.setFullDay(false);
         rdv.setType(SocialExtRendezVousType.COMMISSION);
-        rdv.setIndividual(findBeneficiary("200"));
+//        rdv.setIndividual(findBeneficiary("200"));
         rdv.setLabel("Objectif : Evaluation - Etat : Prévu");
         rdv.setComment("comment");
 
@@ -552,7 +552,6 @@ public class StubDataProvider implements DataProvider {
         portalSocialExtWorker.setEnvironment(getStubEnvironment());
         portalSocialExtWorker.setIdExt(socialWorkerId);
         res.setPortalExtWorker(portalSocialExtWorker);
-        res.setRendezVous(null);
         res.setSector("PAU");
         res.setSectorList(new ArrayList<String>() {{
             add("PAU");
@@ -561,7 +560,6 @@ public class StubDataProvider implements DataProvider {
         }});
         res.setTelephone("0501020304");
         res.setTitle("");
-        res.setUsers(new HashSet<>());
         final SocialExtUser socialExtUser = findSocialExtUser("123");
         socialExtUser.setSocialWorkerId(socialWorkerId);
         res.getUsers().add(socialExtUser);

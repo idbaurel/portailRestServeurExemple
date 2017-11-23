@@ -48,7 +48,7 @@ public class SocialExtWorker {
     private ArrayList<String> sectorList;
 
     @XmlElement(name = "Users")
-    private Set<SocialExtUser> users = new HashSet<SocialExtUser>();
+    private final Set<SocialExtUser> users = new HashSet<SocialExtUser>();
 
     @XmlElement(name = "Telephone")
     private String telephone;
@@ -56,9 +56,9 @@ public class SocialExtWorker {
     @XmlElement(name = "Mail")
     private String mail;
 
-    @XmlElement(name = "RendezVous")
-    @JsonIgnore
-    private Set<SocialExtRendezVous> rendezVous = new HashSet<SocialExtRendezVous>();
+    //fixme: la récursivité sur SocialExtRendezVous.socialWorkers fait planter swagger
+//    @XmlElement(name = "RendezVous")
+//    private final Set<SocialExtRendezVous> rendezVous = new HashSet<>();
 
     @XmlElement(name = "PortalExtWorker", namespace = "http://www.infodb.fr/solis/portail/extsocial")
     private PortalSocialExtWorker portalExtWorker;
@@ -106,9 +106,9 @@ public class SocialExtWorker {
         return users;
     }
 
-    public void setUsers(Set<SocialExtUser> users) {
-        this.users = users;
-    }
+//    public void setUsers(Set<SocialExtUser> users) {
+//        this.users = users;
+//    }
 
     public PortalSocialExtWorker getPortalExtWorker() {
         return portalExtWorker;
@@ -118,13 +118,13 @@ public class SocialExtWorker {
         this.portalExtWorker = portalExtWorker;
     }
 
-    public Set<SocialExtRendezVous> getRendezVous() {
-        return rendezVous;
-    }
+//    public Set<SocialExtRendezVous> getRendezVous() {
+//        return rendezVous;
+//    }
 
-    public void setRendezVous(Set<SocialExtRendezVous> rendezVous) {
-        this.rendezVous = rendezVous;
-    }
+//    public void setRendezVous(Set<SocialExtRendezVous> rendezVous) {
+//        this.rendezVous = rendezVous;
+//    }
 
 	public ArrayList<String> getSectorList() {
 		return sectorList;

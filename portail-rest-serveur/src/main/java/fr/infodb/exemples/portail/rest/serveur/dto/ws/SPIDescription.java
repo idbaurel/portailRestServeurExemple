@@ -22,10 +22,10 @@ final public class SPIDescription {
     private SPIConfig spiConfig;
 
     @XmlElement(name = "ModuleDescription")
-    private Set<SocialModuleDesc> moduleDescs = new HashSet<SocialModuleDesc>();
+    private final Set<SocialModuleDesc> moduleDescs = new HashSet<SocialModuleDesc>();
 
     @XmlElement(name = "Environment")
-    private Set<Environment> environments = new HashSet<Environment>();
+    private final Set<Environment> environments = new HashSet<Environment>();
 
 	public SPIDescription() {
 
@@ -51,17 +51,17 @@ final public class SPIDescription {
         return moduleDescs;
     }
 
-    public void setModuleDescs(Set<SocialModuleDesc> moduleDescs) {
-        this.moduleDescs = moduleDescs;
-    }
+//    public void setModuleDescs(Set<SocialModuleDesc> moduleDescs) {
+//        this.moduleDescs = moduleDescs;
+//    }
 
     public Set<Environment> getEnvironments() {
         return environments;
     }
 
-    public void setEnvironments(Set<Environment> environments) {
-        this.environments = environments;
-    }
+//    public void setEnvironments(Set<Environment> environments) {
+//        this.environments = environments;
+//    }
 
     public boolean hasModule(SocialModule module) {
         boolean result = false;
