@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,7 +18,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(namespace = "http://www.infodb.fr/solis/portail/portalconfig")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlEnum
-public enum SocialModule {
+public enum SocialModule implements Serializable {
     AST("Action Sociale de Terrain", "AST", "acces-ast", "ast", false),
     AFI("Aide Financière", "AFI", "acces-aides-financieres", "afi", false),
     ADOM("Aide à Domicile", "AID-DOM", "acces-aide-domicile", "adom", false),
@@ -47,7 +48,6 @@ public enum SocialModule {
     PAIE("Paiement ASE", "PAIE", "acces-paie", "paie", false),
     
     DECLGRO("Declaration de grossesse", "DECLGRO", "acces-declgro", "acces", false);
-//    RMI("Revenu minimum d'insertion", "RMI", "acces-rmi", "", false);
 
 
     private final String name;

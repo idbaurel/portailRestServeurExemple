@@ -3,6 +3,10 @@ package fr.infodb.exemples.portail.rest.serveur.dto.ws;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,7 +17,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlType(namespace = "http://www.infodb.fr/solis/portail/referential")
 @XmlAccessorType(XmlAccessType.FIELD)
-public enum Referential {
+public enum Referential implements Serializable {
     CIRCO("circonscription"),
     DOMAIN("domaine"),
     THEME("sous_domaine"),

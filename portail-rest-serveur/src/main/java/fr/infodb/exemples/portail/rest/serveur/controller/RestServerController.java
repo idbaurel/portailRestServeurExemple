@@ -3,6 +3,10 @@ package fr.infodb.exemples.portail.rest.serveur.controller;
 import fr.infodb.exemples.portail.rest.serveur.api.RestSocialExtDataProvider;
 import fr.infodb.exemples.portail.rest.serveur.dto.externalsocialbusiness.*;
 import fr.infodb.exemples.portail.rest.serveur.dto.ws.*;
+import fr.infodb.exemples.portail.rest.serveur.dto2.AvailableSocialModules;
+import fr.infodb.exemples.portail.rest.serveur.dto2.LoginHomepageMessages;
+import fr.infodb.exemples.portail.rest.serveur.dto2.PaginationIndividus;
+import fr.infodb.exemples.portail.rest.serveur.dto2.Profiles;
 import fr.infodb.exemples.portail.rest.serveur.exceptions.SocialExtException;
 import fr.infodb.exemples.portail.rest.serveur.services.DataProvider;
 import io.swagger.annotations.Api;
@@ -24,6 +28,7 @@ import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.*;
 @RestController
 @RequestMapping(value = "/portail/spi" /*, produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE}*/)
 @Api(tags = "InfoDB, services rest Portail Agent", value = "Concernant la gestion des erreurs : les conventions classiques REST sont appliquées, côté client seules les erreurs 404 seront remontées de façon différente.")
+//public class RestServerController implements RestSocialExtDataProvider {
 public class RestServerController implements RestSocialExtDataProvider {
 
     //fournisseur de données
@@ -59,14 +64,14 @@ public class RestServerController implements RestSocialExtDataProvider {
         return dataProvider.getBusinessOffers(individualId);
     }
 
-    /**
+    /**done
      * Rechercher les message à afficher sur la page d'authentification.
      *
      * @return Une liste de messages.
      */
     @GetMapping(RESTURL_GET_ALL_LOGIN_HOMEPAGE_MESSAGES)
     @ApiOperation("Rechercher les message à afficher sur la page d'authentification.")
-    public List<LoginHomepageMessage> getAllLoginHomepageMessages() {
+    public LoginHomepageMessages getAllLoginHomepageMessages() {
         return dataProvider.getAllLoginHomepageMessages();
     }
 
@@ -122,17 +127,23 @@ public class RestServerController implements RestSocialExtDataProvider {
      * Récupération des valeurs d'un référentiel (nomenclature).
      *
      * @param referential Enum correspondant au type de référentiel voulu.
-     * @param userId      Id du user à l'origine de l'appel
      * @return Un objet ReferentialDTO qui contient les valeurs du référentiel. Ce DTO contient une liste de ReferentialEntryDTO.
      * @see Referential
      */
+//    @GetMapping(RESTURL_GET_REFERENTIAL)
+//    @ApiOperation("Récupérer les données d'un référentiel (nomenclature).")
+//    public ReferentialDTO getReferential(
+//            @PathVariable(PATHPARAM_REFERENTIAL) String referential,
+//            @RequestHeader(HEADERNAME_USERID) String userId)
+//            throws SocialExtException {
+//        return dataProvider.getReferential(referential, userId);
+//    }
     @GetMapping(RESTURL_GET_REFERENTIAL)
     @ApiOperation("Récupérer les données d'un référentiel (nomenclature).")
     public ReferentialDTO getReferential(
-            @PathVariable(PATHPARAM_REFERENTIAL) String referential,
-            @RequestHeader(HEADERNAME_USERID) String userId)
+            @PathVariable(PATHPARAM_REFERENTIAL) String referential)
             throws SocialExtException {
-        return dataProvider.getReferential(referential, userId);
+        return dataProvider.getReferential(referential);
     }
 
     /**
@@ -191,19 +202,28 @@ public class RestServerController implements RestSocialExtDataProvider {
         dataProvider.updateIndividual(beneficiary);
     }
 
-    /**
+    /**done
      * Retourner les profils d'un utilisateur si l'id de l'utilisateur est renseigné.
      * <p>
      * Si l'id n'est pas renseigné, retourner la liste de tous les profils.
      *
-     * @param userId Id de l'utilisateur.
-     * @return Un Set de String correspondant aux profils.
+     * @return  profils.
      */
     @GetMapping(RESTURL_GET_PROFILES)
-    @ApiOperation("Retourner les profils d'un utilisateur si l'id de l'utilisateur est renseigné. Si l'id n'est pas renseigné, retourner la liste de tous les profils.")
+    @ApiOperation("Retourner tous les profils utilisateurs.")
+    public Profiles getProfiles() {
+        return dataProvider.getAvailableProfiles();
+    }
 
-    public Set<String> getProfiles(@RequestParam(value = QUERYPARAM_USERID, required = false) String userId) {
-        return userId == null ? dataProvider.getAvailableProfiles() : dataProvider.getProfiles(userId);
+    /**
+     * Retourner les profils d'un utilisateur si l'id de l'utilisateur est renseigné.
+     * @param userId id de l'utilisateur
+     * @return profils
+     */
+    @GetMapping(RESTURL_GET_PROFILES + "/{" + PATHPARAM_USERID + "}")
+    @ApiOperation("Retourner les profils d'un utilisateur .")
+    public Profiles getProfiles(@PathVariable(value = PATHPARAM_USERID) String userId) {
+        return dataProvider.getProfiles(userId);
     }
 
     /**
@@ -375,7 +395,7 @@ public class RestServerController implements RestSocialExtDataProvider {
         return dataProvider.findAllSocialWorkers(pageSize, pageNumber);
     }
 
-    /**
+    /**done
      * Récupérer tous les utilisateurs. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
      *
      * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
@@ -397,9 +417,16 @@ public class RestServerController implements RestSocialExtDataProvider {
      * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
      * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
      */
+//    @GetMapping(RESTURL_FIND_ALL_INDIVIDUALS)
+//    @ApiOperation("Récupérer tous les individus. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.")
+//    public BeneficiarySearchResultDTO findAllIndividuals(
+//            @RequestParam(QUERYPARAM_PAGESIZE) int pageSize,
+//            @RequestParam(QUERYPARAM_PAGENUMBER) int pageNumber) {
+//        return dataProvider.findAllIndividuals(pageSize, pageNumber);
+//    }
     @GetMapping(RESTURL_FIND_ALL_INDIVIDUALS)
     @ApiOperation("Récupérer tous les individus. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.")
-    public BeneficiarySearchResultDTO findAllIndividuals(
+    public PaginationIndividus findAllIndividuals(
             @RequestParam(QUERYPARAM_PAGESIZE) int pageSize,
             @RequestParam(QUERYPARAM_PAGENUMBER) int pageNumber) {
         return dataProvider.findAllIndividuals(pageSize, pageNumber);
@@ -417,7 +444,7 @@ public class RestServerController implements RestSocialExtDataProvider {
         return dataProvider.getNews(userId);
     }
 
-    /**
+    /**done
      * Retourner les modules sociaux disponibles dans l'environnement courant.
      *
      * @return Un Set de SocialModule.
@@ -425,7 +452,7 @@ public class RestServerController implements RestSocialExtDataProvider {
      */
     @GetMapping(RESTURL_GET_SOCIAL_MODULES)
     @ApiOperation("Retourner les modules sociaux disponibles dans l'environnement courant.")
-    public Set<SocialModule> getAvailableSocialModules() {
+    public AvailableSocialModules getAvailableSocialModules() {
         return dataProvider.getAvailableSocialModules();
     }
 

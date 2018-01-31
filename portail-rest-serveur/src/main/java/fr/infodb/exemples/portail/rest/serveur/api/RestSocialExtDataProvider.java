@@ -2,6 +2,10 @@ package fr.infodb.exemples.portail.rest.serveur.api;
 
 import fr.infodb.exemples.portail.rest.serveur.dto.externalsocialbusiness.*;
 import fr.infodb.exemples.portail.rest.serveur.dto.ws.*;
+import fr.infodb.exemples.portail.rest.serveur.dto2.AvailableSocialModules;
+import fr.infodb.exemples.portail.rest.serveur.dto2.LoginHomepageMessages;
+import fr.infodb.exemples.portail.rest.serveur.dto2.PaginationIndividus;
+import fr.infodb.exemples.portail.rest.serveur.dto2.Profiles;
 import fr.infodb.exemples.portail.rest.serveur.exceptions.SocialExtException;
 
 import java.util.HashSet;
@@ -51,7 +55,8 @@ public interface RestSocialExtDataProvider {
      *
      * @return la liste des messages à afficher sur la page d'authentification
      */
-    List<LoginHomepageMessage> getAllLoginHomepageMessages();
+//    List<LoginHomepageMessage> getAllLoginHomepageMessages();
+    LoginHomepageMessages getAllLoginHomepageMessages();
 
     /**
      * Retourne les liens vers les home pages de modules.
@@ -90,7 +95,7 @@ public interface RestSocialExtDataProvider {
      * @return un Set de String contenant les profils de l'utilisateur
      * @throws SocialExtException Exception en cas d'erreur
      */
-    Set<String> getProfiles(String userId) throws SocialExtException;
+    Profiles getProfiles(String userId) throws SocialExtException;
 
     /**
      * Retourne une liste de suggestion de lieux dans une commune donnée, à partir d'une portion du nom du lieu.
@@ -178,7 +183,8 @@ public interface RestSocialExtDataProvider {
      * @param pageSize   taille de la page (=nombre d'individus récupérés par requête)
      * @param pageNumber numéro de la page récupérée, commençant au numéro 1
      */
-    BeneficiarySearchResultDTO findAllIndividuals(int pageSize, int pageNumber);
+//    BeneficiarySearchResultDTO findAllIndividuals(int pageSize, int pageNumber);
+    PaginationIndividus findAllIndividuals(int pageSize, int pageNumber);
 
     /**
      * Récupère tous les utilisateurs (utilisé pour la reprise de données initiale).
@@ -213,18 +219,17 @@ public interface RestSocialExtDataProvider {
      * Récupère les valeurs d'un référentiel.
      *
      * @param referential enum correspondant au référentiel souhaité
-     * @param userId      id du user à l'origine de l'appel (pour habilitation ?)
      * @return un ReferentialDTO contenant les entrées de référentiel souhaites.
      * @throws SocialExtException Exception en cas d'erreur
      */
-    ReferentialDTO getReferential(String referential, String userId) throws SocialExtException;
+    ReferentialDTO getReferential(String referential) throws SocialExtException;
 
     /**
      * Récupère les modules sociaux disponibles sur l'environnement.
      *
      * @return un Set de SocialModule (spi-portail)
      */
-    Set<SocialModule> getAvailableSocialModules();
+    AvailableSocialModules getAvailableSocialModules();
 
     /**
      * Recherche d'"individus" : il s'agit des personnes pouvant demander une aide sociale?

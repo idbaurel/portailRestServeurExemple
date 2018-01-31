@@ -2,6 +2,10 @@ package fr.infodb.exemples.portail.rest.serveur.services;
 
 import fr.infodb.exemples.portail.rest.serveur.dto.externalsocialbusiness.*;
 import fr.infodb.exemples.portail.rest.serveur.dto.ws.*;
+import fr.infodb.exemples.portail.rest.serveur.dto2.AvailableSocialModules;
+import fr.infodb.exemples.portail.rest.serveur.dto2.LoginHomepageMessages;
+import fr.infodb.exemples.portail.rest.serveur.dto2.PaginationIndividus;
+import fr.infodb.exemples.portail.rest.serveur.dto2.Profiles;
 import fr.infodb.exemples.portail.rest.serveur.exceptions.SocialExtException;
 
 import java.util.List;
@@ -66,21 +70,19 @@ public interface DataProvider {
     void updateIndividual(SocialExtBeneficiary beneficiary);
 
     /**
-     * Retourner les profils d'un utilisateur si l'id de l'utilisateur est renseigné.
-     * <p>
-     * Si l'id n'est pas renseigné, retourner la liste de tous les profils.
+     * Retourner les profils d'un utilisateur
      *
      * @param userId Id de l'utilisateur.
-     * @return Un Set de String correspondant aux profils.
+     * @return Profils de l'utilisateur.
      */
-    Set<String> getProfiles(String userId);
+    Profiles getProfiles(String userId);
 
     /**
      * Retourner tous les profils utilisateurs actifs.
      *
-     * @return Un Set de String correspondant aux profils utilisateurs.
+     * @return Profils utilisateurs.
      */
-    Set<String> getAvailableProfiles();
+    Profiles getAvailableProfiles();
 
     /**
      * Retourner un ensemble de lieux en fonction d'un type donné.
@@ -144,7 +146,8 @@ public interface DataProvider {
      * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
      * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
      */
-    BeneficiarySearchResultDTO findAllIndividuals(int pageSize, int pageNumber);
+//    BeneficiarySearchResultDTO findAllIndividuals(int pageSize, int pageNumber);
+    PaginationIndividus findAllIndividuals(int pageSize, int pageNumber);
 
     /**
      * Récupérer un utilisateur à partir de son id.
@@ -167,7 +170,8 @@ public interface DataProvider {
      *
      * @return Un Set de SocialModule.
      */
-    Set<SocialModule> getAvailableSocialModules();
+//    Set<SocialModule> getAvailableSocialModules();
+    AvailableSocialModules getAvailableSocialModules();
 
     /**
      * Récupérer les news relatives à un travailleur social.
@@ -245,7 +249,8 @@ public interface DataProvider {
      *
      * @return Liste des messages
      */
-    List<LoginHomepageMessage> getAllLoginHomepageMessages();
+//    List<LoginHomepageMessage> getAllLoginHomepageMessages();
+    LoginHomepageMessages getAllLoginHomepageMessages();
 
     /**
      * Rechercher dans les rendez-vous des individus.
@@ -295,11 +300,10 @@ public interface DataProvider {
      * Récupération des valeurs d'un référentiel (nomenclature).
      *
      * @param referential Enum correspondant au type de référentiel voulu.
-     * @param userId      Id du user à l'origine de l'appel
      * @return Un objet ReferentialDTO qui contient les valeurs du référentiel. Ce DTO contient une liste de ReferentialEntryDTO.
      * @see Referential
      */
-    ReferentialDTO getReferential(String referential, String userId);
+    ReferentialDTO getReferential(String referential);
 
     /**
      * "Rechercher dans les individus.

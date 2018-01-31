@@ -11,5 +11,10 @@ Ce projet utilise:
 **Les contrats des web services sont en cours de modification**
  
 Contrats modifiés:
-* Homepage messages
-* Profils 
+
+méthode controller | description
+------- | -----------
+getAllLoginHomepageMessages | Message de la homepage
+getAvailableSocialModules | Modules métiers disponibles
+getProfiles | Profiles utilisateurs
+findAllUser | Liste des utilisateurs pour reprise de données

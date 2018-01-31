@@ -2,6 +2,7 @@ package fr.infodb.exemples.portail.rest.serveur.services;
 
 import fr.infodb.exemples.portail.rest.serveur.dto.externalsocialbusiness.*;
 import fr.infodb.exemples.portail.rest.serveur.dto.ws.*;
+import fr.infodb.exemples.portail.rest.serveur.dto2.*;
 import fr.infodb.exemples.portail.rest.serveur.exceptions.SocialExtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +14,17 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
+@Service("StubDataProvider")
 public class StubDataProvider implements DataProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StubDataProvider.class);
+
+    private static final DateTimeFormatter FRENCH_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
 
     /**
      * Evénement SIRH
@@ -77,6 +82,9 @@ public class StubDataProvider implements DataProvider {
 
     private SocialExtBeneficiary getSocialExtBeneficiary() {
         SocialExtBeneficiary res = new SocialExtBeneficiary();
+        PortalSocialExtIndividual portalExtIndividual = new PortalSocialExtIndividual();
+        portalExtIndividual.setIdExt("abc-123");
+        res.setPortalExtIndividual(portalExtIndividual);
         res.setLastName("DUPONT");
         res.setFirstName("Marie Hélène");
         res.setBirthDate(localDateToDate(LocalDate.of(1980, Month.APRIL, 24)));
@@ -114,9 +122,9 @@ public class StubDataProvider implements DataProvider {
      * @return Un Set de String correspondant aux profils.
      */
     @Override
-    public Set<String> getProfiles(String userId) {
-        Set<String> res = new HashSet<>();
-        res.add("Administrateur");
+    public Profiles getProfiles(String userId) {
+        Profiles res = new Profiles();
+        res.getProfiles().add("Administrateur");
         return res;
     }
 
@@ -126,10 +134,10 @@ public class StubDataProvider implements DataProvider {
      * @return Un Set de String correspondant aux profils utilisateurs.
      */
     @Override
-    public Set<String> getAvailableProfiles() {
-        Set<String> res = new HashSet<>();
-        res.add("Administrateur");
-        res.add("Secrétaire");
+    public Profiles getAvailableProfiles() {
+        Profiles res = new Profiles();
+        res.getProfiles().add("Administrateur");
+        res.getProfiles().add("Secrétaire");
         return res;
     }
 
@@ -243,26 +251,62 @@ public class StubDataProvider implements DataProvider {
      * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
      * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
      */
+//    @Override
+//    public BeneficiarySearchResultDTO findAllIndividuals(int pageSize, int pageNumber) {
+//        List<SocialExtBeneficiary> beneficiaries = new ArrayList<>();
+//        beneficiaries.add(findBeneficiary("123"));
+//
+//        BeneficiarySearchResultDTO bsrdto = new BeneficiarySearchResultDTO();
+//        bsrdto.setTotalNumber(beneficiaries.size());
+//
+//        for (int i = 0; i < pageSize; i++) {
+//            // Condition d'arrêt : nb total d'enregistrement atteint
+//            if ((pageNumber - 1) * pageSize + i >= bsrdto.getTotalNumber()) {
+//                break;
+//            }
+//            bsrdto.getBeneficiaries().add(beneficiaries.get((pageNumber * pageSize + i) % beneficiaries.size()));
+//        }
+//
+//        bsrdto.setPageNumber(pageNumber);
+//        bsrdto.setPageSize(pageSize);
+//
+//        return bsrdto;
+//    }
+
+
     @Override
-    public BeneficiarySearchResultDTO findAllIndividuals(int pageSize, int pageNumber) {
-        List<SocialExtBeneficiary> beneficiaries = new ArrayList<>();
-        beneficiaries.add(findBeneficiary("123"));
+    public PaginationIndividus findAllIndividuals(int pageSize, int pageNumber) {
+        PaginationIndividus paginationIndividus = new PaginationIndividus();
+        paginationIndividus.getIndividus().addAll(getIndividus());
+        paginationIndividus.setPageSize(pageSize);
+        paginationIndividus.setPageNumber(pageNumber);
+        paginationIndividus.setTotalNumber(paginationIndividus.getIndividus().size());
+        return paginationIndividus;
 
-        BeneficiarySearchResultDTO bsrdto = new BeneficiarySearchResultDTO();
-        bsrdto.setTotalNumber(beneficiaries.size());
+    }
 
-        for (int i = 0; i < pageSize; i++) {
-            // Condition d'arrêt : nb total d'enregistrement atteint
-            if ((pageNumber - 1) * pageSize + i >= bsrdto.getTotalNumber()) {
-                break;
-            }
-            bsrdto.getBeneficiaries().add(beneficiaries.get((pageNumber * pageSize + i) % beneficiaries.size()));
-        }
+    private List<Individu> getIndividus() {
+        List<Individu> individus = new ArrayList<>(1);
+        Individu individu = new Individu();
 
-        bsrdto.setPageNumber(pageNumber);
-        bsrdto.setPageSize(pageSize);
+        individu.setId("abc-123");
+        individu.setNom("DUPONT");
+        individu.setPrenom("Amélie");
+        individu.setGenre(IndividuGenre.FEMME);
+        individu.setDecede(false);
+        individu.setCaf("0123456789-abcdef...");
+        individu.setEmail("amelie.dupont@mailer.fr");
+        individu.setDateNaissance(localDateToDate(LocalDate.of(1980, Month.MARCH, 26)));
+        individu.setMajeur(true);
+        individu.setMobile("0601020304");
+        individu.setNomNaissance("DURAND");
+        individu.setSecteurDossier("Pau");
+        individu.setSecteurSuivi("Bayonne");
+        individu.setTel("0501020304");
+        individu.setTelTravail("0599887766");
 
-        return bsrdto;
+        individus.add(individu);
+        return individus;
     }
 
     /**
@@ -306,10 +350,17 @@ public class StubDataProvider implements DataProvider {
      * @return Un Set de SocialModule.
      */
     @Override
-    public Set<SocialModule> getAvailableSocialModules() {
-        return Arrays.stream(SocialModule.values())
-                .filter(v -> v.getName().startsWith("A"))
-                .collect(Collectors.toSet());
+    public AvailableSocialModules getAvailableSocialModules() {
+//        return Arrays.stream(SocialModule.values())
+//                .filter(v -> v.getName().startsWith("F"))
+//                .collect(Collectors.toSet());
+
+        AvailableSocialModules res = new AvailableSocialModules();
+        res.getModules().add(SocialModule.ASG);
+        res.getModules().add(SocialModule.AST);
+        res.getModules().add(SocialModule.FSL);
+        return res;
+
     }
 
     /**
@@ -434,7 +485,7 @@ public class StubDataProvider implements DataProvider {
         if (user == null || password == null) {
             return AuthenticationResult.KO;
         }
-        return "amelie.durand".equals(user.getUsername()) ? AuthenticationResult.OK : AuthenticationResult.KO;
+        return "beatrice.lennon".equals(user.getUsername()) ? AuthenticationResult.OK : AuthenticationResult.KO;
     }
 
     /**
@@ -442,13 +493,22 @@ public class StubDataProvider implements DataProvider {
      *
      * @return Liste des messages
      */
+//    @Override
+//    public List<LoginHomepageMessage> getAllLoginHomepageMessages() {
+//        List<LoginHomepageMessage> res = new ArrayList<>();
+//        LoginHomepageMessage loginHomepageMessage = new LoginHomepageMessage();
+//        loginHomepageMessage.setMessage("Message du jour sur la home page");
+//        loginHomepageMessage.setType(TypeLoginHomepageMessageEnum.INFO);
+//        res.add(loginHomepageMessage);
+//        return res;
+//    }
     @Override
-    public List<LoginHomepageMessage> getAllLoginHomepageMessages() {
-        List<LoginHomepageMessage> res = new ArrayList<>();
-        LoginHomepageMessage loginHomepageMessage = new LoginHomepageMessage();
-        loginHomepageMessage.setMessage("Message du jour sur la home page");
+    public LoginHomepageMessages getAllLoginHomepageMessages() {
+        LoginHomepageMessages res = new LoginHomepageMessages();
+        LoginHomepageMessages.LoginHomepageMessage loginHomepageMessage = new LoginHomepageMessages.LoginHomepageMessage();
+        loginHomepageMessage.setMessage(String.format("Application 64: Message du %s sur la page d'authentification", FRENCH_FORMATTER.format(LocalDate.now())));
         loginHomepageMessage.setType(TypeLoginHomepageMessageEnum.INFO);
-        res.add(loginHomepageMessage);
+        res.getMessages().add(loginHomepageMessage);
         return res;
     }
 
@@ -558,7 +618,7 @@ public class StubDataProvider implements DataProvider {
         }});
         res.setTelephone("0501020304");
         res.setTitle("");
-        final SocialExtUser socialExtUser = findSocialExtUser("123");
+        final SocialExtUser socialExtUser = findSocialExtUser("456");
         socialExtUser.setSocialWorkerId(socialWorkerId);
         res.getUsers().add(socialExtUser);
         return res;
@@ -568,21 +628,20 @@ public class StubDataProvider implements DataProvider {
      * Récupération des valeurs d'un référentiel (nomenclature).
      *
      * @param referential Enum correspondant au type de référentiel voulu.
-     * @param userId      Id du user à l'origine de l'appel
      * @return Un objet ReferentialDTO qui contient les valeurs du référentiel. Ce DTO contient une liste de ReferentialEntryDTO.
      * @see Referential
      */
     @Override
-    public ReferentialDTO getReferential(String referential, String userId) {
-        ReferentialDTO rdto = new ReferentialDTO();
-        rdto.setId(Referential.valueOf(referential));
-        rdto.setName(referential);
-        ReferentialEntryDTO redto = new ReferentialEntryDTO();
-        rdto.getEntries().add(redto);
-        redto.setId("1");
-        redto.setParentRef(rdto.getId());
-        redto.setValue(referential + "1");
-        return rdto;
+    public ReferentialDTO getReferential(String referential) {
+        ReferentialDTO rDto = new ReferentialDTO();
+        rDto.setId(Referential.valueOf(referential));
+        rDto.setName(referential);
+        ReferentialEntryDTO reDto = new ReferentialEntryDTO();
+        rDto.getEntries().add(reDto);
+        reDto.setId("1");
+        reDto.setParentRef(rDto.getId());
+        reDto.setValue(referential + "1");
+        return rDto;
     }
 
     /**
