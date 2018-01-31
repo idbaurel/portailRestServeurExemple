@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * Représentation d'un individu
+ *
  * @author aurelien
  * créé le 29/01/18.
  */
@@ -14,40 +16,21 @@ public class Individu implements Serializable {
      */
     private String id;
 
-    private IndividuGenre genre;
-
-    //@XmlAttribute(name = "Title")
-    private String title;
-    //@XmlAttribute(name = "FirstName")
-    private String prenom;
-    //@XmlAttribute(name = "LastName")
-    private String nom;
-    //@XmlAttribute(name = "BirthName")
-    private String nomNaissance;
-    //@XmlAttribute(name = "BirthDate")
-    private Date dateNaissance;
-    //@XmlAttribute(name = "Caf")
     private String caf;
-    //@XmlAttribute(name = "Major")
-    private Boolean majeur = true;
-    //@XmlAttribute(name = "Deceased")
     private boolean decede;
-    //@XmlAttribute(name = "DeceasedDate")
     private Date dateDeces;
-    //@XmlAttribute(name = "AdditionnalData")
-//    private String additionnalData;
-    //@XmlAttribute(name = "Tel")
-    private String tel;
-    //@XmlAttribute(name = "Mobile")
-    private String mobile;
-    //@XmlAttribute(name = "Email")
+    private Date dateNaissance;
     private String email;
-    //@XmlAttribute(name = "TelTravail")
-    private String telTravail;
-    //@XmlAttribute(name = "secteurDossier")
+    private IndividuGenre genre;
+    private boolean majeur = true;
+    private String mobile;
+    private String nom;
+    private String nomNaissance;
+    private String prenom;
     private String secteurDossier;
-    //@XmlAttribute(name = "secteurSuivi")
     private String secteurSuivi;
+    private String tel;
+    private String telTravail;
 
     public String getId() {
         return id;
@@ -57,68 +40,12 @@ public class Individu implements Serializable {
         this.id = id;
     }
 
-    public IndividuGenre getGenre() {
-        return genre;
-    }
-
-    public void setGenre(IndividuGenre genre) {
-        this.genre = genre;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getPrenom() {
-        return prenom;
-    }
-
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public String getNomNaissance() {
-        return nomNaissance;
-    }
-
-    public void setNomNaissance(String nomNaissance) {
-        this.nomNaissance = nomNaissance;
-    }
-
-    public Date getDateNaissance() {
-        return dateNaissance;
-    }
-
-    public void setDateNaissance(Date dateNaissance) {
-        this.dateNaissance = dateNaissance;
-    }
-
     public String getCaf() {
         return caf;
     }
 
     public void setCaf(String caf) {
         this.caf = caf;
-    }
-
-    public Boolean getMajeur() {
-        return majeur;
-    }
-
-    public void setMajeur(Boolean majeur) {
-        this.majeur = majeur;
     }
 
     public boolean isDecede() {
@@ -137,20 +64,12 @@ public class Individu implements Serializable {
         this.dateDeces = dateDeces;
     }
 
-    public String getTel() {
-        return tel;
+    public Date getDateNaissance() {
+        return dateNaissance;
     }
 
-    public void setTel(String tel) {
-        this.tel = tel;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    public void setDateNaissance(Date dateNaissance) {
+        this.dateNaissance = dateNaissance;
     }
 
     public String getEmail() {
@@ -161,12 +80,52 @@ public class Individu implements Serializable {
         this.email = email;
     }
 
-    public String getTelTravail() {
-        return telTravail;
+    public IndividuGenre getGenre() {
+        return genre;
     }
 
-    public void setTelTravail(String telTravail) {
-        this.telTravail = telTravail;
+    public void setGenre(IndividuGenre genre) {
+        this.genre = genre;
+    }
+
+    public boolean isMajeur() {
+        return majeur;
+    }
+
+    public void setMajeur(boolean majeur) {
+        this.majeur = majeur;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getNomNaissance() {
+        return nomNaissance;
+    }
+
+    public void setNomNaissance(String nomNaissance) {
+        this.nomNaissance = nomNaissance;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
     }
 
     public String getSecteurDossier() {
@@ -183,5 +142,21 @@ public class Individu implements Serializable {
 
     public void setSecteurSuivi(String secteurSuivi) {
         this.secteurSuivi = secteurSuivi;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    public String getTelTravail() {
+        return telTravail;
+    }
+
+    public void setTelTravail(String telTravail) {
+        this.telTravail = telTravail;
     }
 }

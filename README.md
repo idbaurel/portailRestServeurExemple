@@ -18,3 +18,4 @@ getAllLoginHomepageMessages | Message de la homepage
 getAvailableSocialModules | Modules métiers disponibles
 getProfiles | Profiles utilisateurs
 findAllUser | Liste des utilisateurs pour reprise de données
+findAllIndividuals | Liste des individus/bénéficiaires pour reprise de données
