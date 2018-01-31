@@ -17,5 +17,6 @@ méthode controller | description
 getAllLoginHomepageMessages | Message de la homepage
 getAvailableSocialModules | Modules métiers disponibles
 getProfiles | Profiles utilisateurs
+findAllSocialWorkers | Liste des intervenants sociaux pour reprise de données
 findAllUser | Liste des utilisateurs pour reprise de données
 findAllIndividuals | Liste des individus/bénéficiaires pour reprise de données

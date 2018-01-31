@@ -3,10 +3,7 @@ package fr.infodb.exemples.portail.rest.serveur.controller;
 import fr.infodb.exemples.portail.rest.serveur.api.RestSocialExtDataProvider;
 import fr.infodb.exemples.portail.rest.serveur.dto.externalsocialbusiness.*;
 import fr.infodb.exemples.portail.rest.serveur.dto.ws.*;
-import fr.infodb.exemples.portail.rest.serveur.dto2.AvailableSocialModules;
-import fr.infodb.exemples.portail.rest.serveur.dto2.LoginHomepageMessages;
-import fr.infodb.exemples.portail.rest.serveur.dto2.PaginationIndividus;
-import fr.infodb.exemples.portail.rest.serveur.dto2.Profiles;
+import fr.infodb.exemples.portail.rest.serveur.dto2.*;
 import fr.infodb.exemples.portail.rest.serveur.exceptions.SocialExtException;
 import fr.infodb.exemples.portail.rest.serveur.services.DataProvider;
 import io.swagger.annotations.Api;
@@ -389,7 +386,7 @@ public class RestServerController implements RestSocialExtDataProvider {
      */
     @GetMapping(RESTURL_FIND_ALL_SOCIAL_WORKERS)
     @ApiOperation("Récupérer tous les travailleurs sociaux. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.")
-    public SocialWorkerSearchResultDTO findAllSocialWorkers(
+    public PaginationIntervenantsSociaux findAllSocialWorkers(
             @RequestParam(QUERYPARAM_PAGESIZE) int pageSize,
             @RequestParam(QUERYPARAM_PAGENUMBER) int pageNumber) {
         return dataProvider.findAllSocialWorkers(pageSize, pageNumber);
@@ -397,6 +394,8 @@ public class RestServerController implements RestSocialExtDataProvider {
 
     /**done
      * Récupérer tous les utilisateurs. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
+     * Les requêtes se font de manière paginée.
+     * Attention, cela implique que la recherche doit être ordonnée côté serveur.
      *
      * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
      * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
@@ -404,26 +403,19 @@ public class RestServerController implements RestSocialExtDataProvider {
      */
     @GetMapping(RESTURL_FIND_ALL_USER)
     @ApiOperation("Récupérer tous les utilisateurs. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.")
-    public UserSearchResultDTO findAllUser(
+    public PaginationUtilisateurs findAllUser(
             @RequestParam(QUERYPARAM_PAGESIZE) int pageSize,
             @RequestParam(QUERYPARAM_PAGENUMBER) int pageNumber) {
         return dataProvider.findAllUser(pageSize, pageNumber);
     }
 
-    /**
+    /**done
      * Récupérer tous les individus. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
      *
      * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
      * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
      * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
      */
-//    @GetMapping(RESTURL_FIND_ALL_INDIVIDUALS)
-//    @ApiOperation("Récupérer tous les individus. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.")
-//    public BeneficiarySearchResultDTO findAllIndividuals(
-//            @RequestParam(QUERYPARAM_PAGESIZE) int pageSize,
-//            @RequestParam(QUERYPARAM_PAGENUMBER) int pageNumber) {
-//        return dataProvider.findAllIndividuals(pageSize, pageNumber);
-//    }
     @GetMapping(RESTURL_FIND_ALL_INDIVIDUALS)
     @ApiOperation("Récupérer tous les individus. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.")
     public PaginationIndividus findAllIndividuals(

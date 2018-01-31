@@ -2,10 +2,7 @@ package fr.infodb.exemples.portail.rest.serveur.api;
 
 import fr.infodb.exemples.portail.rest.serveur.dto.externalsocialbusiness.*;
 import fr.infodb.exemples.portail.rest.serveur.dto.ws.*;
-import fr.infodb.exemples.portail.rest.serveur.dto2.AvailableSocialModules;
-import fr.infodb.exemples.portail.rest.serveur.dto2.LoginHomepageMessages;
-import fr.infodb.exemples.portail.rest.serveur.dto2.PaginationIndividus;
-import fr.infodb.exemples.portail.rest.serveur.dto2.Profiles;
+import fr.infodb.exemples.portail.rest.serveur.dto2.*;
 import fr.infodb.exemples.portail.rest.serveur.exceptions.SocialExtException;
 
 import java.util.HashSet;
@@ -194,7 +191,7 @@ public interface RestSocialExtDataProvider {
      * @param pageSize   taille de la page (=nombre d'éléments récupérés par requête)
      * @param pageNumber numéro de la page récupérée, commençant au numéro 1
      */
-    UserSearchResultDTO findAllUser(int pageSize, int pageNumber);
+    PaginationUtilisateurs findAllUser(int pageSize, int pageNumber);
 
     /**
      * Récupère tous les utilisateurs (utilisé pour la reprise de données initiale).
@@ -204,7 +201,7 @@ public interface RestSocialExtDataProvider {
      * @param pageSize   taille de la page (=nombre d'éléments récupérés par requête)
      * @param pageNumber numéro de la page récupérée, commençant au numéro 1
      */
-    SocialWorkerSearchResultDTO findAllSocialWorkers(int pageSize, int pageNumber);
+    PaginationIntervenantsSociaux findAllSocialWorkers(int pageSize, int pageNumber);
 
     /**
      * Récupère la liste de news pour un user.

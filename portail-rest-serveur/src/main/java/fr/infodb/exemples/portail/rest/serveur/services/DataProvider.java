@@ -2,10 +2,7 @@ package fr.infodb.exemples.portail.rest.serveur.services;
 
 import fr.infodb.exemples.portail.rest.serveur.dto.externalsocialbusiness.*;
 import fr.infodb.exemples.portail.rest.serveur.dto.ws.*;
-import fr.infodb.exemples.portail.rest.serveur.dto2.AvailableSocialModules;
-import fr.infodb.exemples.portail.rest.serveur.dto2.LoginHomepageMessages;
-import fr.infodb.exemples.portail.rest.serveur.dto2.PaginationIndividus;
-import fr.infodb.exemples.portail.rest.serveur.dto2.Profiles;
+import fr.infodb.exemples.portail.rest.serveur.dto2.*;
 import fr.infodb.exemples.portail.rest.serveur.exceptions.SocialExtException;
 
 import java.util.List;
@@ -126,7 +123,7 @@ public interface DataProvider {
      * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
      * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
      */
-    UserSearchResultDTO findAllUser(int pageSize, int pageNumber);
+    PaginationUtilisateurs findAllUser(int pageSize, int pageNumber);
 
     /**
      * Récupérer tous les travailleurs sociaux.
@@ -137,7 +134,7 @@ public interface DataProvider {
      * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
      * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
      */
-    SocialWorkerSearchResultDTO findAllSocialWorkers(int pageSize, int pageNumber);
+    PaginationIntervenantsSociaux findAllSocialWorkers(int pageSize, int pageNumber);
 
     /**
      * Récupérer tous les individus. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
