@@ -10,4 +10,6 @@ Ce projet utilise:
  
 **Les contrats des web services sont en cours de modification**
  
- 
+Contrats modifiés:
+* Homepage messages
+* Profils 
