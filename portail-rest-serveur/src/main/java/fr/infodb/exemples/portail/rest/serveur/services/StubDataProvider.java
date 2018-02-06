@@ -12,6 +12,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -328,6 +329,11 @@ public class StubDataProvider implements DataProvider {
 
     private List<Individu> getIndividus() {
         List<Individu> individus = new ArrayList<>(1);
+        individus.add(getIndividu());
+        return individus;
+    }
+
+    private Individu getIndividu() {
         Individu individu = new Individu();
 
         individu.setId("abc-123");
@@ -345,9 +351,8 @@ public class StubDataProvider implements DataProvider {
         individu.setSecteurSuivi("Bayonne");
         individu.setTel("0501020304");
         individu.setTelTravail("0599887766");
-
-        individus.add(individu);
-        return individus;
+        individu.setAdresse(getAdresse());
+        return individu;
     }
 
     /**
@@ -416,6 +421,7 @@ public class StubDataProvider implements DataProvider {
 //                .collect(Collectors.toSet());
 
         AvailableSocialModules res = new AvailableSocialModules();
+        res.getModules().add(SocialModule.ASE);
         res.getModules().add(SocialModule.ASG);
         res.getModules().add(SocialModule.AST);
         res.getModules().add(SocialModule.FSL);
@@ -535,17 +541,17 @@ public class StubDataProvider implements DataProvider {
     /**
      * Authentifier un utilisateur.
      *
-     * @param updto Représentation d'un utilisateur avec mot de passe
+     * @param request Représentation d'un utilisateur avec mot de passe
      * @return Résultat de l'authentification (enum correspondant aux différents statuts possibles
      */
     @Override
-    public AuthenticationResult authenticate(UserAndPwdDTO updto) {
-        SocialExtUser user = updto.getUser();
-        String password = updto.getPassword();
-        if (user == null || password == null) {
+    public AuthenticationResult authenticate(AuthenticationRequest request) {
+        String login = request.getLogin();
+        String password = request.getPassword();
+        if (login == null || password == null) {
             return AuthenticationResult.KO;
         }
-        return "beatrice.lennon".equals(user.getUsername()) ? AuthenticationResult.OK : AuthenticationResult.KO;
+        return "amelie.durand".equals(login) && "secret".equals(password) ? AuthenticationResult.OK : AuthenticationResult.KO;
     }
 
     /**
@@ -601,33 +607,81 @@ public class StubDataProvider implements DataProvider {
      * @throws SocialExtException Si les dates ne sont pas correctes
      */
     @Override
-    public Set<SocialExtRendezVous> getSocialWorkerRendezVous(String userId, String socialWorkerId, String startDate, String endDate) {
+    public ListeRendezVous getSocialWorkerRendezVous(String userId, String socialWorkerId, String startDate, String endDate) {
 
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        Date start;
-        Date end;
-        try {
-            start = df.parse(startDate);
-            end = df.parse(endDate);
-        } catch (ParseException e) {
-            throw new SocialExtException("Erreur de parsing de date", e);
-        }
 
-        Set<SocialExtRendezVous> res = new HashSet<>();
-        SocialExtRendezVous rdv = new SocialExtRendezVous();
-        Random random = new Random();
-        rdv.setId(String.valueOf(random.nextInt()));
-        rdv.setStartDate(start);
-        rdv.setEndDate(end);
-        rdv.setFullDay(false);
-        rdv.setType(SocialExtRendezVousType.COMMISSION);
-        //        rdv.setIndividual(findBeneficiary("200"));
-        rdv.setLabel("Objectif : Evaluation - Etat : Prévu");
-        rdv.setComment("comment");
+        ListeRendezVous res = new ListeRendezVous();
+        RendezVous rdv = new RendezVous();
 
-        res.add(rdv);
+//        //exemple de conversion de java.lang.String vers java.util.Date
+//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//        Date start;
+//        Date end;
+//        try {
+//            start = df.parse(startDate);
+//            end = df.parse(endDate);
+//        } catch (ParseException e) {
+//            throw new SocialExtException("Erreur de parsing de date", e);
+//        }
 
+//        //exemple de conversion de java.lang.String vers java.time.LocalDateTime
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+//        LocalDateTime dateTime = LocalDateTime.parse(startDate, formatter);
+
+        LocalDate now = LocalDate.now();
+        LocalDateTime debut = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 14,0);
+        LocalDateTime fin = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 15,30);
+
+        rdv.setAdresse(getAdresse());
+        rdv.setCodeTypeRdv(1);
+        rdv.setCommentaire("pas de commentaire");
+        rdv.setDateDebut(convertLocalDateTimeToDateViaInstant(debut));
+
+        //côté Portail Agent, la durée est prioritaire sur la date de fin si les 2 informations sont renseignées
+        rdv.setDateFin(convertLocalDateTimeToDateViaInstant(fin));
+        rdv.setDuree(60L);
+
+        rdv.setId("rdv-12345");
+        rdv.setJourneeComplete(false);
+        rdv.setLibelle("rendez vous de suivi");
+        rdv.setModule(SocialModule.AST);
+        rdv.setMotif("absence de nouvelle");
+        rdv.setPlaceType(SocialExtPlaceType.DOMICILE);
+        rdv.setPlaceTypeCode("ptc-123");
+        rdv.setPlaceTypeLabel("ptc label");
+        rdv.setStatut(RendezVousStatutsEnum.PLANNED);
+        rdv.setType(SocialExtRendezVousType.VAD);
+
+        rdv.getIndividus().add(getIndividu());
+        rdv.getIntervenantsSociaux().add(getIntervenantSocial(socialWorkerId));
+
+
+        res.getRendezVous().add(rdv);
         return res;
+    }
+
+    Date convertLocalDateTimeToDateViaInstant(LocalDateTime dateToConvert) {
+        return java.util.Date
+                .from(dateToConvert.atZone(ZoneId.systemDefault())
+                        .toInstant());
+    }
+
+    private Adresse getAdresse() {
+        Adresse adresse = new Adresse();
+        adresse.setCirconscription("circo 1");
+        adresse.setCodeCommune("1");
+        adresse.setCodeDepartement("64");
+        adresse.setCodeLieu("0022");
+        adresse.setCodePostal("64000");
+        adresse.setComplementAdresse("batiment B");
+        adresse.setComplementDestinataire("Pour M. Jacques Dupond");
+        adresse.setLibelleCommune("PAU");
+        adresse.setLibelleLieu("avenue Jean Mermoz");
+        adresse.setNumero("12bis");
+        adresse.setSecteur("PAU EST");
+        adresse.setTelephoneSecteur("0599999999");
+        adresse.setUniteTerritoriale("territoire 1");
+        return adresse;
     }
 
     /**
@@ -660,29 +714,8 @@ public class StubDataProvider implements DataProvider {
      * @param socialWorkerId Id de l'intervenant social.
      */
     @Override
-    public SocialExtWorker findSocialWorker(String socialWorkerId) {
-//        SocialExtWorker res = new SocialExtWorker();
-//        res.setComment("no comment");
-//        res.setFirstName("Amélie");
-//        res.setLastName("DURAND");
-//        res.setMail("amelie.durand@emailprovider.fr");
-//        PortalSocialExtWorker portalSocialExtWorker = new PortalSocialExtWorker();
-//        portalSocialExtWorker.setEnvironment(getStubEnvironment());
-//        portalSocialExtWorker.setIdExt(socialWorkerId);
-//        res.setPortalExtWorker(portalSocialExtWorker);
-//        res.setSector("PAU");
-//        res.setSectorList(new ArrayList<String>() {{
-//            add("PAU");
-//            add("secteur 1");
-//            add("secteur 2");
-//        }});
-//        res.setTelephone("0501020304");
-//        res.setTitle("");
-//        final SocialExtUser socialExtUser = findSocialExtUser("456");
-//        socialExtUser.setSocialWorkerId(socialWorkerId);
-//        res.getUsers().add(socialExtUser);
-//        return res;
-        return null;
+    public IntervenantSocial findSocialWorker(String socialWorkerId) {
+        return getIntervenantSocial(socialWorkerId);
     }
 
     /**
@@ -705,17 +738,33 @@ public class StubDataProvider implements DataProvider {
         return rDto;
     }
 
+//    /**
+//     * "Rechercher dans les individus.
+//     *
+//     * @param searchCriteria Set de critères de recherche. Chaque critère contient un type, une classe et une valeur.
+//     * @return Une liste d'individus correspondant aux critères.
+//     * @see SearchCriterionDTO
+//     */
+//    @Override
+//    public List<SocialExtBeneficiary> findAllIndividuals(Set<SearchCriterionDTO> searchCriteria) {
+//        List<SocialExtBeneficiary> res = new ArrayList<>();
+//        res.add(findBeneficiary("123"));
+//        return res;
+//    }
+
     /**
-     * "Rechercher dans les individus.
+     * Rechercher tous les individus correspondant aux critères reçus
      *
-     * @param searchCriteria Set de critères de recherche. Chaque critère contient un type, une classe et une valeur.
-     * @return Une liste d'individus correspondant aux critères.
-     * @see SearchCriterionDTO
+     * @param rechercheIndividusRequest Critères pour filtrer les individus
+     * @return Représentation des individus trouvés
      */
     @Override
-    public List<SocialExtBeneficiary> findAllIndividuals(Set<SearchCriterionDTO> searchCriteria) {
-        List<SocialExtBeneficiary> res = new ArrayList<>();
-        res.add(findBeneficiary("123"));
+    public PaginationIndividus findAllIndividuals(RechercheIndividusRequest rechercheIndividusRequest) {
+        final PaginationIndividus res = new PaginationIndividus();
+        res.getIndividus().add(getIndividu());
+        res.setPageNumber(1);
+        res.setPageSize(1);
+        res.setTotalNumber(1);
         return res;
     }
 

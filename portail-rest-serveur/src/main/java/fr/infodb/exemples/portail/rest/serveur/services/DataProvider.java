@@ -239,7 +239,7 @@ public interface DataProvider {
      * @param updto Représentation d'un utilisateur avec mot de passe
      * @return Résultat de l'authentification (enum correspondant aux différents statuts possibles
      */
-    AuthenticationResult authenticate(UserAndPwdDTO updto);
+    AuthenticationResult authenticate(AuthenticationRequest updto);
 
     /**
      * Recherche les message à afficher sur la page d'authentification.
@@ -267,7 +267,7 @@ public interface DataProvider {
      * @return Un Set de SocialExtRendezVous.
      * @throws SocialExtException Si les dates ne sont pas correctes
      */
-    Set<SocialExtRendezVous> getSocialWorkerRendezVous(String userId, String socialWorkerId, String startDate, String endDate);
+    ListeRendezVous getSocialWorkerRendezVous(String userId, String socialWorkerId, String startDate, String endDate);
 
     /**
      * Créer un rendez-vous pour un intervenant social.
@@ -291,7 +291,7 @@ public interface DataProvider {
      *
      * @param socialWorkerId Id de l'intervenant social.
      */
-    SocialExtWorker findSocialWorker(String socialWorkerId);
+    IntervenantSocial findSocialWorker(String socialWorkerId);
 
     /**
      * Récupération des valeurs d'un référentiel (nomenclature).
@@ -302,12 +302,20 @@ public interface DataProvider {
      */
     ReferentialDTO getReferential(String referential);
 
+//    /**
+//     * "Rechercher dans les individus.
+//     *
+//     * @param searchCriteria Set de critères de recherche. Chaque critère contient un type, une classe et une valeur.
+//     * @return Une liste d'individus correspondant aux critères.
+//     * @see SearchCriterionDTO
+//     */
+//    List<SocialExtBeneficiary> findAllIndividuals(Set<SearchCriterionDTO> searchCriteria);
+
     /**
-     * "Rechercher dans les individus.
+     * Rechercher tous les individus correspondant aux critères reçus
      *
-     * @param searchCriteria Set de critères de recherche. Chaque critère contient un type, une classe et une valeur.
-     * @return Une liste d'individus correspondant aux critères.
-     * @see SearchCriterionDTO
+     * @param rechercheIndividusRequest Critères pour filtrer les individus
+     * @return Représentation des individus trouvés
      */
-    List<SocialExtBeneficiary> findAllIndividuals(Set<SearchCriterionDTO> searchCriteria);
+    PaginationIndividus findAllIndividuals(RechercheIndividusRequest rechercheIndividusRequest);
 }

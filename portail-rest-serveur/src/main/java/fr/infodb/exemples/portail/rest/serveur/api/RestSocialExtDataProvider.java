@@ -5,7 +5,6 @@ import fr.infodb.exemples.portail.rest.serveur.dto.ws.*;
 import fr.infodb.exemples.portail.rest.serveur.dto2.*;
 import fr.infodb.exemples.portail.rest.serveur.exceptions.SocialExtException;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,10 +25,10 @@ public interface RestSocialExtDataProvider {
      * @param socialWorkerId id du travailleur social
      * @param startDate      date de début de la période de recherche
      * @param endDate        date de fin de la période de recherche
-     * @return un Set de SocialExtRendezVous
+     * @return Représentation d'une liste de rendez vous
      * @throws SocialExtException Exception en cas d'erreur
      */
-    Set<SocialExtRendezVous> getSocialWorkerRendezVous(String userId, String socialWorkerId, String startDate, String endDate) throws SocialExtException;
+    ListeRendezVous getSocialWorkerRendezVous(String userId, String socialWorkerId, String startDate, String endDate) throws SocialExtException;
 
     /**
      * Méthode permettant de récupérer la liste des offres de services
@@ -94,12 +93,6 @@ public interface RestSocialExtDataProvider {
      */
     Profiles getProfiles(String userId) throws SocialExtException;
 
-    /**
-     * Retourne une liste de suggestion de lieux dans une commune donnée, à partir d'une portion du nom du lieu.
-     * @param Identifiant de la commune
-     * @return
-     * @throws SocialExtException Exception en cas d'erreur
-     */
 
     /**
      * Retourne une liste de suggestion de lieux dans une commune donnée, à partir d'une portion du nom du lieu.
@@ -228,14 +221,22 @@ public interface RestSocialExtDataProvider {
      */
     AvailableSocialModules getAvailableSocialModules();
 
+//    /**
+//     * Recherche d'"individus" : il s'agit des personnes pouvant demander une aide sociale?
+//     *
+//     * @param searchCriteria critères de recherche
+//     * @return wrapper autour d'une liste de bénéficiaires
+//     * @throws SocialExtException Exception en cas d'erreur
+//     */
+//    List<SocialExtBeneficiary> searchIndividuals(HashSet<SearchCriterionDTO> searchCriteria) throws SocialExtException;
+
     /**
-     * Recherche d'"individus" : il s'agit des personnes pouvant demander une aide sociale?
+     * Rechercher tous les individus correspondant aux critères reçus
      *
-     * @param searchCriteria critères de recherche
-     * @return wrapper autour d'une liste de bénéficiaires
-     * @throws SocialExtException Exception en cas d'erreur
+     * @param rechercheIndividusRequest Critères pour filtrer les individus
+     * @return Représentation des individus trouvés
      */
-    List<SocialExtBeneficiary> searchIndividuals(HashSet<SearchCriterionDTO> searchCriteria) throws SocialExtException;
+    PaginationIndividus searchIndividuals(RechercheIndividusRequest rechercheIndividusRequest);
 
     /**
      * Récupère les modules sociaux disponibles pour la lifeline.
@@ -304,7 +305,7 @@ public interface RestSocialExtDataProvider {
      * @return un AuthenticationResult contenant le statut de l'authentification
      * @throws SocialExtException Exception en cas d'erreur
      */
-    AuthenticationResult authenticate(UserAndPwdDTO updto) throws SocialExtException;
+    AuthenticationResult authenticate(AuthenticationRequest updto) throws SocialExtException;
 
     /**
      * Récupère un bénéficiaire à partir de son id.
@@ -328,5 +329,5 @@ public interface RestSocialExtDataProvider {
      * @param externalId id de l'intervenant social
      * @return l'intervenant social
      */
-    SocialExtWorker findSocialWorker(String externalId);
+    IntervenantSocial findSocialWorker(String externalId);
 }

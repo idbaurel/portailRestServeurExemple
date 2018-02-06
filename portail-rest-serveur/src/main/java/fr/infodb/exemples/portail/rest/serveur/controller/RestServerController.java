@@ -12,7 +12,6 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,9 +22,8 @@ import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.*;
  * Web services REST exposés
  */
 @RestController
-@RequestMapping(value = "/portail/spi" /*, produces = {MediaType.APPLICATION_JSON_UTF8_VALUE, MediaType.APPLICATION_XML_VALUE}*/)
+@RequestMapping(value = "/portail/spi")
 @Api(tags = "InfoDB, services rest Portail Agent", value = "Concernant la gestion des erreurs : les conventions classiques REST sont appliquées, côté client seules les erreurs 404 seront remontées de façon différente.")
-//public class RestServerController implements RestSocialExtDataProvider {
 public class RestServerController implements RestSocialExtDataProvider {
 
     //fournisseur de données
@@ -61,7 +59,8 @@ public class RestServerController implements RestSocialExtDataProvider {
         return dataProvider.getBusinessOffers(individualId);
     }
 
-    /**done
+    /**
+     * done
      * Rechercher les message à afficher sur la page d'authentification.
      *
      * @return Une liste de messages.
@@ -127,14 +126,14 @@ public class RestServerController implements RestSocialExtDataProvider {
      * @return Un objet ReferentialDTO qui contient les valeurs du référentiel. Ce DTO contient une liste de ReferentialEntryDTO.
      * @see Referential
      */
-//    @GetMapping(RESTURL_GET_REFERENTIAL)
-//    @ApiOperation("Récupérer les données d'un référentiel (nomenclature).")
-//    public ReferentialDTO getReferential(
-//            @PathVariable(PATHPARAM_REFERENTIAL) String referential,
-//            @RequestHeader(HEADERNAME_USERID) String userId)
-//            throws SocialExtException {
-//        return dataProvider.getReferential(referential, userId);
-//    }
+    //    @GetMapping(RESTURL_GET_REFERENTIAL)
+    //    @ApiOperation("Récupérer les données d'un référentiel (nomenclature).")
+    //    public ReferentialDTO getReferential(
+    //            @PathVariable(PATHPARAM_REFERENTIAL) String referential,
+    //            @RequestHeader(HEADERNAME_USERID) String userId)
+    //            throws SocialExtException {
+    //        return dataProvider.getReferential(referential, userId);
+    //    }
     @GetMapping(RESTURL_GET_REFERENTIAL)
     @ApiOperation("Récupérer les données d'un référentiel (nomenclature).")
     public ReferentialDTO getReferential(
@@ -199,12 +198,13 @@ public class RestServerController implements RestSocialExtDataProvider {
         dataProvider.updateIndividual(beneficiary);
     }
 
-    /**done
+    /**
+     * done
      * Retourner les profils d'un utilisateur si l'id de l'utilisateur est renseigné.
      * <p>
      * Si l'id n'est pas renseigné, retourner la liste de tous les profils.
      *
-     * @return  profils.
+     * @return profils.
      */
     @GetMapping(RESTURL_GET_PROFILES)
     @ApiOperation("Retourner tous les profils utilisateurs.")
@@ -214,6 +214,7 @@ public class RestServerController implements RestSocialExtDataProvider {
 
     /**
      * Retourner les profils d'un utilisateur si l'id de l'utilisateur est renseigné.
+     *
      * @param userId id de l'utilisateur
      * @return profils
      */
@@ -348,7 +349,7 @@ public class RestServerController implements RestSocialExtDataProvider {
      */
     @GetMapping(RESTURL_FIND_SOCIAL_WORKER)
     @ApiOperation("Récupérer un intervenant social à partir de son id.")
-    public SocialExtWorker findSocialWorker(@PathVariable(PATHPARAM_SOCIALWORKERID) String externalId) {
+    public IntervenantSocial findSocialWorker(@PathVariable(PATHPARAM_SOCIALWORKERID) String externalId) {
         return dataProvider.findSocialWorker(externalId);
     }
 
@@ -360,8 +361,8 @@ public class RestServerController implements RestSocialExtDataProvider {
      */
     @PostMapping(RESTURL_AUTHENTICATE)
     @ApiOperation("Authentifier un utilisateur.")
-    public AuthenticationResult authenticate(UserAndPwdDTO updto) {
-        return dataProvider.authenticate(updto);
+    public AuthenticationResult authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
+        return dataProvider.authenticate(authenticationRequest);
     }
 
     /**
@@ -392,7 +393,8 @@ public class RestServerController implements RestSocialExtDataProvider {
         return dataProvider.findAllSocialWorkers(pageSize, pageNumber);
     }
 
-    /**done
+    /**
+     * done
      * Récupérer tous les utilisateurs. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
      * Les requêtes se font de manière paginée.
      * Attention, cela implique que la recherche doit être ordonnée côté serveur.
@@ -409,7 +411,8 @@ public class RestServerController implements RestSocialExtDataProvider {
         return dataProvider.findAllUser(pageSize, pageNumber);
     }
 
-    /**done
+    /**
+     * done
      * Récupérer tous les individus. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
      *
      * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
@@ -436,7 +439,8 @@ public class RestServerController implements RestSocialExtDataProvider {
         return dataProvider.getNews(userId);
     }
 
-    /**done
+    /**
+     * done
      * Retourner les modules sociaux disponibles dans l'environnement courant.
      *
      * @return Un Set de SocialModule.
@@ -460,17 +464,29 @@ public class RestServerController implements RestSocialExtDataProvider {
         return new StringWrapperDTO(dataProvider.getRedirectionToken(updto));
     }
 
+////    /**
+////     * "Rechercher dans les individus.
+////     *
+////     * @param searchCriteria Set de critères de recherche. Chaque critère contient un type, une classe et une valeur.
+////     * @return Une liste d'individus correspondant aux critères.
+////     * @see SearchCriterionDTO
+////     */
+//    @PostMapping(RESTURL_SEARCH_INDIVIDUALS)
+//    @ApiOperation("Recherche dans les individus.")
+//    public List<SocialExtBeneficiary> searchIndividuals(@RequestBody HashSet<SearchCriterionDTO> searchCriteria) {
+//        return dataProvider.findAllIndividuals(searchCriteria);
+//    }
+
     /**
-     * "Rechercher dans les individus.
+     * Rechercher tous les individus correspondant aux critères reçus
      *
-     * @param searchCriteria Set de critères de recherche. Chaque critère contient un type, une classe et une valeur.
-     * @return Une liste d'individus correspondant aux critères.
-     * @see SearchCriterionDTO
+     * @param rechercheIndividusRequest Critères pour filtrer les individus
+     * @return Représentation des individus trouvés
      */
     @PostMapping(RESTURL_SEARCH_INDIVIDUALS)
     @ApiOperation("Recherche dans les individus.")
-    public List<SocialExtBeneficiary> searchIndividuals(HashSet<SearchCriterionDTO> searchCriteria) {
-        return dataProvider.findAllIndividuals(searchCriteria);
+    public PaginationIndividus searchIndividuals(@RequestBody RechercheIndividusRequest rechercheIndividusRequest) {
+        return dataProvider.findAllIndividuals(rechercheIndividusRequest);
     }
 
     /**
@@ -497,7 +513,7 @@ public class RestServerController implements RestSocialExtDataProvider {
      */
     @GetMapping(RESTURL_GET_SOCIAL_WORKER_RENDEZ_VOUS)
     @ApiOperation("Rechercher dans les rendez-vous des travailleurs sociaux.")
-    public Set<SocialExtRendezVous> getSocialWorkerRendezVous(
+    public ListeRendezVous getSocialWorkerRendezVous(
             @RequestHeader(HEADERNAME_USERID) String userId,
             @PathVariable(PATHPARAM_SOCIALWORKERID) String socialWorkerId,
             @RequestParam(QUERYPARAM_DATEDEBUT) String startDate,

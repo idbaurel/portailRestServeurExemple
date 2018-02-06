@@ -23,14 +23,16 @@ public class Individu implements Serializable {
     private String email;
     private IndividuGenre genre;
     private boolean majeur = true;
-    private String mobile;
     private String nom;
     private String nomNaissance;
     private String prenom;
     private String secteurDossier;
     private String secteurSuivi;
     private String tel;
+    private String mobile;
     private String telTravail;
+
+    private Adresse adresse;
 
     public String getId() {
         return id;
@@ -158,5 +160,13 @@ public class Individu implements Serializable {
 
     public void setTelTravail(String telTravail) {
         this.telTravail = telTravail;
+    }
+
+    public Adresse getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(Adresse adresse) {
+        this.adresse = adresse;
     }
 }
