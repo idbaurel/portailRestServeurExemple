@@ -8,9 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -337,16 +334,16 @@ public class StubDataProvider implements DataProvider {
         Individu individu = new Individu();
 
         individu.setId("abc-123");
-        individu.setNom("DUPONT");
-        individu.setPrenom("Amélie");
+        individu.setNom("DUPONTEL");
+        individu.setPrenom("Marie hélène");
         individu.setGenre(IndividuGenre.FEMME);
         individu.setDecede(false);
         individu.setCaf("0123456789-abcdef...");
-        individu.setEmail("amelie.dupont@mailer.fr");
+        individu.setEmail("mh.dupontel@mailer.fr");
         individu.setDateNaissance(localDateToDate(LocalDate.of(1980, Month.MARCH, 26)));
         individu.setMajeur(true);
         individu.setMobile("0601020304");
-        individu.setNomNaissance("DURAND");
+        individu.setNomNaissance("MARTIN");
         individu.setSecteurDossier("Pau");
         individu.setSecteurSuivi("Bayonne");
         individu.setTel("0501020304");
@@ -415,12 +412,12 @@ public class StubDataProvider implements DataProvider {
      * @return Un Set de SocialModule.
      */
     @Override
-    public AvailableSocialModules getAvailableSocialModules() {
+    public SocialModules getAvailableSocialModules() {
 //        return Arrays.stream(SocialModule.values())
 //                .filter(v -> v.getName().startsWith("F"))
 //                .collect(Collectors.toSet());
 
-        AvailableSocialModules res = new AvailableSocialModules();
+        SocialModules res = new SocialModules();
         res.getModules().add(SocialModule.ASE);
         res.getModules().add(SocialModule.ASG);
         res.getModules().add(SocialModule.AST);
@@ -531,11 +528,11 @@ public class StubDataProvider implements DataProvider {
      * @return Un Set de SocialModule.
      */
     @Override
-    public Set<SocialModule> getAvailableSocialModulesForLifeLine() {
-        //renvoie ceux commençant par "A"
-        return Arrays.stream(SocialModule.values())
-                .filter(v -> v.getName().startsWith("A"))
-                .collect(Collectors.toSet());
+    public SocialModules getAvailableSocialModulesForLifeLine() {
+        SocialModules res = new SocialModules();
+        res.getModules().add(SocialModule.ASG);
+        res.getModules().add(SocialModule.FSL);
+        return res;
     }
 
     /**
@@ -586,32 +583,23 @@ public class StubDataProvider implements DataProvider {
      * @return Une liste de SocialExtRendezVous.
      */
     @Override
-    public List<SocialExtRendezVous> getIndividualRendezVous(String externalId) {
-        List<SocialExtRendezVous> res = new ArrayList<>();
-        SocialExtRendezVous socialExtRendezVous = new SocialExtRendezVous();
-        socialExtRendezVous.setLabel("rendez vous 1");
-        socialExtRendezVous.setType(SocialExtRendezVousType.CIRCO);
-        res.add(socialExtRendezVous);
-        return res;
+    public ListeRendezVous getIndividualRendezVous(String externalId) {
+        return getListeRendezVous("is-123456");
     }
 
     /**
-     * fixme erreur de serialisation SocialExtRendezVous
+     *
      * Rechercher dans les rendez-vous des travailleurs sociaux.
      *
      * @param userId         Id de l'utilisateur portail à l'origine de l'appel
      * @param socialWorkerId Id du travailleur social
      * @param startDate      Date de début de la période de recherche, format yyyy-MM-ddTHH:mm:ss
      * @param endDate        Date de fin de la période de recherche, format yyyy-MM-ddTHH:mm:ss
-     * @return Un Set de SocialExtRendezVous.
+     * @return Représentation d'une liste de rendez-vous
      * @throws SocialExtException Si les dates ne sont pas correctes
      */
     @Override
     public ListeRendezVous getSocialWorkerRendezVous(String userId, String socialWorkerId, String startDate, String endDate) {
-
-
-        ListeRendezVous res = new ListeRendezVous();
-        RendezVous rdv = new RendezVous();
 
 //        //exemple de conversion de java.lang.String vers java.util.Date
 //        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -628,10 +616,21 @@ public class StubDataProvider implements DataProvider {
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 //        LocalDateTime dateTime = LocalDateTime.parse(startDate, formatter);
 
+        return getListeRendezVous(socialWorkerId);
+    }
+
+    private ListeRendezVous getListeRendezVous(String socialWorkerId) {
+        ListeRendezVous res = new ListeRendezVous();
+        res.getRendezVous().add(getRendezVous(socialWorkerId));
+        return res;
+    }
+
+    private RendezVous getRendezVous(String socialWorkerId) {
         LocalDate now = LocalDate.now();
         LocalDateTime debut = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 14,0);
         LocalDateTime fin = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 15,30);
 
+        RendezVous rdv = new RendezVous();
         rdv.setAdresse(getAdresse());
         rdv.setCodeTypeRdv(1);
         rdv.setCommentaire("pas de commentaire");
@@ -654,10 +653,7 @@ public class StubDataProvider implements DataProvider {
 
         rdv.getIndividus().add(getIndividu());
         rdv.getIntervenantsSociaux().add(getIntervenantSocial(socialWorkerId));
-
-
-        res.getRendezVous().add(rdv);
-        return res;
+        return rdv;
     }
 
     Date convertLocalDateTimeToDateViaInstant(LocalDateTime dateToConvert) {
@@ -761,7 +757,17 @@ public class StubDataProvider implements DataProvider {
     @Override
     public PaginationIndividus findAllIndividuals(RechercheIndividusRequest rechercheIndividusRequest) {
         final PaginationIndividus res = new PaginationIndividus();
-        res.getIndividus().add(getIndividu());
+        final Individu individu = getIndividu();
+//        if (rechercheIndividusRequest.getNom() != null && rechercheIndividusRequest.isRechercheSurNomDeNaissance()) {
+//            individu.setNomNaissance(rechercheIndividusRequest.getNom());
+//        } else if (rechercheIndividusRequest.getNom() != null) {
+//            individu.setNom(rechercheIndividusRequest.getNom());
+//        }
+//        if (rechercheIndividusRequest.getDateNaissance() != null) {
+//            individu.setDateNaissance(rechercheIndividusRequest.getDateNaissance());
+//        }
+
+        res.getIndividus().add(individu);
         res.setPageNumber(1);
         res.setPageSize(1);
         res.setTotalNumber(1);

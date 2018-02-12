@@ -10,7 +10,7 @@ import java.util.List;
  * @author aurelien
  * créé le 10/01/18.
  */
-public class AvailableSocialModules implements Serializable {
+public class SocialModules implements Serializable {
 
     private final List<SocialModule> modules = new ArrayList<>();
 

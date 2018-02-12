@@ -4,6 +4,7 @@ import fr.infodb.exemples.portail.rest.serveur.dto.ws.SearchCriterionDTO;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,9 +13,49 @@ import java.util.List;
  */
 public class RechercheIndividusRequest extends Pagination {
 
-    private final List<SearchCriterionDTO> criteresRecherches = new ArrayList<SearchCriterionDTO>();
+    private String nom;
+    private String prenom;
+    private Date dateNaissance;
+    private String commune;
+    private boolean rechercheSurNomDeNaissance;
 
-    public List<SearchCriterionDTO> getCriteresRecherches() {
-        return criteresRecherches;
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
+
+    public Date getDateNaissance() {
+        return dateNaissance;
+    }
+
+    public void setDateNaissance(Date dateNaissance) {
+        this.dateNaissance = dateNaissance;
+    }
+
+    public String getCommune() {
+        return commune;
+    }
+
+    public void setCommune(String commune) {
+        this.commune = commune;
+    }
+
+    public boolean isRechercheSurNomDeNaissance() {
+        return rechercheSurNomDeNaissance;
+    }
+
+    public void setRechercheSurNomDeNaissance(boolean rechercheSurNomDeNaissance) {
+        this.rechercheSurNomDeNaissance = rechercheSurNomDeNaissance;
     }
 }

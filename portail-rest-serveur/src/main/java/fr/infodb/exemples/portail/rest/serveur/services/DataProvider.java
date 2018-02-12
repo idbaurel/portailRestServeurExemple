@@ -168,7 +168,7 @@ public interface DataProvider {
      * @return Un Set de SocialModule.
      */
 //    Set<SocialModule> getAvailableSocialModules();
-    AvailableSocialModules getAvailableSocialModules();
+    SocialModules getAvailableSocialModules();
 
     /**
      * Récupérer les news relatives à un travailleur social.
@@ -231,7 +231,7 @@ public interface DataProvider {
      *
      * @return Un Set de SocialModule.
      */
-    Set<SocialModule> getAvailableSocialModulesForLifeLine();
+    SocialModules getAvailableSocialModulesForLifeLine();
 
     /**
      * Authentifier un utilisateur.
@@ -253,9 +253,9 @@ public interface DataProvider {
      * Rechercher dans les rendez-vous des individus.
      *
      * @param externalId Clé de l'individu
-     * @return Une liste de SocialExtRendezVous.
+     * @return Représentation des rendez-vous d'un individu
      */
-    List<SocialExtRendezVous> getIndividualRendezVous(String externalId);
+    ListeRendezVous getIndividualRendezVous(String externalId);
 
     /**
      * Rechercher dans les rendez-vous des travailleurs sociaux.

@@ -219,7 +219,7 @@ public interface RestSocialExtDataProvider {
      *
      * @return un Set de SocialModule (spi-portail)
      */
-    AvailableSocialModules getAvailableSocialModules();
+    SocialModules getAvailableSocialModules();
 
 //    /**
 //     * Recherche d'"individus" : il s'agit des personnes pouvant demander une aide sociale?
@@ -239,11 +239,11 @@ public interface RestSocialExtDataProvider {
     PaginationIndividus searchIndividuals(RechercheIndividusRequest rechercheIndividusRequest);
 
     /**
-     * Récupère les modules sociaux disponibles pour la lifeline.
+     * Récupère les modules métiers disponibles pour la ligne de vie sur le Parcours Usager du Portail Agent.
      *
-     * @return un Set de SocialModule
+     * @return Représentation des modules métiers
      */
-    Set<SocialModule> getAvailableSocialModulesForLifeLine();
+    SocialModules getAvailableSocialModulesForLifeLine();
 
     /**
      * Retourne la liste des rendez-vous d'un individu.
@@ -252,7 +252,7 @@ public interface RestSocialExtDataProvider {
      * @return une List de SocialExtRendezVous
      * @throws SocialExtException Exception en cas d'erreur
      */
-    List<SocialExtRendezVous> getIndividualRendezVous(String externalId) throws SocialExtException;
+    ListeRendezVous getIndividualRendezVous(String externalId) throws SocialExtException;
 
     /**
      * Récupère l'ensemble des lieux d'un type de lieux donné (par exemple l'ensemble des CIRCO).

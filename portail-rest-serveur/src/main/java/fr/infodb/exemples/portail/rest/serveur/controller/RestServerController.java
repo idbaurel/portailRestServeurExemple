@@ -35,44 +35,184 @@ public class RestServerController implements RestSocialExtDataProvider {
     }
 
     /**
-     * Retourner, pour l'utilisateur spécifié, le nombre d'évènements en attente de traitement issus du SIRH.
-     *
-     * @param userId Identifiant de l'utilisateur
-     * @return Le nombre d'évènements.
-     */
-    @GetMapping(RESTURL_GET_NUMBER_SIRH_EVENTS)
-    @ApiOperation("Retourner, pour l'utilisateur spécifié, le nombre d'évènements en attente de traitement issus du SIRH.")
-    public Long getNumberSirhEvents(@ApiParam("Identifiant de l'utilisateur") @PathVariable(PATHPARAM_USERID) String userId) {
-        return dataProvider.getNumberSirhEvents(userId);
-    }
-
-    /**
-     * Rechercher les offres de service pour un individu.
-     *
-     * @param individualId Clé de l'individu
-     * @return Une liste d'offres de service.
-     */
-    @GetMapping(RESTURL_GET_BUSINESS_OFFERS)
-    @ApiOperation("Rechercher les offres de service pour un individu.")
-    public List<BusinessOffer> getBusinessOffers(
-            @ApiParam("Clé de l'individu") @PathVariable(PATHPARAM_BENEFICIARYID) String individualId) {
-        return dataProvider.getBusinessOffers(individualId);
-    }
-
-    /**
      * done
      * Rechercher les message à afficher sur la page d'authentification.
      *
      * @return Une liste de messages.
      */
     @GetMapping(RESTURL_GET_ALL_LOGIN_HOMEPAGE_MESSAGES)
-    @ApiOperation("Rechercher les message à afficher sur la page d'authentification.")
+    @ApiOperation("Rechercher les message à afficher sur la page d'authentification. [FAIT]")
     public LoginHomepageMessages getAllLoginHomepageMessages() {
         return dataProvider.getAllLoginHomepageMessages();
     }
 
     /**
-     * Récupère la référence du dossier.
+     * done
+     * Authentifier un utilisateur.
+     *
+     * @return Résultat de l'authentification (enum correspondant aux différents statuts possibles).
+     * @see AuthenticationResult
+     */
+    @PostMapping(RESTURL_AUTHENTICATE)
+    @ApiOperation("Authentifier un utilisateur. [FAIT]")
+    public AuthenticationResult authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
+        return dataProvider.authenticate(authenticationRequest);
+    }
+
+    /**
+     * done
+     * Retourner les modules sociaux disponibles dans l'environnement courant.
+     *
+     * @return Un Set de SocialModule.
+     * @see SocialModule
+     */
+    @GetMapping(RESTURL_GET_SOCIAL_MODULES)
+    @ApiOperation("Retourner les modules métiers disponibles sur l'application. [FAIT]")
+    public SocialModules getAvailableSocialModules() {
+        return dataProvider.getAvailableSocialModules();
+    }
+
+    /**
+     * done
+     * Récupérer les modules sociaux disponibles pour affichage dans une ligne de vie.
+     *
+     * @return Un Set de SocialModule.
+     */
+    @GetMapping(RESTURL_GET_SOCIAL_MODULES_FOR_LIFE_LINE)
+    @ApiOperation("Récupérer les modules sociaux disponibles pour affichage dans une ligne de vie. [FAIT]")
+    public SocialModules getAvailableSocialModulesForLifeLine() {
+        return dataProvider.getAvailableSocialModulesForLifeLine();
+    }
+
+    /**
+     * done
+     * Récupérer tous les individus. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
+     *
+     * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
+     * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
+     * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
+     */
+    @GetMapping(RESTURL_FIND_ALL_INDIVIDUALS)
+    @ApiOperation("Récupérer tous les individus. Cette méthode est utilisée dans le cadre de la reprise de données. [FAIT]")
+    public PaginationIndividus findAllIndividuals(
+            @RequestParam(QUERYPARAM_PAGESIZE) int pageSize,
+            @RequestParam(QUERYPARAM_PAGENUMBER) int pageNumber) {
+        return dataProvider.findAllIndividuals(pageSize, pageNumber);
+    }
+
+    /**
+     * done
+     * Récupérer tous les travailleurs sociaux.
+     * <p>
+     * Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
+     *
+     * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
+     * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
+     * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
+     */
+    @GetMapping(RESTURL_FIND_ALL_SOCIAL_WORKERS)
+    @ApiOperation("Récupérer tous les travailleurs sociaux. Cette méthode est utilisée dans le cadre de la reprise de données. [FAIT]")
+    public PaginationIntervenantsSociaux findAllSocialWorkers(
+            @RequestParam(QUERYPARAM_PAGESIZE) int pageSize,
+            @RequestParam(QUERYPARAM_PAGENUMBER) int pageNumber) {
+        return dataProvider.findAllSocialWorkers(pageSize, pageNumber);
+    }
+
+    /**
+     * done
+     * Récupérer tous les utilisateurs. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
+     * Les requêtes se font de manière paginée.
+     * Attention, cela implique que la recherche doit être ordonnée côté serveur.
+     *
+     * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
+     * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
+     * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
+     */
+    @GetMapping(RESTURL_FIND_ALL_USER)
+    @ApiOperation("Récupérer tous les utilisateurs. Cette méthode est utilisée dans le cadre de la reprise de données. [FAIT]")
+    public PaginationUtilisateurs findAllUser(
+            @RequestParam(QUERYPARAM_PAGESIZE) int pageSize,
+            @RequestParam(QUERYPARAM_PAGENUMBER) int pageNumber) {
+        return dataProvider.findAllUser(pageSize, pageNumber);
+    }
+
+    /**
+     * done
+     * Récupérer un intervenant social à partir de son id.
+     *
+     * @param externalId Id de l'intervenant social.
+     * @return Un objet SocialExtWorker correspondant à l'intervenant social recherché.
+     */
+    @GetMapping(RESTURL_FIND_SOCIAL_WORKER)
+    @ApiOperation("Récupérer un intervenant social à partir de son id. [FAIT]")
+    public IntervenantSocial findSocialWorker(@PathVariable(PATHPARAM_SOCIALWORKERID) String externalId) {
+        return dataProvider.findSocialWorker(externalId);
+    }
+
+    /**
+     * done
+     * Retourner les profils d'un utilisateur si l'id de l'utilisateur est renseigné.
+     * <p>
+     * Si l'id n'est pas renseigné, retourner la liste de tous les profils.
+     *
+     * @return profils.
+     */
+    @GetMapping(RESTURL_GET_PROFILES)
+    @ApiOperation("Retourner tous les profils utilisateurs. [FAIT]")
+    public Profiles getProfiles() {
+        return dataProvider.getAvailableProfiles();
+    }
+
+    /**
+     * done
+     * Retourner les profils d'un utilisateur si l'id de l'utilisateur est renseigné.
+     *
+     * @param userId id de l'utilisateur
+     * @return profils
+     */
+    @GetMapping(RESTURL_GET_PROFILES + "/{" + PATHPARAM_USERID + "}")
+    @ApiOperation("Retourner les profils d'un utilisateur. [FAIT]")
+    public Profiles getProfiles(@PathVariable(value = PATHPARAM_USERID) String userId) {
+        return dataProvider.getProfiles(userId);
+    }
+
+    /**
+     * done
+     * Rechercher tous les individus correspondant aux critères reçus
+     *
+     * @param rechercheIndividusRequest Critères pour filtrer les individus
+     * @return Représentation des individus trouvés
+     */
+    @PostMapping(RESTURL_SEARCH_INDIVIDUALS)
+    @ApiOperation("Rechercher des individus sur critères simples (pas de recherche avancée). [FAIT]")
+    public PaginationIndividus searchIndividuals(@RequestBody RechercheIndividusRequest rechercheIndividusRequest) {
+        return dataProvider.findAllIndividuals(rechercheIndividusRequest);
+    }
+
+    /**
+     * done
+     * Rechercher dans les rendez-vous des travailleurs sociaux.
+     *
+     * @param userId         Id de l'utilisateur portail à l'origine de l'appel
+     * @param socialWorkerId Id du travailleur social
+     * @param startDate      Date de début de la période de recherche, format yyyy-MM-ddTHH:mm:ss
+     * @param endDate        Date de fin de la période de recherche, format yyyy-MM-ddTHH:mm:ss
+     * @return Un Set de SocialExtRendezVous.
+     */
+    @GetMapping(RESTURL_GET_SOCIAL_WORKER_RENDEZ_VOUS)
+    @ApiOperation("Rechercher dans les rendez-vous des travailleurs sociaux. [FAIT]")
+    public ListeRendezVous getSocialWorkerRendezVous(
+            @RequestHeader(HEADERNAME_USERID) String userId,
+            @PathVariable(PATHPARAM_SOCIALWORKERID) String socialWorkerId,
+            @RequestParam(QUERYPARAM_DATEDEBUT) String startDate,
+            @RequestParam(QUERYPARAM_DATEFIN) String endDate) {
+        return dataProvider.getSocialWorkerRendezVous(userId, socialWorkerId, startDate, endDate);
+    }
+
+    //-----------------A FAIRE------------------------------------------
+
+    /**
+     * Récupérer la référence du dossier.
      *
      * @param userId       Id du user portail à l'origine de l'appel
      * @param socialModule SocialModule concerné.
@@ -80,7 +220,7 @@ public class RestServerController implements RestSocialExtDataProvider {
      * @return Référence du dossier.
      */
     @GetMapping(RESTURL_GET_MODULE_IDENTIFIER)
-    @ApiOperation("Récupère la référence du dossier.")
+    @ApiOperation("Récupérer la référence du dossier.")
     public StringWrapperDTO getModuleIdentifier(
             @RequestHeader(HEADERNAME_USERID) String userId,
             @PathVariable(PATHPARAM_SOCIALMODULE) SocialModule socialModule,
@@ -89,7 +229,7 @@ public class RestServerController implements RestSocialExtDataProvider {
     }
 
     /**
-     * Retourne le dossier d'un bénéficiaire.
+     * Retourner le dossier d'un bénéficiaire.
      *
      * @param userId Id de l'utilisateur du portail à l'origine de cet appel
      * @param index  Id du bénéficiaire recherché.
@@ -105,7 +245,7 @@ public class RestServerController implements RestSocialExtDataProvider {
     }
 
     /**
-     * Récupère la synthèse d'un individu.
+     * Récupérer la synthèse d'un individu.
      *
      * @param userId Id de l'utilisateur du portail à l'origine de cet appel
      * @param index  Id du bénéficiaire recherché
@@ -120,20 +260,12 @@ public class RestServerController implements RestSocialExtDataProvider {
     }
 
     /**
-     * Récupération des valeurs d'un référentiel (nomenclature).
+     * Récupérer les données d'un référentiel (nomenclature).
      *
      * @param referential Enum correspondant au type de référentiel voulu.
      * @return Un objet ReferentialDTO qui contient les valeurs du référentiel. Ce DTO contient une liste de ReferentialEntryDTO.
      * @see Referential
      */
-    //    @GetMapping(RESTURL_GET_REFERENTIAL)
-    //    @ApiOperation("Récupérer les données d'un référentiel (nomenclature).")
-    //    public ReferentialDTO getReferential(
-    //            @PathVariable(PATHPARAM_REFERENTIAL) String referential,
-    //            @RequestHeader(HEADERNAME_USERID) String userId)
-    //            throws SocialExtException {
-    //        return dataProvider.getReferential(referential, userId);
-    //    }
     @GetMapping(RESTURL_GET_REFERENTIAL)
     @ApiOperation("Récupérer les données d'un référentiel (nomenclature).")
     public ReferentialDTO getReferential(
@@ -143,7 +275,7 @@ public class RestServerController implements RestSocialExtDataProvider {
     }
 
     /**
-     * Retourne un lien de débranchement vers un écran SOLIS indépendant d'un module social.
+     * Retourner un lien de débranchement vers un écran d'une application externe indépendant d'un module social.
      *
      * @param token    Token d'authentification
      * @param linkType Type de lien pour débranchement
@@ -151,7 +283,7 @@ public class RestServerController implements RestSocialExtDataProvider {
      * @see SolisLinkType
      */
     @GetMapping(RESTURL_GET_LINK)
-    @ApiOperation("Retourner un lien de débranchement vers un écran SOLIS indépendant d'un module social.")
+    @ApiOperation("Retourner un lien de débranchement vers un écran d'une application externe indépendant d'un module social.")
     public StringWrapperDTO getLink(
             @RequestHeader(HEADERNAME_AUTH_TOKEN) String token,
             @PathVariable(PATHPARAM_LINKTYPE) String linkType) throws SocialExtException {
@@ -199,32 +331,6 @@ public class RestServerController implements RestSocialExtDataProvider {
     }
 
     /**
-     * done
-     * Retourner les profils d'un utilisateur si l'id de l'utilisateur est renseigné.
-     * <p>
-     * Si l'id n'est pas renseigné, retourner la liste de tous les profils.
-     *
-     * @return profils.
-     */
-    @GetMapping(RESTURL_GET_PROFILES)
-    @ApiOperation("Retourner tous les profils utilisateurs.")
-    public Profiles getProfiles() {
-        return dataProvider.getAvailableProfiles();
-    }
-
-    /**
-     * Retourner les profils d'un utilisateur si l'id de l'utilisateur est renseigné.
-     *
-     * @param userId id de l'utilisateur
-     * @return profils
-     */
-    @GetMapping(RESTURL_GET_PROFILES + "/{" + PATHPARAM_USERID + "}")
-    @ApiOperation("Retourner les profils d'un utilisateur .")
-    public Profiles getProfiles(@PathVariable(value = PATHPARAM_USERID) String userId) {
-        return dataProvider.getProfiles(userId);
-    }
-
-    /**
      * Retourner un ensemble de lieux en fonction d'un type donné.
      *
      * @param type Type de lieu
@@ -251,7 +357,7 @@ public class RestServerController implements RestSocialExtDataProvider {
     }
 
     /**
-     * Retourner une liste de lieux correspondant à une portion de nom donnée.
+     * Retourner pour une commune une liste de lieux correspondant à une portion de nom donnée.
      *
      * @param municipalityId Id de la commune.
      * @param token          Portion du nom du lieu.
@@ -278,7 +384,7 @@ public class RestServerController implements RestSocialExtDataProvider {
     }
 
     /**
-     * Récupérer les liens de débranchement vers les écrans de Solis.
+     * Récupérer les liens de débranchement vers les écrans de l'application externe.
      *
      * @param token        Token d'authentification.
      * @param screens      Ensemble d'écrans.
@@ -288,7 +394,7 @@ public class RestServerController implements RestSocialExtDataProvider {
      * @see SocialModuleScreen
      */
     @GetMapping(RESTURL_GET_LINKS)
-    @ApiOperation("Récupérer les liens de débranchement vers les écrans de Solis.")
+    @ApiOperation("Récupérer les liens de débranchement vers les écrans de l'application externe.")
     public Map<SocialModuleScreen, String> getLinks(
             @RequestHeader(HEADERNAME_AUTH_TOKEN) String token,
             @RequestParam(QUERYPARAM_SCREEN) Set<SocialModuleScreen> screens,
@@ -342,92 +448,6 @@ public class RestServerController implements RestSocialExtDataProvider {
     }
 
     /**
-     * Récupérer un intervenant social à partir de son id.
-     *
-     * @param externalId Id de l'intervenant social.
-     * @return Un objet SocialExtWorker correspondant à l'intervenant social recherché.
-     */
-    @GetMapping(RESTURL_FIND_SOCIAL_WORKER)
-    @ApiOperation("Récupérer un intervenant social à partir de son id.")
-    public IntervenantSocial findSocialWorker(@PathVariable(PATHPARAM_SOCIALWORKERID) String externalId) {
-        return dataProvider.findSocialWorker(externalId);
-    }
-
-    /**
-     * Authentifier un utilisateur.
-     *
-     * @return Résultat de l'authentification (enum correspondant aux différents statuts possibles).
-     * @see AuthenticationResult
-     */
-    @PostMapping(RESTURL_AUTHENTICATE)
-    @ApiOperation("Authentifier un utilisateur.")
-    public AuthenticationResult authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
-        return dataProvider.authenticate(authenticationRequest);
-    }
-
-    /**
-     * Récupérer les modules sociaux disponibles pour affichage dans une ligne de vie.
-     *
-     * @return Un Set de SocialModule.
-     */
-    @GetMapping(RESTURL_GET_SOCIAL_MODULES_FOR_LIFE_LINE)
-    @ApiOperation("Récupérer les modules sociaux disponibles pour affichage dans une ligne de vie.")
-    public Set<SocialModule> getAvailableSocialModulesForLifeLine() {
-        return dataProvider.getAvailableSocialModulesForLifeLine();
-    }
-
-    /**
-     * Récupérer tous les travailleurs sociaux.
-     * <p>
-     * Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
-     *
-     * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
-     * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
-     * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
-     */
-    @GetMapping(RESTURL_FIND_ALL_SOCIAL_WORKERS)
-    @ApiOperation("Récupérer tous les travailleurs sociaux. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.")
-    public PaginationIntervenantsSociaux findAllSocialWorkers(
-            @RequestParam(QUERYPARAM_PAGESIZE) int pageSize,
-            @RequestParam(QUERYPARAM_PAGENUMBER) int pageNumber) {
-        return dataProvider.findAllSocialWorkers(pageSize, pageNumber);
-    }
-
-    /**
-     * done
-     * Récupérer tous les utilisateurs. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
-     * Les requêtes se font de manière paginée.
-     * Attention, cela implique que la recherche doit être ordonnée côté serveur.
-     *
-     * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
-     * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
-     * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
-     */
-    @GetMapping(RESTURL_FIND_ALL_USER)
-    @ApiOperation("Récupérer tous les utilisateurs. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.")
-    public PaginationUtilisateurs findAllUser(
-            @RequestParam(QUERYPARAM_PAGESIZE) int pageSize,
-            @RequestParam(QUERYPARAM_PAGENUMBER) int pageNumber) {
-        return dataProvider.findAllUser(pageSize, pageNumber);
-    }
-
-    /**
-     * done
-     * Récupérer tous les individus. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
-     *
-     * @param pageSize   Taille de la page de résultats (=nombre de résultats retournés par cette requête).
-     * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
-     * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
-     */
-    @GetMapping(RESTURL_FIND_ALL_INDIVIDUALS)
-    @ApiOperation("Récupérer tous les individus. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.")
-    public PaginationIndividus findAllIndividuals(
-            @RequestParam(QUERYPARAM_PAGESIZE) int pageSize,
-            @RequestParam(QUERYPARAM_PAGENUMBER) int pageNumber) {
-        return dataProvider.findAllIndividuals(pageSize, pageNumber);
-    }
-
-    /**
      * Récupérer les news relatives à un travailleur social.
      *
      * @param userId Id du travailleur social concerné.
@@ -440,85 +460,28 @@ public class RestServerController implements RestSocialExtDataProvider {
     }
 
     /**
-     * done
-     * Retourner les modules sociaux disponibles dans l'environnement courant.
-     *
-     * @return Un Set de SocialModule.
-     * @see SocialModule
-     */
-    @GetMapping(RESTURL_GET_SOCIAL_MODULES)
-    @ApiOperation("Retourner les modules sociaux disponibles dans l'environnement courant.")
-    public AvailableSocialModules getAvailableSocialModules() {
-        return dataProvider.getAvailableSocialModules();
-    }
-
-    /**
-     * Récupérer un token de redirection.
+     * Obtenir un token de sécurité pour les redirections (débranchement).
      *
      * @param updto Wrapper autour d'un SocialExtUSer (habilitation) et une map de paramètres.
      * @return Wrapper de String, token de redirection.
      */
     @PostMapping(RESTURL_GET_REDIRECTION_TOKEN)
-    @ApiOperation("Récupérer un token de redirection.")
+    @ApiOperation("Obtenir un token de sécurité pour les redirections (débranchement).")
     public StringWrapperDTO getRedirectionToken(UserAndParamsDTO updto) {
         return new StringWrapperDTO(dataProvider.getRedirectionToken(updto));
     }
 
-////    /**
-////     * "Rechercher dans les individus.
-////     *
-////     * @param searchCriteria Set de critères de recherche. Chaque critère contient un type, une classe et une valeur.
-////     * @return Une liste d'individus correspondant aux critères.
-////     * @see SearchCriterionDTO
-////     */
-//    @PostMapping(RESTURL_SEARCH_INDIVIDUALS)
-//    @ApiOperation("Recherche dans les individus.")
-//    public List<SocialExtBeneficiary> searchIndividuals(@RequestBody HashSet<SearchCriterionDTO> searchCriteria) {
-//        return dataProvider.findAllIndividuals(searchCriteria);
-//    }
-
-    /**
-     * Rechercher tous les individus correspondant aux critères reçus
+    /**done
+     * Récupérer tous les rendez-vous d'individu.
      *
-     * @param rechercheIndividusRequest Critères pour filtrer les individus
-     * @return Représentation des individus trouvés
-     */
-    @PostMapping(RESTURL_SEARCH_INDIVIDUALS)
-    @ApiOperation("Recherche dans les individus.")
-    public PaginationIndividus searchIndividuals(@RequestBody RechercheIndividusRequest rechercheIndividusRequest) {
-        return dataProvider.findAllIndividuals(rechercheIndividusRequest);
-    }
-
-    /**
-     * Rechercher dans les rendez-vous des individus.
-     *
-     * @param externalId Clé de l'individu
-     * @return Une liste de SocialExtRendezVous.
+     * @param externalId Identifiant de l'individu
+     * @return Représentation des rendez vous d'un individu.
      */
     @GetMapping(RESTURL_GET_INDIVIDUAL_RENDEZ_VOUS)
     @ApiOperation("Rechercher dans les rendez-vous des individus.")
-    public List<SocialExtRendezVous> getIndividualRendezVous(
+    public ListeRendezVous getIndividualRendezVous(
             @PathVariable(PATHPARAM_BENEFICIARYID) String externalId) {
         return dataProvider.getIndividualRendezVous(externalId);
-    }
-
-    /**
-     * Rechercher dans les rendez-vous des travailleurs sociaux.
-     *
-     * @param userId         Id de l'utilisateur portail à l'origine de l'appel
-     * @param socialWorkerId Id du travailleur social
-     * @param startDate      Date de début de la période de recherche, format yyyy-MM-ddTHH:mm:ss
-     * @param endDate        Date de fin de la période de recherche, format yyyy-MM-ddTHH:mm:ss
-     * @return Un Set de SocialExtRendezVous.
-     */
-    @GetMapping(RESTURL_GET_SOCIAL_WORKER_RENDEZ_VOUS)
-    @ApiOperation("Rechercher dans les rendez-vous des travailleurs sociaux.")
-    public ListeRendezVous getSocialWorkerRendezVous(
-            @RequestHeader(HEADERNAME_USERID) String userId,
-            @PathVariable(PATHPARAM_SOCIALWORKERID) String socialWorkerId,
-            @RequestParam(QUERYPARAM_DATEDEBUT) String startDate,
-            @RequestParam(QUERYPARAM_DATEFIN) String endDate) {
-        return dataProvider.getSocialWorkerRendezVous(userId, socialWorkerId, startDate, endDate);
     }
 
     /**
@@ -532,5 +495,30 @@ public class RestServerController implements RestSocialExtDataProvider {
     @ApiOperation("Créer un rendez-vous pour un intervenant social.")
     public StringWrapperDTO createSocialWorkerRendezVous(SocialExtRendezVous rendezVous) {
         return new StringWrapperDTO(dataProvider.createSocialWorkerRendezVous(rendezVous));
+    }
+
+    /**
+     * Retourner, pour l'utilisateur spécifié, le nombre d'évènements en attente de traitement issus du SIRH.
+     *
+     * @param userId Identifiant de l'utilisateur
+     * @return Le nombre d'évènements.
+     */
+    @GetMapping(RESTURL_GET_NUMBER_SIRH_EVENTS)
+    @ApiOperation("Retourner, pour l'utilisateur spécifié, le nombre d'évènements en attente de traitement issus du SIRH.")
+    public Long getNumberSirhEvents(@ApiParam("Identifiant de l'utilisateur") @PathVariable(PATHPARAM_USERID) String userId) {
+        return dataProvider.getNumberSirhEvents(userId);
+    }
+
+    /**
+     * Rechercher les offres de service pour un individu.
+     *
+     * @param individualId Clé de l'individu
+     * @return Une liste d'offres de service.
+     */
+    @GetMapping(RESTURL_GET_BUSINESS_OFFERS)
+    @ApiOperation("Rechercher les offres de service pour un individu.")
+    public List<BusinessOffer> getBusinessOffers(
+            @ApiParam("Clé de l'individu") @PathVariable(PATHPARAM_BENEFICIARYID) String individualId) {
+        return dataProvider.getBusinessOffers(individualId);
     }
 }
