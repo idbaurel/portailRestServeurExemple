@@ -113,13 +113,13 @@ public interface RestSocialExtDataProvider {
      */
     List<SocialExtMunicipality> suggestMunicipalities(String token) throws SocialExtException;
 
-    /**
-     * Retourne un token d'authentification.
-     *
-     * @param updto Dto contenant les informations nécessaires pour construire le token d'authentification.
-     * @return un StringWrapperDTO contenant le token généré
-     */
-    StringWrapperDTO getRedirectionToken(UserAndParamsDTO updto);
+//    /**
+//     * Retourne un token d'authentification.
+//     *
+//     * @param updto Dto contenant les informations nécessaires pour construire le token d'authentification.
+//     * @return un StringWrapperDTO contenant le token généré
+//     */
+//    StringWrapperDTO getRedirectionToken(UserAndParamsDTO updto);
 
     /**
      * Retourne une Map de liens correspondant à des écrans de Solis (pour débranchement).
@@ -152,7 +152,7 @@ public interface RestSocialExtDataProvider {
      * @return un objet SocialExtBeneficiary contenant le détail du bénéficiaire
      * @throws SocialExtException Exception en cas d'erreur
      */
-    SocialExtBeneficiary getFileRecord(String userId, String index) throws SocialExtException;
+    DossierBeneficiaire getFileRecord(String userId, String index) throws SocialExtException;
 
     /**
      * Récupère la "synthèse individuelle" pour un bénéficiaire donné, c'est-à-dire ses informations détaillées.

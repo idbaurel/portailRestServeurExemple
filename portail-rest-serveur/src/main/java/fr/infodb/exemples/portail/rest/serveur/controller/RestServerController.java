@@ -178,19 +178,6 @@ public class RestServerController implements RestSocialExtDataProvider {
 
     /**
      * done
-     * Rechercher tous les individus correspondant aux critères reçus
-     *
-     * @param rechercheIndividusRequest Critères pour filtrer les individus
-     * @return Représentation des individus trouvés
-     */
-    @PostMapping(RESTURL_SEARCH_INDIVIDUALS)
-    @ApiOperation("Rechercher des individus sur critères simples (pas de recherche avancée). [FAIT]")
-    public PaginationIndividus searchIndividuals(@RequestBody RechercheIndividusRequest rechercheIndividusRequest) {
-        return dataProvider.findAllIndividuals(rechercheIndividusRequest);
-    }
-
-    /**
-     * done
      * Rechercher dans les rendez-vous des travailleurs sociaux.
      *
      * @param userId         Id de l'utilisateur portail à l'origine de l'appel
@@ -207,6 +194,19 @@ public class RestServerController implements RestSocialExtDataProvider {
             @RequestParam(QUERYPARAM_DATEDEBUT) String startDate,
             @RequestParam(QUERYPARAM_DATEFIN) String endDate) {
         return dataProvider.getSocialWorkerRendezVous(userId, socialWorkerId, startDate, endDate);
+    }
+
+    /**
+     * done
+     * Rechercher tous les individus correspondant aux critères reçus
+     *
+     * @param rechercheIndividusRequest Critères pour filtrer les individus
+     * @return Représentation des individus trouvés
+     */
+    @PostMapping(RESTURL_SEARCH_INDIVIDUALS)
+    @ApiOperation("Rechercher des individus sur critères simples (pas de recherche avancée). [FAIT]")
+    public PaginationIndividus searchIndividuals(@RequestBody RechercheIndividusRequest rechercheIndividusRequest) {
+        return dataProvider.findAllIndividuals(rechercheIndividusRequest);
     }
 
     //-----------------A FAIRE------------------------------------------
@@ -235,9 +235,18 @@ public class RestServerController implements RestSocialExtDataProvider {
      * @param index  Id du bénéficiaire recherché.
      * @return Un objet socialExtBeneficiary contenant le détail du bénéficiaire.
      */
+//    @GetMapping(RESTURL_GET_FILE_RECORD)
+//    @ApiOperation("Retourne le dossier d'un bénéficiaire.")
+//    public SocialExtBeneficiary getFileRecord(
+//            @RequestHeader(HEADERNAME_USERID) String userId,
+//            @PathVariable(PATHPARAM_BENEFICIARYID) String index)
+//            throws SocialExtException {
+//        return dataProvider.getFileRecord(userId, index);
+//    }
+
     @GetMapping(RESTURL_GET_FILE_RECORD)
-    @ApiOperation("Retourne le dossier d'un bénéficiaire.")
-    public SocialExtBeneficiary getFileRecord(
+    @ApiOperation("Retourner le dossier d'un bénéficiaire.")
+    public DossierBeneficiaire getFileRecord(
             @RequestHeader(HEADERNAME_USERID) String userId,
             @PathVariable(PATHPARAM_BENEFICIARYID) String index)
             throws SocialExtException {
@@ -459,17 +468,17 @@ public class RestServerController implements RestSocialExtDataProvider {
         return dataProvider.getNews(userId);
     }
 
-    /**
-     * Obtenir un token de sécurité pour les redirections (débranchement).
-     *
-     * @param updto Wrapper autour d'un SocialExtUSer (habilitation) et une map de paramètres.
-     * @return Wrapper de String, token de redirection.
-     */
-    @PostMapping(RESTURL_GET_REDIRECTION_TOKEN)
-    @ApiOperation("Obtenir un token de sécurité pour les redirections (débranchement).")
-    public StringWrapperDTO getRedirectionToken(UserAndParamsDTO updto) {
-        return new StringWrapperDTO(dataProvider.getRedirectionToken(updto));
-    }
+//    /**
+//     * Obtenir un token de sécurité pour les redirections (débranchement).
+//     *
+//     * @param updto Wrapper autour d'un SocialExtUSer (habilitation) et une map de paramètres.
+//     * @return Wrapper de String, token de redirection.
+//     */
+//    @PostMapping(RESTURL_GET_REDIRECTION_TOKEN)
+//    @ApiOperation("Obtenir un token de sécurité pour les redirections (débranchement).")
+//    public StringWrapperDTO getRedirectionToken(UserAndParamsDTO updto) {
+//        return new StringWrapperDTO(dataProvider.getRedirectionToken(updto));
+//    }
 
     /**done
      * Récupérer tous les rendez-vous d'individu.

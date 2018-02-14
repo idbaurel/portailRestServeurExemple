@@ -103,9 +103,9 @@ public interface DataProvider {
      *
      * @param userId Id de l'utilisateur du portail à l'origine de cet appel
      * @param index  Id du bénéficiaire recherché.
-     * @return Un objet socialExtBeneficiary contenant le détail du bénéficiaire.
+     * @return Représentation du dossier bénéficiaire
      */
-    SocialExtBeneficiary getFileRecord(String userId, String index);
+    DossierBeneficiaire getFileRecord(String userId, String index);
 
     /**
      * Récupère la synthèse d'un individu.
@@ -278,13 +278,13 @@ public interface DataProvider {
      */
     String createSocialWorkerRendezVous(SocialExtRendezVous rendezVous);
 
-    /**
-     * Récupérer un token de redirection.
-     *
-     * @param updto Wrapper autour d'un SocialExtUSer (habilitation) et une map de paramètres.
-     * @return Token de redirection.
-     */
-    String getRedirectionToken(UserAndParamsDTO updto);
+//    /**
+//     * Récupérer un token de redirection.
+//     *
+//     * @param updto Wrapper autour d'un SocialExtUSer (habilitation) et une map de paramètres.
+//     * @return Token de redirection.
+//     */
+//    String getRedirectionToken(UserAndParamsDTO updto);
 
     /**
      * Récupérer un intervenant social à partir de son id.

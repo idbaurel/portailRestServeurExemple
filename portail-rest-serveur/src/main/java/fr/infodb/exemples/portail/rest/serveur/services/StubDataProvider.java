@@ -14,7 +14,6 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service("StubDataProvider")
 public class StubDataProvider implements DataProvider {
@@ -22,7 +21,6 @@ public class StubDataProvider implements DataProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(StubDataProvider.class);
 
     private static final DateTimeFormatter FRENCH_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
 
     /**
      * Evénement SIRH
@@ -174,8 +172,43 @@ public class StubDataProvider implements DataProvider {
      * @return Un objet socialExtBeneficiary contenant le détail du bénéficiaire.
      */
     @Override
-    public SocialExtBeneficiary getFileRecord(String userId, String index) {
-        return getSocialExtBeneficiary();
+    public DossierBeneficiaire getFileRecord(String userId, String index) {
+        return getDossierBeneficiaire();
+    }
+
+    private DossierBeneficiaire getDossierBeneficiaire() {
+        DossierBeneficiaire res = new DossierBeneficiaire();
+        res.setIndividu(getIndividu());
+        res.getAutresIndividus().addAll(getAutresIndividus());
+        return "abc-123".equals(res.getIndividu().getId()) ? res : null;
+    }
+
+    private List<Individu> getAutresIndividus() {
+        List<Individu> res = new ArrayList<>();
+        final Individu individu1 = getIndividu();
+        individu1.setId("abc-456");
+        individu1.setDateNaissance(localDateToDate(LocalDate.of(1975, Month.DECEMBER, 22)));
+        individu1.setNom("DUPONTEL");
+        individu1.setPrenom("Frédéric");
+        individu1.setNomNaissance(null);
+        individu1.setGenre(IndividuGenre.HOMME);
+        individu1.setEmail("frederic.dupontel@mail.fr");
+        individu1.setMobile("0698765432");
+        res.add(individu1);
+
+        final Individu individu2 = getIndividu();
+        individu1.setId("abc-789");
+        individu2.setDateNaissance(localDateToDate(LocalDate.of(2010, Month.SEPTEMBER, 3)));
+        individu2.setNom("DUPONTEL");
+        individu2.setPrenom("Eléonore");
+        individu2.setNomNaissance(null);
+        individu2.setGenre(IndividuGenre.FEMME);
+        individu2.setEmail("frederic.dupontel@mail.fr");
+        individu2.setMobile(null);
+        individu2.setMajeur(false);
+        res.add(individu2);
+
+        return res;
     }
 
     /**
@@ -208,18 +241,17 @@ public class StubDataProvider implements DataProvider {
         return results;
     }
 
-
     //    public UserSearchResultDTO findAllUser(int pageSize, int pageNumber) {
-//        UserSearchResultDTO results = new UserSearchResultDTO();
-//        results.setPageNumber(pageNumber);
-//        results.setPageSize(pageSize);
-//        results.setTotalNumber(1);
-//
-//        List<SocialExtUser> users = new ArrayList<>();
-//        users.add(findSocialExtUser("123"));
-//        results.setUsers(users);
-//        return results;
-//    }
+    //        UserSearchResultDTO results = new UserSearchResultDTO();
+    //        results.setPageNumber(pageNumber);
+    //        results.setPageSize(pageSize);
+    //        results.setTotalNumber(1);
+    //
+    //        List<SocialExtUser> users = new ArrayList<>();
+    //        users.add(findSocialExtUser("123"));
+    //        results.setUsers(users);
+    //        return results;
+    //    }
 
     /**
      * Récupérer tous les travailleurs sociaux.
@@ -231,27 +263,27 @@ public class StubDataProvider implements DataProvider {
      * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
      */
     @Override
-//    public SocialWorkerSearchResultDTO findAllSocialWorkers(int pageSize, int pageNumber) {
-//
-//        List<SocialExtWorker> workers = new ArrayList<>();
-//
-//        workers.add(findSocialWorker("123"));
-//
-//        SocialWorkerSearchResultDTO workersDTO = new SocialWorkerSearchResultDTO();
-//        workersDTO.setPageNumber(pageNumber);
-//        workersDTO.setPageSize(pageSize);
-//        workersDTO.setTotalNumber(workers.size());
-//
-//        for (int i = 0; i < pageSize; i++) {
-//            // Condition d'arrêt : nb total d'enregistrement atteint
-//            if ((pageNumber - 1) * pageSize + i >= workersDTO.getTotalNumber()) {
-//                break;
-//            }
-//            workersDTO.getWorkers().add(workers.get((pageNumber * pageSize + i) % workers.size()));
-//        }
-//
-//        return workersDTO;
-//    }
+    //    public SocialWorkerSearchResultDTO findAllSocialWorkers(int pageSize, int pageNumber) {
+    //
+    //        List<SocialExtWorker> workers = new ArrayList<>();
+    //
+    //        workers.add(findSocialWorker("123"));
+    //
+    //        SocialWorkerSearchResultDTO workersDTO = new SocialWorkerSearchResultDTO();
+    //        workersDTO.setPageNumber(pageNumber);
+    //        workersDTO.setPageSize(pageSize);
+    //        workersDTO.setTotalNumber(workers.size());
+    //
+    //        for (int i = 0; i < pageSize; i++) {
+    //            // Condition d'arrêt : nb total d'enregistrement atteint
+    //            if ((pageNumber - 1) * pageSize + i >= workersDTO.getTotalNumber()) {
+    //                break;
+    //            }
+    //            workersDTO.getWorkers().add(workers.get((pageNumber * pageSize + i) % workers.size()));
+    //        }
+    //
+    //        return workersDTO;
+    //    }
     public PaginationIntervenantsSociaux findAllSocialWorkers(int pageSize, int pageNumber) {
         PaginationIntervenantsSociaux pagination = new PaginationIntervenantsSociaux();
 
@@ -290,29 +322,27 @@ public class StubDataProvider implements DataProvider {
      * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
      * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
      */
-//    @Override
-//    public BeneficiarySearchResultDTO findAllIndividuals(int pageSize, int pageNumber) {
-//        List<SocialExtBeneficiary> beneficiaries = new ArrayList<>();
-//        beneficiaries.add(findBeneficiary("123"));
-//
-//        BeneficiarySearchResultDTO bsrdto = new BeneficiarySearchResultDTO();
-//        bsrdto.setTotalNumber(beneficiaries.size());
-//
-//        for (int i = 0; i < pageSize; i++) {
-//            // Condition d'arrêt : nb total d'enregistrement atteint
-//            if ((pageNumber - 1) * pageSize + i >= bsrdto.getTotalNumber()) {
-//                break;
-//            }
-//            bsrdto.getBeneficiaries().add(beneficiaries.get((pageNumber * pageSize + i) % beneficiaries.size()));
-//        }
-//
-//        bsrdto.setPageNumber(pageNumber);
-//        bsrdto.setPageSize(pageSize);
-//
-//        return bsrdto;
-//    }
-
-
+    //    @Override
+    //    public BeneficiarySearchResultDTO findAllIndividuals(int pageSize, int pageNumber) {
+    //        List<SocialExtBeneficiary> beneficiaries = new ArrayList<>();
+    //        beneficiaries.add(findBeneficiary("123"));
+    //
+    //        BeneficiarySearchResultDTO bsrdto = new BeneficiarySearchResultDTO();
+    //        bsrdto.setTotalNumber(beneficiaries.size());
+    //
+    //        for (int i = 0; i < pageSize; i++) {
+    //            // Condition d'arrêt : nb total d'enregistrement atteint
+    //            if ((pageNumber - 1) * pageSize + i >= bsrdto.getTotalNumber()) {
+    //                break;
+    //            }
+    //            bsrdto.getBeneficiaries().add(beneficiaries.get((pageNumber * pageSize + i) % beneficiaries.size()));
+    //        }
+    //
+    //        bsrdto.setPageNumber(pageNumber);
+    //        bsrdto.setPageSize(pageSize);
+    //
+    //        return bsrdto;
+    //    }
     @Override
     public PaginationIndividus findAllIndividuals(int pageSize, int pageNumber) {
         PaginationIndividus paginationIndividus = new PaginationIndividus();
@@ -321,7 +351,6 @@ public class StubDataProvider implements DataProvider {
         paginationIndividus.setPageNumber(pageNumber);
         paginationIndividus.setTotalNumber(paginationIndividus.getIndividus().size());
         return paginationIndividus;
-
     }
 
     private List<Individu> getIndividus() {
@@ -384,13 +413,13 @@ public class StubDataProvider implements DataProvider {
         res.setPrenom("Amélie");
         res.setSecteur("PAU");
 
-//        res.setSectorList(new ArrayList<String>() {{
-//            add("PAU");
-//            add("secteur 1");
-//            add("secteur 2");
-//        }});
-//        res.setSocialWorkerId("sw-123456");
-//        res.setLinkedWithSocialWorker(true);
+        //        res.setSectorList(new ArrayList<String>() {{
+        //            add("PAU");
+        //            add("secteur 1");
+        //            add("secteur 2");
+        //        }});
+        //        res.setSocialWorkerId("sw-123456");
+        //        res.setLinkedWithSocialWorker(true);
 
         return res;
     }
@@ -413,9 +442,9 @@ public class StubDataProvider implements DataProvider {
      */
     @Override
     public SocialModules getAvailableSocialModules() {
-//        return Arrays.stream(SocialModule.values())
-//                .filter(v -> v.getName().startsWith("F"))
-//                .collect(Collectors.toSet());
+        //        return Arrays.stream(SocialModule.values())
+        //                .filter(v -> v.getName().startsWith("F"))
+        //                .collect(Collectors.toSet());
 
         SocialModules res = new SocialModules();
         res.getModules().add(SocialModule.ASE);
@@ -423,7 +452,6 @@ public class StubDataProvider implements DataProvider {
         res.getModules().add(SocialModule.AST);
         res.getModules().add(SocialModule.FSL);
         return res;
-
     }
 
     /**
@@ -556,15 +584,15 @@ public class StubDataProvider implements DataProvider {
      *
      * @return Liste des messages
      */
-//    @Override
-//    public List<LoginHomepageMessage> getAllLoginHomepageMessages() {
-//        List<LoginHomepageMessage> res = new ArrayList<>();
-//        LoginHomepageMessage loginHomepageMessage = new LoginHomepageMessage();
-//        loginHomepageMessage.setMessage("Message du jour sur la home page");
-//        loginHomepageMessage.setType(TypeLoginHomepageMessageEnum.INFO);
-//        res.add(loginHomepageMessage);
-//        return res;
-//    }
+    //    @Override
+    //    public List<LoginHomepageMessage> getAllLoginHomepageMessages() {
+    //        List<LoginHomepageMessage> res = new ArrayList<>();
+    //        LoginHomepageMessage loginHomepageMessage = new LoginHomepageMessage();
+    //        loginHomepageMessage.setMessage("Message du jour sur la home page");
+    //        loginHomepageMessage.setType(TypeLoginHomepageMessageEnum.INFO);
+    //        res.add(loginHomepageMessage);
+    //        return res;
+    //    }
     @Override
     public LoginHomepageMessages getAllLoginHomepageMessages() {
         LoginHomepageMessages res = new LoginHomepageMessages();
@@ -588,7 +616,6 @@ public class StubDataProvider implements DataProvider {
     }
 
     /**
-     *
      * Rechercher dans les rendez-vous des travailleurs sociaux.
      *
      * @param userId         Id de l'utilisateur portail à l'origine de l'appel
@@ -601,20 +628,20 @@ public class StubDataProvider implements DataProvider {
     @Override
     public ListeRendezVous getSocialWorkerRendezVous(String userId, String socialWorkerId, String startDate, String endDate) {
 
-//        //exemple de conversion de java.lang.String vers java.util.Date
-//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-//        Date start;
-//        Date end;
-//        try {
-//            start = df.parse(startDate);
-//            end = df.parse(endDate);
-//        } catch (ParseException e) {
-//            throw new SocialExtException("Erreur de parsing de date", e);
-//        }
+        //        //exemple de conversion de java.lang.String vers java.util.Date
+        //        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        //        Date start;
+        //        Date end;
+        //        try {
+        //            start = df.parse(startDate);
+        //            end = df.parse(endDate);
+        //        } catch (ParseException e) {
+        //            throw new SocialExtException("Erreur de parsing de date", e);
+        //        }
 
-//        //exemple de conversion de java.lang.String vers java.time.LocalDateTime
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-//        LocalDateTime dateTime = LocalDateTime.parse(startDate, formatter);
+        //        //exemple de conversion de java.lang.String vers java.time.LocalDateTime
+        //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        //        LocalDateTime dateTime = LocalDateTime.parse(startDate, formatter);
 
         return getListeRendezVous(socialWorkerId);
     }
@@ -627,8 +654,8 @@ public class StubDataProvider implements DataProvider {
 
     private RendezVous getRendezVous(String socialWorkerId) {
         LocalDate now = LocalDate.now();
-        LocalDateTime debut = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 14,0);
-        LocalDateTime fin = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 15,30);
+        LocalDateTime debut = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 14, 0);
+        LocalDateTime fin = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 15, 30);
 
         RendezVous rdv = new RendezVous();
         rdv.setAdresse(getAdresse());
@@ -693,16 +720,16 @@ public class StubDataProvider implements DataProvider {
         return typeAndIdRendezvous.getId() + ":" + typeAndIdRendezvous.getType().name();
     }
 
-    /**
-     * Récupérer un token de redirection.
-     *
-     * @param updto Wrapper autour d'un SocialExtUSer (habilitation) et une map de paramètres.
-     * @return Token de redirection.
-     */
-    @Override
-    public String getRedirectionToken(UserAndParamsDTO updto) {
-        return "stub_token";
-    }
+//    /**
+//     * Récupérer un token de redirection.
+//     *
+//     * @param updto Wrapper autour d'un SocialExtUSer (habilitation) et une map de paramètres.
+//     * @return Token de redirection.
+//     */
+//    @Override
+//    public String getRedirectionToken(UserAndParamsDTO updto) {
+//        return "stub_token";
+//    }
 
     /**
      * Récupérer un intervenant social à partir de son id.
@@ -734,19 +761,19 @@ public class StubDataProvider implements DataProvider {
         return rDto;
     }
 
-//    /**
-//     * "Rechercher dans les individus.
-//     *
-//     * @param searchCriteria Set de critères de recherche. Chaque critère contient un type, une classe et une valeur.
-//     * @return Une liste d'individus correspondant aux critères.
-//     * @see SearchCriterionDTO
-//     */
-//    @Override
-//    public List<SocialExtBeneficiary> findAllIndividuals(Set<SearchCriterionDTO> searchCriteria) {
-//        List<SocialExtBeneficiary> res = new ArrayList<>();
-//        res.add(findBeneficiary("123"));
-//        return res;
-//    }
+    //    /**
+    //     * "Rechercher dans les individus.
+    //     *
+    //     * @param searchCriteria Set de critères de recherche. Chaque critère contient un type, une classe et une valeur.
+    //     * @return Une liste d'individus correspondant aux critères.
+    //     * @see SearchCriterionDTO
+    //     */
+    //    @Override
+    //    public List<SocialExtBeneficiary> findAllIndividuals(Set<SearchCriterionDTO> searchCriteria) {
+    //        List<SocialExtBeneficiary> res = new ArrayList<>();
+    //        res.add(findBeneficiary("123"));
+    //        return res;
+    //    }
 
     /**
      * Rechercher tous les individus correspondant aux critères reçus
@@ -758,14 +785,14 @@ public class StubDataProvider implements DataProvider {
     public PaginationIndividus findAllIndividuals(RechercheIndividusRequest rechercheIndividusRequest) {
         final PaginationIndividus res = new PaginationIndividus();
         final Individu individu = getIndividu();
-//        if (rechercheIndividusRequest.getNom() != null && rechercheIndividusRequest.isRechercheSurNomDeNaissance()) {
-//            individu.setNomNaissance(rechercheIndividusRequest.getNom());
-//        } else if (rechercheIndividusRequest.getNom() != null) {
-//            individu.setNom(rechercheIndividusRequest.getNom());
-//        }
-//        if (rechercheIndividusRequest.getDateNaissance() != null) {
-//            individu.setDateNaissance(rechercheIndividusRequest.getDateNaissance());
-//        }
+        //        if (rechercheIndividusRequest.getNom() != null && rechercheIndividusRequest.isRechercheSurNomDeNaissance()) {
+        //            individu.setNomNaissance(rechercheIndividusRequest.getNom());
+        //        } else if (rechercheIndividusRequest.getNom() != null) {
+        //            individu.setNom(rechercheIndividusRequest.getNom());
+        //        }
+        //        if (rechercheIndividusRequest.getDateNaissance() != null) {
+        //            individu.setDateNaissance(rechercheIndividusRequest.getDateNaissance());
+        //        }
 
         res.getIndividus().add(individu);
         res.setPageNumber(1);
