@@ -299,6 +299,20 @@ public class RestServerController implements RestSocialExtDataProvider {
         return new StringWrapperDTO(dataProvider.getLink(SolisLinkType.valueOf(linkType), token, null));
     }
 
+//    /**
+//     * Récupérer les aides liées à un bénéficiaire.
+//     *
+//     * @param userId        Id du SocialExtUser à l'origine de l'appel
+//     * @param beneficiaryId Id du bénéficiaire.
+//     * @return Un objet SocialExtBeneficiary contenant le détail des aides.
+//     */
+//    @GetMapping(RESTURL_GET_SOCIAL_FILE_MEASURES)
+//    @ApiOperation("Récupérer les aides liées à un bénéficiaire.")
+//    public SocialExtBeneficiary getSocialFileMeasures(
+//            @RequestHeader(HEADERNAME_USERID) String userId,
+//            @PathVariable(PATHPARAM_BENEFICIARYID) String beneficiaryId) {
+//        return dataProvider.getSocialFileMeasures(userId, beneficiaryId);
+//    }
     /**
      * Récupérer les aides liées à un bénéficiaire.
      *
@@ -308,7 +322,7 @@ public class RestServerController implements RestSocialExtDataProvider {
      */
     @GetMapping(RESTURL_GET_SOCIAL_FILE_MEASURES)
     @ApiOperation("Récupérer les aides liées à un bénéficiaire.")
-    public SocialExtBeneficiary getSocialFileMeasures(
+    public MesuresSociales getSocialFileMeasures(
             @RequestHeader(HEADERNAME_USERID) String userId,
             @PathVariable(PATHPARAM_BENEFICIARYID) String beneficiaryId) {
         return dataProvider.getSocialFileMeasures(userId, beneficiaryId);

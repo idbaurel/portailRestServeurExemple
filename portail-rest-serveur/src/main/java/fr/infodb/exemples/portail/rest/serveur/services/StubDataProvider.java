@@ -72,11 +72,51 @@ public class StubDataProvider implements DataProvider {
      * @return Un objet SocialExtBeneficiary contenant le détail des aides.
      */
     @Override
-    public SocialExtBeneficiary getSocialFileMeasures(String userId, String index) {
-        return getSocialExtBeneficiary();
+    public MesuresSociales getSocialFileMeasures(String userId, String index) {
+        return stubMesuresSociales(index);
     }
 
-    private SocialExtBeneficiary getSocialExtBeneficiary() {
+    private MesuresSociales stubMesuresSociales(String index) {
+        MesuresSociales res = new MesuresSociales();
+
+        GroupeMesuresSociales groupe1 = new GroupeMesuresSociales();
+        //l'id du groupe provient du paramétrage stocké en BDD portail: LIFE_LINE_LABEL.LIFE_LINE_ID
+        groupe1.setId("ASG");
+        groupe1.setModuleMetier(SocialModule.ASG);
+//        groupe1.setLibelle("groupe 1");
+//        groupe1.setLibelleFixe("groupe1 libelle fixe" + index);
+//        groupe1.setLibelleVariable("lib variable");
+//        groupe1.setDateDebut(localDateToDate(LocalDate.of(2016, Month.APRIL,23)));
+
+
+        res.getGroupesMesuresSociales().add(groupe1);
+
+
+
+        MesureSociale mesure1 = new MesureSociale();
+        mesure1.setIndex("ms-001");
+        mesure1.setDateDebut(localDateToDate(LocalDate.of(2016, Month.APRIL,23)));
+        mesure1.setDateFin(localDateToDate(LocalDate.of(2017, Month.APRIL,22)));
+        mesure1.setLibelle("Mesure de soutien");
+        mesure1.setLibelleDateDebut(null);
+        mesure1.setLibelleDateFin(null);
+        mesure1.setStatut(SocialExtMeasureState.UNKNOWN);
+        groupe1.getMesuresSociales().add(mesure1);
+
+        MesureSociale mesure2 = new MesureSociale();
+        mesure2.setIndex("ms-002");
+        mesure2.setDateDebut(localDateToDate(LocalDate.of(2017, Month.APRIL,23)));
+        mesure2.setDateFin(null);
+        mesure2.setLibelle("Mesure d'accompagnement");
+        mesure2.setLibelleDateDebut(null);
+        mesure2.setLibelleDateFin(null);
+        mesure2.setStatut(SocialExtMeasureState.IN_PROGRESS);
+        groupe1.getMesuresSociales().add(mesure2);
+
+        return res;
+    }
+
+    private SocialExtBeneficiary stubSocialExtBeneficiary() {
         SocialExtBeneficiary res = new SocialExtBeneficiary();
         PortalSocialExtIndividual portalExtIndividual = new PortalSocialExtIndividual();
         portalExtIndividual.setIdExt("abc-123");
@@ -173,19 +213,19 @@ public class StubDataProvider implements DataProvider {
      */
     @Override
     public DossierBeneficiaire getFileRecord(String userId, String index) {
-        return getDossierBeneficiaire();
+        return stubDossierBeneficiaire();
     }
 
-    private DossierBeneficiaire getDossierBeneficiaire() {
+    private DossierBeneficiaire stubDossierBeneficiaire() {
         DossierBeneficiaire res = new DossierBeneficiaire();
-        res.setIndividu(getIndividu());
-        res.getAutresIndividus().addAll(getAutresIndividus());
+        res.setIndividu(stubIndividu());
+        res.getAutresIndividus().addAll(stubAutresIndividus());
         return "abc-123".equals(res.getIndividu().getId()) ? res : null;
     }
 
-    private List<Individu> getAutresIndividus() {
+    private List<Individu> stubAutresIndividus() {
         List<Individu> res = new ArrayList<>();
-        final Individu individu1 = getIndividu();
+        final Individu individu1 = stubIndividu();
         individu1.setId("abc-456");
         individu1.setDateNaissance(localDateToDate(LocalDate.of(1975, Month.DECEMBER, 22)));
         individu1.setNom("DUPONTEL");
@@ -193,19 +233,20 @@ public class StubDataProvider implements DataProvider {
         individu1.setNomNaissance(null);
         individu1.setGenre(IndividuGenre.HOMME);
         individu1.setEmail("frederic.dupontel@mail.fr");
+        individu1.setMajeur(true);
         individu1.setMobile("0698765432");
         res.add(individu1);
 
-        final Individu individu2 = getIndividu();
-        individu1.setId("abc-789");
+        final Individu individu2 = stubIndividu();
+        individu2.setId("abc-789");
         individu2.setDateNaissance(localDateToDate(LocalDate.of(2010, Month.SEPTEMBER, 3)));
         individu2.setNom("DUPONTEL");
         individu2.setPrenom("Eléonore");
         individu2.setNomNaissance(null);
         individu2.setGenre(IndividuGenre.FEMME);
-        individu2.setEmail("frederic.dupontel@mail.fr");
-        individu2.setMobile(null);
+        individu2.setEmail(null);
         individu2.setMajeur(false);
+        individu2.setMobile(null);
         res.add(individu2);
 
         return res;
@@ -220,7 +261,7 @@ public class StubDataProvider implements DataProvider {
      */
     @Override
     public SocialExtBeneficiary getIndividualSynthesis(String userId, String index) {
-        return getSocialExtBeneficiary();
+        return stubSocialExtBeneficiary();
     }
 
     /**
@@ -291,12 +332,12 @@ public class StubDataProvider implements DataProvider {
         pagination.setPageNumber(pageNumber);
         pagination.setTotalNumber(1);
 
-        pagination.getIntervenantsSociaux().add(getIntervenantSocial("is-123456"));
+        pagination.getIntervenantsSociaux().add(stubIntervenantSocial("is-123456"));
 
         return pagination;
     }
 
-    private IntervenantSocial getIntervenantSocial(String id) {
+    private IntervenantSocial stubIntervenantSocial(String id) {
         IntervenantSocial res = new IntervenantSocial();
         res.setId(id);
 
@@ -346,20 +387,20 @@ public class StubDataProvider implements DataProvider {
     @Override
     public PaginationIndividus findAllIndividuals(int pageSize, int pageNumber) {
         PaginationIndividus paginationIndividus = new PaginationIndividus();
-        paginationIndividus.getIndividus().addAll(getIndividus());
+        paginationIndividus.getIndividus().addAll(stubIndividus());
         paginationIndividus.setPageSize(pageSize);
         paginationIndividus.setPageNumber(pageNumber);
         paginationIndividus.setTotalNumber(paginationIndividus.getIndividus().size());
         return paginationIndividus;
     }
 
-    private List<Individu> getIndividus() {
+    private List<Individu> stubIndividus() {
         List<Individu> individus = new ArrayList<>(1);
-        individus.add(getIndividu());
+        individus.add(stubIndividu());
         return individus;
     }
 
-    private Individu getIndividu() {
+    private Individu stubIndividu() {
         Individu individu = new Individu();
 
         individu.setId("abc-123");
@@ -377,7 +418,7 @@ public class StubDataProvider implements DataProvider {
         individu.setSecteurSuivi("Bayonne");
         individu.setTel("0501020304");
         individu.setTelTravail("0599887766");
-        individu.setAdresse(getAdresse());
+        individu.setAdresse(stubAdresse());
         return individu;
     }
 
@@ -432,7 +473,7 @@ public class StubDataProvider implements DataProvider {
      */
     @Override
     public SocialExtBeneficiary findBeneficiary(String externalId) {
-        return getSocialExtBeneficiary();
+        return stubSocialExtBeneficiary();
     }
 
     /**
@@ -612,7 +653,7 @@ public class StubDataProvider implements DataProvider {
      */
     @Override
     public ListeRendezVous getIndividualRendezVous(String externalId) {
-        return getListeRendezVous("is-123456");
+        return stubListeRendezVous("is-123456");
     }
 
     /**
@@ -643,22 +684,22 @@ public class StubDataProvider implements DataProvider {
         //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         //        LocalDateTime dateTime = LocalDateTime.parse(startDate, formatter);
 
-        return getListeRendezVous(socialWorkerId);
+        return stubListeRendezVous(socialWorkerId);
     }
 
-    private ListeRendezVous getListeRendezVous(String socialWorkerId) {
+    private ListeRendezVous stubListeRendezVous(String socialWorkerId) {
         ListeRendezVous res = new ListeRendezVous();
-        res.getRendezVous().add(getRendezVous(socialWorkerId));
+        res.getRendezVous().add(stubRendezVous(socialWorkerId));
         return res;
     }
 
-    private RendezVous getRendezVous(String socialWorkerId) {
+    private RendezVous stubRendezVous(String socialWorkerId) {
         LocalDate now = LocalDate.now();
         LocalDateTime debut = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 14, 0);
         LocalDateTime fin = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 15, 30);
 
         RendezVous rdv = new RendezVous();
-        rdv.setAdresse(getAdresse());
+        rdv.setAdresse(stubAdresse());
         rdv.setCodeTypeRdv(1);
         rdv.setCommentaire("pas de commentaire");
         rdv.setDateDebut(convertLocalDateTimeToDateViaInstant(debut));
@@ -678,8 +719,8 @@ public class StubDataProvider implements DataProvider {
         rdv.setStatut(RendezVousStatutsEnum.PLANNED);
         rdv.setType(SocialExtRendezVousType.VAD);
 
-        rdv.getIndividus().add(getIndividu());
-        rdv.getIntervenantsSociaux().add(getIntervenantSocial(socialWorkerId));
+        rdv.getIndividus().add(stubIndividu());
+        rdv.getIntervenantsSociaux().add(stubIntervenantSocial(socialWorkerId));
         return rdv;
     }
 
@@ -689,7 +730,7 @@ public class StubDataProvider implements DataProvider {
                         .toInstant());
     }
 
-    private Adresse getAdresse() {
+    private Adresse stubAdresse() {
         Adresse adresse = new Adresse();
         adresse.setCirconscription("circo 1");
         adresse.setCodeCommune("1");
@@ -738,7 +779,7 @@ public class StubDataProvider implements DataProvider {
      */
     @Override
     public IntervenantSocial findSocialWorker(String socialWorkerId) {
-        return getIntervenantSocial(socialWorkerId);
+        return stubIntervenantSocial(socialWorkerId);
     }
 
     /**
@@ -784,7 +825,7 @@ public class StubDataProvider implements DataProvider {
     @Override
     public PaginationIndividus findAllIndividuals(RechercheIndividusRequest rechercheIndividusRequest) {
         final PaginationIndividus res = new PaginationIndividus();
-        final Individu individu = getIndividu();
+        final Individu individu = stubIndividu();
         //        if (rechercheIndividusRequest.getNom() != null && rechercheIndividusRequest.isRechercheSurNomDeNaissance()) {
         //            individu.setNomNaissance(rechercheIndividusRequest.getNom());
         //        } else if (rechercheIndividusRequest.getNom() != null) {
@@ -816,7 +857,7 @@ public class StubDataProvider implements DataProvider {
      *
      * @return Représentation de l'environnement d'origine des données
      */
-    private Environment getStubEnvironment() {
+    private Environment stubEnvironment() {
         return new Environment("application64", "Application 64", "Application de gestion des aides sociales du CD64");
     }
 }

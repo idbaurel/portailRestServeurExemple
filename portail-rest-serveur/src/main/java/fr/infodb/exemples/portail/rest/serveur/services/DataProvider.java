@@ -46,9 +46,9 @@ public interface DataProvider {
      *
      * @param userId Id de l'utilisateur à l'origine de l'appel
      * @param index  Id du bénéficiaire
-     * @return Un objet SocialExtBeneficiary contenant le détail des aides.
+     * @return Représentation des mesures sociales du bénéficiaire.
      */
-    SocialExtBeneficiary getSocialFileMeasures(String userId, String index);
+    MesuresSociales getSocialFileMeasures(String userId, String index);
 
     /**
      * Créer un individu.

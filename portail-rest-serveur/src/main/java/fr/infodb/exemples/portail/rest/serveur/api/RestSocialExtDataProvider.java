@@ -80,9 +80,9 @@ public interface RestSocialExtDataProvider {
      *
      * @param userId id de l'utilisateur à l'origine de l'appel (pour habilitation ?)
      * @param index  id du bénéficiaire
-     * @return un objet SocialExtBeneficiary contenant les aides du bénéficiaire.
+     * @return Représentation des mesures sociales du bénéficiaire.
      */
-    SocialExtBeneficiary getSocialFileMeasures(String userId, String index);
+    MesuresSociales getSocialFileMeasures(String userId, String index);
 
     /**
      * Retourne les profils d'un utilisateur.
