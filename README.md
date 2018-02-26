@@ -10,7 +10,7 @@ Ce projet utilise:
  
 **Les contrats des web services sont en cours de modification**
 
-url ws (http://<host>:<port>/portail/spi/ + …) | verbe http | nom méthode | thème | état | à implémenter par le CD64 | description
+url ws (http://\<host\>:\<port\>/portail/spi/ + …) | verbe http | nom méthode | thème | état | à implémenter par le CD64 | description
 -----|-----|-----|-----|-----|-----|-----|
 beneficiary/{beneficiaryId} | GET | findBeneficiary | données |  |  | Récupérer un individu à partir de son id
 beneficiary/{beneficiaryId}/fileRecord | GET | getFileRecord | données |  |  | Retourner le dossier d’un individu
