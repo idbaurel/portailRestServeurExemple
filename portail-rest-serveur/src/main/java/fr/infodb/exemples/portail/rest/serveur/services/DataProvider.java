@@ -107,14 +107,14 @@ public interface DataProvider {
      */
     DossierBeneficiaire getFileRecord(String userId, String index);
 
-    /**
-     * Récupère la synthèse d'un individu.
-     *
-     * @param userId Id de l'utilisateur du portail à l'origine de cet appel
-     * @param index  Id du bénéficiaire recherché
-     * @return Un SocialExtBeneficiary, contenant le détail du bénéficiaire.
-     */
-    SocialExtBeneficiary getIndividualSynthesis(String userId, String index);
+//    /**
+//     * Récupère la synthèse d'un individu.
+//     *
+//     * @param userId Id de l'utilisateur du portail à l'origine de cet appel
+//     * @param index  Id du bénéficiaire recherché
+//     * @return Un SocialExtBeneficiary, contenant le détail du bénéficiaire.
+//     */
+//    SocialExtBeneficiary getIndividualSynthesis(String userId, String index);
 
     /**
      * Récupérer tous les utilisateurs. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
@@ -171,12 +171,12 @@ public interface DataProvider {
     SocialModules getAvailableSocialModules();
 
     /**
-     * Récupérer les taĉhes à accomplir par un utilisateur
+     * Récupérer les tâches à accomplir par un travailleur social
      *
-     * @param userId Id de l'utilisateur concerné.
-     * @return Représentation des taĉhes à accomplir par un utilisateur
+     * @param socialWorkerId Id du travailleur social concerné.
+     * @return Représentation des tâches à accomplir par un travailleur social
      */
-    TachesUtilisateur getNews(String userId);
+    TachesUtilisateur getNews(String socialWorkerId);
 
     /**
      * Récupérer les liens de débranchement vers les écrans de Solis.

@@ -83,11 +83,6 @@ public class StubDataProvider implements DataProvider {
         //l'id du groupe provient du paramétrage stocké en BDD portail: LIFE_LINE_LABEL.LIFE_LINE_ID
         groupe1.setId("ASG");
         groupe1.setModuleMetier(SocialModule.ASG);
-//        groupe1.setLibelle("groupe 1");
-//        groupe1.setLibelleFixe("groupe1 libelle fixe" + index);
-//        groupe1.setLibelleVariable("lib variable");
-//        groupe1.setDateDebut(localDateToDate(LocalDate.of(2016, Month.APRIL,23)));
-
 
         res.getGroupesMesuresSociales().add(groupe1);
 
@@ -220,7 +215,9 @@ public class StubDataProvider implements DataProvider {
         DossierBeneficiaire res = new DossierBeneficiaire();
         res.setIndividu(stubIndividu());
         res.getAutresIndividus().addAll(stubAutresIndividus());
-        return "abc-123".equals(res.getIndividu().getId()) ? res : null;
+        res.getIntervenantSociaux().add(stubIntervenantSocial("sw-123456"));
+//        return "abc-123".equals(res.getIndividu().getId()) ? res : null;
+        return res;
     }
 
     private List<Individu> stubAutresIndividus() {
@@ -252,17 +249,17 @@ public class StubDataProvider implements DataProvider {
         return res;
     }
 
-    /**
-     * Récupère la synthèse d'un individu.
-     *
-     * @param userId Id de l'utilisateur du portail à l'origine de cet appel
-     * @param index  Id du bénéficiaire recherché
-     * @return Un SocialExtBeneficiary, contenant le détail du bénéficiaire.
-     */
-    @Override
-    public SocialExtBeneficiary getIndividualSynthesis(String userId, String index) {
-        return stubSocialExtBeneficiary();
-    }
+//    /**
+//     * Récupère la synthèse d'un individu.
+//     *
+//     * @param userId Id de l'utilisateur du portail à l'origine de cet appel
+//     * @param index  Id du bénéficiaire recherché
+//     * @return Un SocialExtBeneficiary, contenant le détail du bénéficiaire.
+//     */
+//    @Override
+//    public SocialExtBeneficiary getIndividualSynthesis(String userId, String index) {
+//        return stubSocialExtBeneficiary();
+//    }
 
     /**
      * Récupérer tous les utilisateurs. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
@@ -496,13 +493,13 @@ public class StubDataProvider implements DataProvider {
     }
 
     /**
-     * Récupérer les news relatives à un travailleur social.
+     * Récupérer les tâches à accomplir par un travailleur social
      *
-     * @param userId Id du travailleur social concerné.
-     * @return Un objet NewsList, qui contient une liste de News. L'objet News contient une date et une liste de lignes de contenu (type String).
+     * @param socialWorkerId Id du travailleur social concerné.
+     * @return Représentation des tâches à accomplir par un travailleur social
      */
     @Override
-    public TachesUtilisateur getNews(String userId) {
+    public TachesUtilisateur getNews(String socialWorkerId) {
         TachesUtilisateur res = new TachesUtilisateur();
 
         TacheUtilisateur news = new TacheUtilisateur();

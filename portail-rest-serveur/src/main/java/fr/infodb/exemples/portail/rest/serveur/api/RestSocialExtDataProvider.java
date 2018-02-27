@@ -154,16 +154,16 @@ public interface RestSocialExtDataProvider {
      */
     DossierBeneficiaire getFileRecord(String userId, String index) throws SocialExtException;
 
-    /**
-     * Récupère la "synthèse individuelle" pour un bénéficiaire donné, c'est-à-dire ses informations détaillées.
-     * Remarque : cette méthode fait peut-être doublon avec getFileRecord ??? (cf J. Perceveau)
-     *
-     * @param userId id de l'utilisateur du portail à l'origine de cet appel (pour habilitation ?)
-     * @param index  id du bénéficiaire
-     * @return un objet SocialExtBeneficiary contenant le détail du bénéficiaire
-     * @throws SocialExtException Exception en cas d'erreur
-     */
-    SocialExtBeneficiary getIndividualSynthesis(String userId, String index) throws SocialExtException;
+//    /**
+//     * Récupère la "synthèse individuelle" pour un bénéficiaire donné, c'est-à-dire ses informations détaillées.
+//     * Remarque : cette méthode fait peut-être doublon avec getFileRecord ??? (cf J. Perceveau)
+//     *
+//     * @param userId id de l'utilisateur du portail à l'origine de cet appel (pour habilitation ?)
+//     * @param index  id du bénéficiaire
+//     * @return un objet SocialExtBeneficiary contenant le détail du bénéficiaire
+//     * @throws SocialExtException Exception en cas d'erreur
+//     */
+//    SocialExtBeneficiary getIndividualSynthesis(String userId, String index) throws SocialExtException;
 
     /**
      * Récupère tous les individus (utilisé pour la reprise de données initiale).
@@ -197,12 +197,12 @@ public interface RestSocialExtDataProvider {
     PaginationIntervenantsSociaux findAllSocialWorkers(int pageSize, int pageNumber);
 
     /**
-     * Récupérer les taĉhes à accomplir par un utilisateur
+     * Récupérer les tâches à accomplir par un travailleur social
      *
-     * @param userId Id de l'utilisateur concerné.
-     * @return Représentation des taĉhes à accomplir par un utilisateur
+     * @param socialWorkerId Id du travailleur social concerné.
+     * @return Représentation des tâches à accomplir par un travailleur social
      */
-    TachesUtilisateur getNews(String userId) throws SocialExtException;
+    TachesUtilisateur getNews(String socialWorkerId) throws SocialExtException;
 
     /**
      * Récupère les valeurs d'un référentiel.

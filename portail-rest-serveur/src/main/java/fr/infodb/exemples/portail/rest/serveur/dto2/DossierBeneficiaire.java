@@ -14,6 +14,9 @@ public class DossierBeneficiaire implements Serializable {
 
     private final List<Individu> autresIndividus = new ArrayList<>();
 
+    private final List<IntervenantSocial> intervenantSociaux = new ArrayList<>();
+
+
     public Individu getIndividu() {
         return individu;
     }
@@ -24,5 +27,9 @@ public class DossierBeneficiaire implements Serializable {
 
     public List<Individu> getAutresIndividus() {
         return autresIndividus;
+    }
+
+    public List<IntervenantSocial> getIntervenantSociaux() {
+        return intervenantSociaux;
     }
 }

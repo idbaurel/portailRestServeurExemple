@@ -235,15 +235,6 @@ public class RestServerController implements RestSocialExtDataProvider {
      * @param index  Id du bénéficiaire recherché.
      * @return Un objet socialExtBeneficiary contenant le détail du bénéficiaire.
      */
-//    @GetMapping(RESTURL_GET_FILE_RECORD)
-//    @ApiOperation("Retourne le dossier d'un bénéficiaire.")
-//    public SocialExtBeneficiary getFileRecord(
-//            @RequestHeader(HEADERNAME_USERID) String userId,
-//            @PathVariable(PATHPARAM_BENEFICIARYID) String index)
-//            throws SocialExtException {
-//        return dataProvider.getFileRecord(userId, index);
-//    }
-
     @GetMapping(RESTURL_GET_FILE_RECORD)
     @ApiOperation("Retourner le dossier d'un bénéficiaire.")
     public DossierBeneficiaire getFileRecord(
@@ -253,20 +244,20 @@ public class RestServerController implements RestSocialExtDataProvider {
         return dataProvider.getFileRecord(userId, index);
     }
 
-    /**
-     * Récupérer la synthèse d'un individu.
-     *
-     * @param userId Id de l'utilisateur du portail à l'origine de cet appel
-     * @param index  Id du bénéficiaire recherché
-     * @return Un SocialExtBeneficiary, contenant le détail du bénéficiaire.
-     */
-    @GetMapping(RESTURL_GET_INDIVIDUAL_SYNTHESIS)
-    @ApiOperation("Récupérer la synthèse d'un individu.")
-    public SocialExtBeneficiary getIndividualSynthesis(
-            @RequestHeader(HEADERNAME_USERID) String userId,
-            @PathVariable(PATHPARAM_BENEFICIARYID) String index) {
-        return dataProvider.getIndividualSynthesis(userId, index);
-    }
+//    /**
+//     * Récupérer la synthèse d'un individu.
+//     *
+//     * @param userId Id de l'utilisateur du portail à l'origine de cet appel
+//     * @param index  Id du bénéficiaire recherché
+//     * @return Un SocialExtBeneficiary, contenant le détail du bénéficiaire.
+//     */
+//    @GetMapping(RESTURL_GET_INDIVIDUAL_SYNTHESIS)
+//    @ApiOperation("Récupérer la synthèse d'un individu.")
+//    public SocialExtBeneficiary getIndividualSynthesis(
+//            @RequestHeader(HEADERNAME_USERID) String userId,
+//            @PathVariable(PATHPARAM_BENEFICIARYID) String index) {
+//        return dataProvider.getIndividualSynthesis(userId, index);
+//    }
 
     /**
      * Récupérer les données d'un référentiel (nomenclature).
@@ -472,15 +463,15 @@ public class RestServerController implements RestSocialExtDataProvider {
 
 
     /**
-     * Récupérer les taĉhes à accomplir par un utilisateur
+     * Récupérer les tâches à accomplir par un travailleur social
      *
-     * @param userId Id de l'utilisateur concerné.
-     * @return Représentation des taĉhes à accomplir par un utilisateur
+     * @param socialWorkerId Id du travailleur social concerné.
+     * @return Représentation des tâches à accomplir par un travailleur social
      */
     @GetMapping(RESTURL_GET_NEWS)
     @ApiOperation("Récupérer les news relatives à un travailleur social.")
-    public TachesUtilisateur getNews(@RequestParam(QUERYPARAM_SWUSERID) String userId) {
-        return dataProvider.getNews(userId);
+    public TachesUtilisateur getNews(@RequestParam(QUERYPARAM_SWUSERID) String socialWorkerId) {
+        return dataProvider.getNews(socialWorkerId);
     }
 
 //    /**
