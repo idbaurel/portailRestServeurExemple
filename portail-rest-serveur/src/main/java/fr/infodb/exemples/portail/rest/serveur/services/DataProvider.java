@@ -171,12 +171,12 @@ public interface DataProvider {
     SocialModules getAvailableSocialModules();
 
     /**
-     * Récupérer les news relatives à un travailleur social.
+     * Récupérer les taĉhes à accomplir par un utilisateur
      *
-     * @param userId Id du travailleur social concerné.
-     * @return Un objet NewsList, qui contient une liste de News. L'objet News contient une date et une liste de lignes de contenu (type String).
+     * @param userId Id de l'utilisateur concerné.
+     * @return Représentation des taĉhes à accomplir par un utilisateur
      */
-    NewsList getNews(String userId);
+    TachesUtilisateur getNews(String userId);
 
     /**
      * Récupérer les liens de débranchement vers les écrans de Solis.

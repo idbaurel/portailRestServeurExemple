@@ -502,11 +502,23 @@ public class StubDataProvider implements DataProvider {
      * @return Un objet NewsList, qui contient une liste de News. L'objet News contient une date et une liste de lignes de contenu (type String).
      */
     @Override
-    public NewsList getNews(String userId) {
-        NewsList res = new NewsList();
-        res.setNewsList(new ArrayList<>());
-        News news = new News(new Date(), "information 1");
-        res.getNewsList().add(news);
+    public TachesUtilisateur getNews(String userId) {
+        TachesUtilisateur res = new TachesUtilisateur();
+
+        TacheUtilisateur news = new TacheUtilisateur();
+        news.setDateEcheance(new Date());
+        news.setLibelle("tâche 1");
+        news.getDetails().add("détail 1");
+        news.getDetails().add("détail 2");
+        news.getDetails().add("détail 3");
+        news.setSocialModule(SocialModule.ASG);
+        news.setIdIndividuConcerne("abc-123");
+        news.setPrenomIndividuConcerne("Marie hélène");
+        news.setNomIndividuConcerne("DUPONTEL");
+        news.setGenreIndividuConcerne(IndividuGenre.FEMME);
+        news.setTypeTache(TacheUtilisateurType.PROCESSUS_ASG);
+
+        res.getTaches().add(news);
         return res;
     }
 
@@ -695,8 +707,8 @@ public class StubDataProvider implements DataProvider {
 
     private RendezVous stubRendezVous(String socialWorkerId) {
         LocalDate now = LocalDate.now();
-        LocalDateTime debut = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 14, 0);
-        LocalDateTime fin = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 15, 30);
+        LocalDateTime debut = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 10, 0);
+        LocalDateTime fin = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 11, 30);
 
         RendezVous rdv = new RendezVous();
         rdv.setAdresse(stubAdresse());

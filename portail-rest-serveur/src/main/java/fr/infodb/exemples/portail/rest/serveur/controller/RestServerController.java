@@ -470,15 +470,16 @@ public class RestServerController implements RestSocialExtDataProvider {
         return dataProvider.findSocialExtUser(externalId);
     }
 
+
     /**
-     * Récupérer les news relatives à un travailleur social.
+     * Récupérer les taĉhes à accomplir par un utilisateur
      *
-     * @param userId Id du travailleur social concerné.
-     * @return Un objet NewsList, qui contient une liste de News. L'objet News contient une date et une liste de lignes de contenu (type String).
+     * @param userId Id de l'utilisateur concerné.
+     * @return Représentation des taĉhes à accomplir par un utilisateur
      */
     @GetMapping(RESTURL_GET_NEWS)
     @ApiOperation("Récupérer les news relatives à un travailleur social.")
-    public NewsList getNews(@RequestParam(QUERYPARAM_SWUSERID) String userId) {
+    public TachesUtilisateur getNews(@RequestParam(QUERYPARAM_SWUSERID) String userId) {
         return dataProvider.getNews(userId);
     }
 

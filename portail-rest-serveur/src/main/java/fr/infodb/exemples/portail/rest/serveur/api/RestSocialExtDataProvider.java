@@ -197,13 +197,12 @@ public interface RestSocialExtDataProvider {
     PaginationIntervenantsSociaux findAllSocialWorkers(int pageSize, int pageNumber);
 
     /**
-     * Récupère la liste de news pour un user.
+     * Récupérer les taĉhes à accomplir par un utilisateur
      *
-     * @param userId id du user pour lequel on veut la liste de news
-     * @return un objet NewsList (spi-portail)
-     * @throws SocialExtException Exception en cas d'erreur
+     * @param userId Id de l'utilisateur concerné.
+     * @return Représentation des taĉhes à accomplir par un utilisateur
      */
-    NewsList getNews(String userId) throws SocialExtException;
+    TachesUtilisateur getNews(String userId) throws SocialExtException;
 
     /**
      * Récupère les valeurs d'un référentiel.

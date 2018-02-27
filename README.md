@@ -28,7 +28,7 @@ links/{userId} | GET | getLinks | débranchement |  | non | Retourner un lien de
 loginHomepageMessages | GET | getAllLoginHomepageMessages | données | fait |  | Rechercher les message à afficher sur la page d'authentification
 municipalities/suggest | GET | suggestMunicipalities | données |  | ? | Récupérer des valeurs à suggérer à l'utilisateur pour la complétion des municipalités
 municipalities/{municipalityId}/places/suggest | GET | suggestPlaces | données |  | ? | Retourner pour une commune une liste de lieux correspondant à une portion de nom donnée
-news | GET | getNews | données |  |  | Récupérer les news relatives à un travailleur social
+news | GET | getNews | données | fait |  | Récupérer les news relatives à un travailleur social
 places/search | GET | getPlacesByType | données |  | ? | Retourner un ensemble de lieux en fonction d'un type donné
 places/{placeId}/circo | GET | getCirco | données |  | ? | Retourner la circonscription liée à un lieu
 referentials/{referential} | GET | getReferential | données |  | ? | Récupérer les données d'un référentiel (nomenclature)
