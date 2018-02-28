@@ -8,7 +8,7 @@ Ce projet utilise:
 * Spring Boot 1.5.10
 * maven 3.3.9
  
-**Les contrats des web services sont en cours de modification**
+**Les contrats des web services sont terminés**
 
 url ws (http://\<host\>:\<port\>/portail/spi/ + …) | verbe http | nom méthode | thème | description |
 -----|-----|-----|-----|-----|
