@@ -1,11 +1,9 @@
 package fr.infodb.exemples.portail.rest.serveur.services;
 
-import fr.infodb.exemples.portail.rest.serveur.dto.externalsocialbusiness.*;
-import fr.infodb.exemples.portail.rest.serveur.dto.ws.*;
-import fr.infodb.exemples.portail.rest.serveur.dto2.*;
+import fr.infodb.exemples.portail.rest.serveur.api.DataProvider;
+import fr.infodb.exemples.portail.rest.serveur.dto.*;
+import fr.infodb.exemples.portail.rest.serveur.dto.constants.*;
 import fr.infodb.exemples.portail.rest.serveur.exceptions.SocialExtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -13,85 +11,57 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+/**
+ * Implémentation "bouchon" du fournisseur de données
+ */
 @Service("StubDataProvider")
 public class StubDataProvider implements DataProvider {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StubDataProvider.class);
 
     private static final DateTimeFormatter FRENCH_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-    /**
-     * Evénement SIRH
-     *
-     * @param userId Identifiant de l'utilisateur
-     * @return Nombre d'événement pour l'utilisateur
-     */
-    @Override
-    public Long getNumberSirhEvents(String userId) {
-        return 0L;
-    }
-
-    /**
-     * Recherche des offres de services
-     *
-     * @param individualId Identifiant du bénéficiaire
-     * @return Liste d'offre
-     */
-    @Override
-    public List<BusinessOffer> getBusinessOffers(String individualId) {
-        List<BusinessOffer> res = new ArrayList<>();
-        BusinessOffer businessOffer = new BusinessOffer();
-        businessOffer.setOfferDate(new Date());
-        businessOffer.setOfferLabel("libellé de l'offre");
-        businessOffer.setOfferLabelDate("libellé de la date de l'offre");
-        businessOffer.setOfferStatus("status de l'offre");
-        res.add(businessOffer);
-        return res;
-    }
 
     /**
      * Récupère la référence du dossier
      *
      * @param module     SocialModule concerné.
      * @param type       Type d'identifiant.
-     * @param externalId Id du user portail à l'origine de l'appel
+     * @param individuId Id de l'individu demandé
      * @return Référence du dossier.
      */
     @Override
-    public String getModuleIdentifier(SocialModule module, ModuleIdentifierType type, String externalId) {
-        return "ref-dossier-123";
+    public StringWrapperDTO getModuleIdentifier(SocialModule module, ModuleIdentifierType type, String individuId) {
+        return new StringWrapperDTO("ref-dossier-123");
     }
 
     /**
      * Récupère les aides liées à un bénéficiaire.
      *
-     * @param userId Id de l'utilisateur à l'origine de l'appel
-     * @param index  Id du bénéficiaire
+     * @param userId     Id de l'utilisateur à l'origine de l'appel
+     * @param individuId Id du bénéficiaire
      * @return Un objet SocialExtBeneficiary contenant le détail des aides.
      */
     @Override
-    public MesuresSociales getSocialFileMeasures(String userId, String index) {
-        return stubMesuresSociales(index);
+    public MesuresSociales getSocialFileMeasures(String userId, String individuId) {
+        return stubMesuresSociales();
     }
 
-    private MesuresSociales stubMesuresSociales(String index) {
+    private MesuresSociales stubMesuresSociales() {
         MesuresSociales res = new MesuresSociales();
 
         GroupeMesuresSociales groupe1 = new GroupeMesuresSociales();
         //l'id du groupe provient du paramétrage stocké en BDD portail: LIFE_LINE_LABEL.LIFE_LINE_ID
         groupe1.setId("ASG");
         groupe1.setModuleMetier(SocialModule.ASG);
-
         res.getGroupesMesuresSociales().add(groupe1);
-
-
 
         MesureSociale mesure1 = new MesureSociale();
         mesure1.setIndex("ms-001");
-        mesure1.setDateDebut(localDateToDate(LocalDate.of(2016, Month.APRIL,23)));
-        mesure1.setDateFin(localDateToDate(LocalDate.of(2017, Month.APRIL,22)));
+        mesure1.setDateDebut(localDateToDate(LocalDate.of(2016, Month.APRIL, 23)));
+        mesure1.setDateFin(localDateToDate(LocalDate.of(2017, Month.APRIL, 22)));
         mesure1.setLibelle("Mesure de soutien");
         mesure1.setLibelleDateDebut(null);
         mesure1.setLibelleDateFin(null);
@@ -100,7 +70,7 @@ public class StubDataProvider implements DataProvider {
 
         MesureSociale mesure2 = new MesureSociale();
         mesure2.setIndex("ms-002");
-        mesure2.setDateDebut(localDateToDate(LocalDate.of(2017, Month.APRIL,23)));
+        mesure2.setDateDebut(localDateToDate(LocalDate.of(2017, Month.APRIL, 23)));
         mesure2.setDateFin(null);
         mesure2.setLibelle("Mesure d'accompagnement");
         mesure2.setLibelleDateDebut(null);
@@ -109,39 +79,6 @@ public class StubDataProvider implements DataProvider {
         groupe1.getMesuresSociales().add(mesure2);
 
         return res;
-    }
-
-    private SocialExtBeneficiary stubSocialExtBeneficiary() {
-        SocialExtBeneficiary res = new SocialExtBeneficiary();
-        PortalSocialExtIndividual portalExtIndividual = new PortalSocialExtIndividual();
-        portalExtIndividual.setIdExt("abc-123");
-        res.setPortalExtIndividual(portalExtIndividual);
-        res.setLastName("DUPONT");
-        res.setFirstName("Marie Hélène");
-        res.setBirthDate(localDateToDate(LocalDate.of(1980, Month.APRIL, 24)));
-        return res;
-    }
-
-    /**
-     * Créer un individu.
-     *
-     * @param beneficiary Données de l'individu à créer
-     * @return Identifiant de l'individu créer
-     */
-    @Override
-    public String createIndividuals(SocialExtBeneficiary beneficiary) {
-        return "123456";
-    }
-
-    /**
-     * Modifier un individu.
-     *
-     * @param beneficiary Paramètres de l'individu à modifier.
-     * @see SocialExtBeneficiary
-     */
-    @Override
-    public void updateIndividual(SocialExtBeneficiary beneficiary) {
-        LOGGER.info("Mise à jour de l'individu {} {}", beneficiary.getLastName(), beneficiary.getFirstName());
     }
 
     /**
@@ -173,41 +110,14 @@ public class StubDataProvider implements DataProvider {
     }
 
     /**
-     * Retourner un ensemble de lieux en fonction d'un type donné.
-     *
-     * @param type Type de lieu
-     * @return Les lieux correspondant au type de lieu donné.
-     * @see SocialExtPlaceType
-     */
-    @Override
-    public Set<SocialExtPlace> getPlacesByType(SocialExtPlaceType type) {
-
-        Set<SocialExtPlace> res = new HashSet<>();
-        SocialExtPlace socialExtPlace = new SocialExtPlace("avenue Jean Biray", "", "", "12345", 123, 64, "PAU", "64000", "64");
-        res.add(socialExtPlace);
-        return res;
-    }
-
-    /**
-     * Retourner la circonscription liée à un lieu.
-     *
-     * @param placeId Identifiant du lieu
-     * @return Circonscription liée à un lieu.
-     */
-    @Override
-    public String getCirco(String placeId) {
-        return "Pau-Nord";
-    }
-
-    /**
      * Retourne le dossier d'un bénéficiaire.
      *
-     * @param userId Id de l'utilisateur du portail à l'origine de cet appel
-     * @param index  Id du bénéficiaire recherché.
+     * @param userId     Id de l'utilisateur du portail à l'origine de cet appel
+     * @param individuId Id du bénéficiaire recherché.
      * @return Un objet socialExtBeneficiary contenant le détail du bénéficiaire.
      */
     @Override
-    public DossierBeneficiaire getFileRecord(String userId, String index) {
+    public DossierBeneficiaire getFileRecord(String userId, String individuId) {
         return stubDossierBeneficiaire();
     }
 
@@ -216,7 +126,6 @@ public class StubDataProvider implements DataProvider {
         res.setIndividu(stubIndividu());
         res.getAutresIndividus().addAll(stubAutresIndividus());
         res.getIntervenantSociaux().add(stubIntervenantSocial("sw-123456"));
-//        return "abc-123".equals(res.getIndividu().getId()) ? res : null;
         return res;
     }
 
@@ -249,18 +158,6 @@ public class StubDataProvider implements DataProvider {
         return res;
     }
 
-//    /**
-//     * Récupère la synthèse d'un individu.
-//     *
-//     * @param userId Id de l'utilisateur du portail à l'origine de cet appel
-//     * @param index  Id du bénéficiaire recherché
-//     * @return Un SocialExtBeneficiary, contenant le détail du bénéficiaire.
-//     */
-//    @Override
-//    public SocialExtBeneficiary getIndividualSynthesis(String userId, String index) {
-//        return stubSocialExtBeneficiary();
-//    }
-
     /**
      * Récupérer tous les utilisateurs. Cette méthode est utilisée uniquement dans le cadre de la reprise de données initiale.
      *
@@ -278,7 +175,6 @@ public class StubDataProvider implements DataProvider {
         results.getUtilisateurs().add(stubUtilisateur("azerty-123"));
         return results;
     }
-
 
     /**
      * Récupérer tous les travailleurs sociaux.
@@ -329,27 +225,6 @@ public class StubDataProvider implements DataProvider {
      * @param pageNumber Numéro de la page de résultats demandée (commençant à 1).
      * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
      */
-    //    @Override
-    //    public BeneficiarySearchResultDTO findAllIndividuals(int pageSize, int pageNumber) {
-    //        List<SocialExtBeneficiary> beneficiaries = new ArrayList<>();
-    //        beneficiaries.add(findBeneficiary("123"));
-    //
-    //        BeneficiarySearchResultDTO bsrdto = new BeneficiarySearchResultDTO();
-    //        bsrdto.setTotalNumber(beneficiaries.size());
-    //
-    //        for (int i = 0; i < pageSize; i++) {
-    //            // Condition d'arrêt : nb total d'enregistrement atteint
-    //            if ((pageNumber - 1) * pageSize + i >= bsrdto.getTotalNumber()) {
-    //                break;
-    //            }
-    //            bsrdto.getBeneficiaries().add(beneficiaries.get((pageNumber * pageSize + i) % beneficiaries.size()));
-    //        }
-    //
-    //        bsrdto.setPageNumber(pageNumber);
-    //        bsrdto.setPageSize(pageSize);
-    //
-    //        return bsrdto;
-    //    }
     @Override
     public PaginationIndividus findAllIndividuals(int pageSize, int pageNumber) {
         PaginationIndividus paginationIndividus = new PaginationIndividus();
@@ -391,27 +266,12 @@ public class StubDataProvider implements DataProvider {
     /**
      * Récupérer un utilisateur à partir de son id.
      *
-     * @param externalId Id de l'utilisateur.
+     * @param userId Id de l'utilisateur.
      * @return Un objet SocialExtUser correspondant à l'utilisateur recherché.
      */
     @Override
-    public Utilisateur findSocialExtUser(String externalId) {
-//        SocialExtUser res = new SocialExtUser();
-//        res.setId(externalId);
-//        res.setUsername("amelie.durand");
-//        res.setFirstName("DURAND");
-//        res.setLastName("Amélie");
-//        res.setLinkedWithSocialWorker(true);
-//        res.setSector("PAU");
-//        res.setSectorList(new ArrayList<String>() {{
-//            add("PAU");
-//            add("secteur 1");
-//            add("secteur 2");
-//        }});
-//        res.setSocialWorkerId("sw-123456");
-//        return res;
-
-        return stubUtilisateur(externalId);
+    public Utilisateur findSocialExtUser(String userId) {
+        return stubUtilisateur(userId);
     }
 
     private Utilisateur stubUtilisateur(String externalId) {
@@ -428,12 +288,11 @@ public class StubDataProvider implements DataProvider {
     /**
      * Récupérer un bénéficiaire à partir de son id.
      *
-     * @param externalId Identifiant du bénéficiaire.
+     * @param individuId Identifiant du bénéficiaire.
      * @return Un objet SocialExtBeneficiary.
      */
     @Override
-    public Individu findBeneficiary(String externalId) {
-//        return stubSocialExtBeneficiary();
+    public Individu findBeneficiary(String individuId) {
         return stubIndividu();
     }
 
@@ -444,10 +303,6 @@ public class StubDataProvider implements DataProvider {
      */
     @Override
     public SocialModules getAvailableSocialModules() {
-        //        return Arrays.stream(SocialModule.values())
-        //                .filter(v -> v.getName().startsWith("F"))
-        //                .collect(Collectors.toSet());
-
         SocialModules res = new SocialModules();
         res.getModules().add(SocialModule.ASE);
         res.getModules().add(SocialModule.ASG);
@@ -480,87 +335,6 @@ public class StubDataProvider implements DataProvider {
         news.setTypeTache(TacheUtilisateurType.PROCESSUS_ASG);
 
         res.getTaches().add(news);
-        return res;
-    }
-
-    /**
-     * Récupérer les liens de débranchement vers les écrans de Solis.
-     *
-     * @param screens         Ensemble d'écrans.
-     * @param user            Utilisateur du portail
-     * @param indexIndividual Id de l'individu concerné
-     * @param token           Token d'authentification.
-     * @return Une Map avec en clé une enum correspondant aux écrans et en valeur une String contenant le lien
-     */
-    @Override
-    public Map<SocialModuleScreen, String> getLinks(Set<SocialModuleScreen> screens, String user, String indexIndividual, String token) {
-        Map<SocialModuleScreen, String> res = new HashMap<>();
-        if (screens != null) {
-            for (SocialModuleScreen screen : screens) {
-                res.put(screen, "http://host:8080/applicationMetier/" + screen.getName());
-            }
-        }
-        return res;
-    }
-
-    /**
-     * Récupérer les liens vers les pages d'accueil des modules sociaux
-     *
-     * @param modules Ensemble de modules.
-     * @param user    Utilisateur du portail
-     * @param token   Token d'authentification
-     * @return Une Map avec en clé une enum correspondant aux modules et en valeur une String contenant le lien.
-     */
-    @Override
-    public Map<SocialModule, String> getHomePages(Set<SocialModule> modules, String user, String token) {
-        Map<SocialModule, String> res = new HashMap<>();
-        if (modules != null) {
-            for (SocialModule module : modules) {
-                res.put(module, "http://host:8080/applicationMetier/" + module.getName());
-            }
-        }
-        return res;
-    }
-
-    /**
-     * Retourne un lien de débranchement vers un écran SOLIS indépendant d'un module social.
-     *
-     * @param token    Token d'authentification
-     * @param linkType Type de lien pour débranchement
-     * @return Le lien http.
-     * @see SolisLinkType
-     */
-    @Override
-    public String getLink(SolisLinkType linkType, String token, SocialExtUser user) throws SocialExtException {
-        return "http://host:8080/applicationMetier/businessuri?param1=123&param2=test";
-    }
-
-    /**
-     * Récupérer des valeurs à suggérer à l'utilisateur pour la complétion des municipalités.
-     *
-     * @param token Contient les premiers caractères de la municipalité.
-     * @return Liste de SocialExtMunicipalities.
-     */
-    @Override
-    public List<SocialExtMunicipality> suggestMunicipalities(String token) {
-        List<SocialExtMunicipality> res = new ArrayList<>();
-        SocialExtMunicipality socialExtMunicipality = new SocialExtMunicipality(1, 64, "PAU", "64000");
-        res.add(socialExtMunicipality);
-        return res;
-    }
-
-    /**
-     * Retourner une liste de lieux correspondant à une portion de nom donnée.
-     *
-     * @param token          Portion du nom du lieu.
-     * @param municipalityId Id de la commune.
-     * @return Liste de lieux dont le nom contient la portion donnée.
-     */
-    @Override
-    public List<SocialExtPlace> suggestPlaces(String token, String municipalityId) {
-        List<SocialExtPlace> res = new ArrayList<>();
-        SocialExtPlace socialExtPlace = new SocialExtPlace("avenue Jean Biray", "", "", "12345", 123, 64, "PAU", "64000", "64");
-        res.add(socialExtPlace);
         return res;
     }
 
@@ -598,15 +372,6 @@ public class StubDataProvider implements DataProvider {
      *
      * @return Liste des messages
      */
-    //    @Override
-    //    public List<LoginHomepageMessage> getAllLoginHomepageMessages() {
-    //        List<LoginHomepageMessage> res = new ArrayList<>();
-    //        LoginHomepageMessage loginHomepageMessage = new LoginHomepageMessage();
-    //        loginHomepageMessage.setMessage("Message du jour sur la home page");
-    //        loginHomepageMessage.setType(TypeLoginHomepageMessageEnum.INFO);
-    //        res.add(loginHomepageMessage);
-    //        return res;
-    //    }
     @Override
     public LoginHomepageMessages getAllLoginHomepageMessages() {
         LoginHomepageMessages res = new LoginHomepageMessages();
@@ -618,14 +383,13 @@ public class StubDataProvider implements DataProvider {
     }
 
     /**
-     * fixme erreur de serialisation SocialExtRendezVous
      * Rechercher dans les rendez-vous des individus.
      *
-     * @param externalId Clé de l'individu
+     * @param individuId Clé de l'individu
      * @return Une liste de SocialExtRendezVous.
      */
     @Override
-    public ListeRendezVous getIndividualRendezVous(String externalId) {
+    public ListeRendezVous getIndividualRendezVous(String individuId) {
         return stubListeRendezVous("is-123456");
     }
 
@@ -697,7 +461,7 @@ public class StubDataProvider implements DataProvider {
         return rdv;
     }
 
-    Date convertLocalDateTimeToDateViaInstant(LocalDateTime dateToConvert) {
+    private Date convertLocalDateTimeToDateViaInstant(LocalDateTime dateToConvert) {
         return java.util.Date
                 .from(dateToConvert.atZone(ZoneId.systemDefault())
                         .toInstant());
@@ -720,30 +484,6 @@ public class StubDataProvider implements DataProvider {
         adresse.setUniteTerritoriale("territoire 1");
         return adresse;
     }
-
-    /**
-     * Créer un rendez-vous pour un intervenant social.
-     *
-     * @param rendezVous Paramètres du rendez-vous (date, travailleurs sociaux, etc...)
-     * @return L'id du rendez-vous créé.
-     * @see SocialExtRendezVous
-     */
-    @Override
-    public String createSocialWorkerRendezVous(SocialExtRendezVous rendezVous) {
-        TypeAndIdRendezvous typeAndIdRendezvous = new TypeAndIdRendezvous(123, TypeRendezVous.RENDEZ_VOUS_CENTRALISE);
-        return typeAndIdRendezvous.getId() + ":" + typeAndIdRendezvous.getType().name();
-    }
-
-//    /**
-//     * Récupérer un token de redirection.
-//     *
-//     * @param updto Wrapper autour d'un SocialExtUSer (habilitation) et une map de paramètres.
-//     * @return Token de redirection.
-//     */
-//    @Override
-//    public String getRedirectionToken(UserAndParamsDTO updto) {
-//        return "stub_token";
-//    }
 
     /**
      * Récupérer un intervenant social à partir de son id.
@@ -775,20 +515,6 @@ public class StubDataProvider implements DataProvider {
         return rDto;
     }
 
-    //    /**
-    //     * "Rechercher dans les individus.
-    //     *
-    //     * @param searchCriteria Set de critères de recherche. Chaque critère contient un type, une classe et une valeur.
-    //     * @return Une liste d'individus correspondant aux critères.
-    //     * @see SearchCriterionDTO
-    //     */
-    //    @Override
-    //    public List<SocialExtBeneficiary> findAllIndividuals(Set<SearchCriterionDTO> searchCriteria) {
-    //        List<SocialExtBeneficiary> res = new ArrayList<>();
-    //        res.add(findBeneficiary("123"));
-    //        return res;
-    //    }
-
     /**
      * Rechercher tous les individus correspondant aux critères reçus
      *
@@ -796,17 +522,9 @@ public class StubDataProvider implements DataProvider {
      * @return Représentation des individus trouvés
      */
     @Override
-    public PaginationIndividus findAllIndividuals(RechercheIndividusRequest rechercheIndividusRequest) {
+    public PaginationIndividus searchIndividuals(RechercheIndividusRequest rechercheIndividusRequest) {
         final PaginationIndividus res = new PaginationIndividus();
         final Individu individu = stubIndividu();
-        //        if (rechercheIndividusRequest.getNom() != null && rechercheIndividusRequest.isRechercheSurNomDeNaissance()) {
-        //            individu.setNomNaissance(rechercheIndividusRequest.getNom());
-        //        } else if (rechercheIndividusRequest.getNom() != null) {
-        //            individu.setNom(rechercheIndividusRequest.getNom());
-        //        }
-        //        if (rechercheIndividusRequest.getDateNaissance() != null) {
-        //            individu.setDateNaissance(rechercheIndividusRequest.getDateNaissance());
-        //        }
 
         res.getIndividus().add(individu);
         res.setPageNumber(1);
@@ -823,14 +541,5 @@ public class StubDataProvider implements DataProvider {
      */
     private static Date localDateToDate(final LocalDate localDate) {
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-    }
-
-    /**
-     * Stub d'une représentation de l'environnement d'origine des données
-     *
-     * @return Représentation de l'environnement d'origine des données
-     */
-    private Environment stubEnvironment() {
-        return new Environment("application64", "Application 64", "Application de gestion des aides sociales du CD64");
     }
 }
