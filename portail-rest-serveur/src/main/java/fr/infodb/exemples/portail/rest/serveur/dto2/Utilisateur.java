@@ -15,6 +15,11 @@ public class Utilisateur implements Serializable {
     private String prenom;
     private String secteur;
 
+    //un utilisateur correspond à un intervenant social (et vice versa)
+    private String intervenantSocialId;
+
+
+
     public String getId() {
         return id;
     }
@@ -53,5 +58,13 @@ public class Utilisateur implements Serializable {
 
     public void setSecteur(String secteur) {
         this.secteur = secteur;
+    }
+
+    public String getIntervenantSocialId() {
+        return intervenantSocialId;
+    }
+
+    public void setIntervenantSocialId(String intervenantSocialId) {
+        this.intervenantSocialId = intervenantSocialId;
     }
 }

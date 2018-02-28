@@ -214,6 +214,8 @@ public class RestServerController implements RestSocialExtDataProvider {
     /**
      * Récupérer la référence du dossier.
      *
+     * Les identifiants des modules sont paramétrés dans la table MODULE_IDENTIFIER.
+     *
      * @param userId       Id du user portail à l'origine de l'appel
      * @param socialModule SocialModule concerné.
      * @param moduleIdType Type d'identifiant.
@@ -443,7 +445,7 @@ public class RestServerController implements RestSocialExtDataProvider {
      */
     @GetMapping(RESTURL_FIND_BENEFICIARY)
     @ApiOperation("Récupérer un bénéficiaire à partir de son id.")
-    public SocialExtBeneficiary findBeneficiary(
+    public Individu findBeneficiary(
             @PathVariable(PATHPARAM_BENEFICIARYID) String externalId) {
         return dataProvider.findBeneficiary(externalId);
     }
@@ -456,7 +458,7 @@ public class RestServerController implements RestSocialExtDataProvider {
      */
     @GetMapping(RESTURL_FIND_SOCIAL_EXT_USER)
     @ApiOperation("Récupérer un utilisateur à partir de son id.")
-    public SocialExtUser findSocialExtUser(
+    public Utilisateur findSocialExtUser(
             @PathVariable(PATHPARAM_USERID) String externalId) {
         return dataProvider.findSocialExtUser(externalId);
     }

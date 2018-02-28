@@ -150,17 +150,17 @@ public interface DataProvider {
      * Récupérer un utilisateur à partir de son id.
      *
      * @param externalId Id de l'utilisateur.
-     * @return Un objet SocialExtUser correspondant à l'utilisateur recherché.
+     * @return L'utilisateur recherché.
      */
-    SocialExtUser findSocialExtUser(String externalId);
+    Utilisateur findSocialExtUser(String externalId);
 
     /**
-     * Récupérer un utilisateur à partir de son id.
+     * Récupérer un individu à partir de son id.
      *
-     * @param externalId Id de l'utilisateur.
-     * @return Un objet SocialExtUser correspondant à l'utilisateur recherché.
+     * @param externalId Id de l'individu.
+     * @return L'individu recherché.
      */
-    SocialExtBeneficiary findBeneficiary(String externalId);
+    Individu findBeneficiary(String externalId);
 
     /**
      * Retourner les modules sociaux disponibles dans l'environnement courant.

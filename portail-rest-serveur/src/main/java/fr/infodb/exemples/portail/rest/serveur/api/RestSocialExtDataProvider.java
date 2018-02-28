@@ -312,7 +312,7 @@ public interface RestSocialExtDataProvider {
      * @param externalId id du bénéficiaire
      * @return le bénéficiaire
      */
-    SocialExtBeneficiary findBeneficiary(String externalId);
+    Individu findBeneficiary(String externalId);
 
     /**
      * Récupère un utilisateur à partir de son id.
@@ -320,7 +320,7 @@ public interface RestSocialExtDataProvider {
      * @param externalId id de l'utilisateur
      * @return l'utilisateur
      */
-    SocialExtUser findSocialExtUser(String externalId);
+    Utilisateur findSocialExtUser(String externalId);
 
     /**
      * Récupère un intervenant social à partir de son id.

@@ -275,21 +275,10 @@ public class StubDataProvider implements DataProvider {
         results.setPageSize(pageSize);
         results.setTotalNumber(1);
 
-        results.getUtilisateurs().add(getUtilisateur("azerty-123"));
+        results.getUtilisateurs().add(stubUtilisateur("azerty-123"));
         return results;
     }
 
-    //    public UserSearchResultDTO findAllUser(int pageSize, int pageNumber) {
-    //        UserSearchResultDTO results = new UserSearchResultDTO();
-    //        results.setPageNumber(pageNumber);
-    //        results.setPageSize(pageSize);
-    //        results.setTotalNumber(1);
-    //
-    //        List<SocialExtUser> users = new ArrayList<>();
-    //        users.add(findSocialExtUser("123"));
-    //        results.setUsers(users);
-    //        return results;
-    //    }
 
     /**
      * Récupérer tous les travailleurs sociaux.
@@ -301,27 +290,6 @@ public class StubDataProvider implements DataProvider {
      * @return Un DTO contenant le nombre total de résultats de la recherche, la taille de la page, le numéro de la page, et la liste des résultats de recherche de la page demandée.
      */
     @Override
-    //    public SocialWorkerSearchResultDTO findAllSocialWorkers(int pageSize, int pageNumber) {
-    //
-    //        List<SocialExtWorker> workers = new ArrayList<>();
-    //
-    //        workers.add(findSocialWorker("123"));
-    //
-    //        SocialWorkerSearchResultDTO workersDTO = new SocialWorkerSearchResultDTO();
-    //        workersDTO.setPageNumber(pageNumber);
-    //        workersDTO.setPageSize(pageSize);
-    //        workersDTO.setTotalNumber(workers.size());
-    //
-    //        for (int i = 0; i < pageSize; i++) {
-    //            // Condition d'arrêt : nb total d'enregistrement atteint
-    //            if ((pageNumber - 1) * pageSize + i >= workersDTO.getTotalNumber()) {
-    //                break;
-    //            }
-    //            workersDTO.getWorkers().add(workers.get((pageNumber * pageSize + i) % workers.size()));
-    //        }
-    //
-    //        return workersDTO;
-    //    }
     public PaginationIntervenantsSociaux findAllSocialWorkers(int pageSize, int pageNumber) {
         PaginationIntervenantsSociaux pagination = new PaginationIntervenantsSociaux();
 
@@ -329,7 +297,9 @@ public class StubDataProvider implements DataProvider {
         pagination.setPageNumber(pageNumber);
         pagination.setTotalNumber(1);
 
-        pagination.getIntervenantsSociaux().add(stubIntervenantSocial("is-123456"));
+        final IntervenantSocial intervenantSocial = stubIntervenantSocial("is-123456");
+        intervenantSocial.setUtilisateur(stubUtilisateur("azerty-123"));
+        pagination.getIntervenantsSociaux().add(intervenantSocial);
 
         return pagination;
     }
@@ -348,7 +318,6 @@ public class StubDataProvider implements DataProvider {
         res.getSecteurs().add("secteur 2");
         res.setTelephone("0501020304");
         res.setGenre(IndividuGenre.FEMME);
-        res.setUtilisateur(getUtilisateur("azerty-123"));
 
         return res;
     }
@@ -426,39 +395,33 @@ public class StubDataProvider implements DataProvider {
      * @return Un objet SocialExtUser correspondant à l'utilisateur recherché.
      */
     @Override
-    public SocialExtUser findSocialExtUser(String externalId) {
-        SocialExtUser res = new SocialExtUser();
-        res.setId(externalId);
-        res.setUsername("amelie.durand");
-        res.setFirstName("DURAND");
-        res.setLastName("Amélie");
-        res.setLinkedWithSocialWorker(true);
-        res.setSector("PAU");
-        res.setSectorList(new ArrayList<String>() {{
-            add("PAU");
-            add("secteur 1");
-            add("secteur 2");
-        }});
-        res.setSocialWorkerId("sw-123456");
-        return res;
+    public Utilisateur findSocialExtUser(String externalId) {
+//        SocialExtUser res = new SocialExtUser();
+//        res.setId(externalId);
+//        res.setUsername("amelie.durand");
+//        res.setFirstName("DURAND");
+//        res.setLastName("Amélie");
+//        res.setLinkedWithSocialWorker(true);
+//        res.setSector("PAU");
+//        res.setSectorList(new ArrayList<String>() {{
+//            add("PAU");
+//            add("secteur 1");
+//            add("secteur 2");
+//        }});
+//        res.setSocialWorkerId("sw-123456");
+//        return res;
+
+        return stubUtilisateur(externalId);
     }
 
-    public Utilisateur getUtilisateur(String externalId) {
+    private Utilisateur stubUtilisateur(String externalId) {
         Utilisateur res = new Utilisateur();
         res.setId(externalId);
         res.setLogin("amelie.durand");
         res.setNom("DURAND");
         res.setPrenom("Amélie");
         res.setSecteur("PAU");
-
-        //        res.setSectorList(new ArrayList<String>() {{
-        //            add("PAU");
-        //            add("secteur 1");
-        //            add("secteur 2");
-        //        }});
-        //        res.setSocialWorkerId("sw-123456");
-        //        res.setLinkedWithSocialWorker(true);
-
+        res.setIntervenantSocialId("sw-123456");
         return res;
     }
 
@@ -469,8 +432,9 @@ public class StubDataProvider implements DataProvider {
      * @return Un objet SocialExtBeneficiary.
      */
     @Override
-    public SocialExtBeneficiary findBeneficiary(String externalId) {
-        return stubSocialExtBeneficiary();
+    public Individu findBeneficiary(String externalId) {
+//        return stubSocialExtBeneficiary();
+        return stubIndividu();
     }
 
     /**
