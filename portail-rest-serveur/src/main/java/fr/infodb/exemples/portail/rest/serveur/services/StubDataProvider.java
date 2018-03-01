@@ -21,8 +21,11 @@ import java.util.List;
 @Service("StubDataProvider")
 public class StubDataProvider implements DataProvider {
 
-
     private static final DateTimeFormatter FRENCH_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    private static final String USER_ID = "user-123";
+    private static final String SOCIAL_WORKER_ID = "sw-123456";
+    private static final String INDIVIDU_ID = "individu-123";
 
     /**
      * Récupère la référence du dossier
@@ -125,14 +128,14 @@ public class StubDataProvider implements DataProvider {
         DossierBeneficiaire res = new DossierBeneficiaire();
         res.setIndividu(stubIndividu());
         res.getAutresIndividus().addAll(stubAutresIndividus());
-        res.getIntervenantSociaux().add(stubIntervenantSocial("sw-123456"));
+        res.getIntervenantSociaux().add(stubIntervenantSocial(SOCIAL_WORKER_ID));
         return res;
     }
 
     private List<Individu> stubAutresIndividus() {
         List<Individu> res = new ArrayList<>();
         final Individu individu1 = stubIndividu();
-        individu1.setId("abc-456");
+        individu1.setId("individu-456");
         individu1.setDateNaissance(localDateToDate(LocalDate.of(1975, Month.DECEMBER, 22)));
         individu1.setNom("DUPONTEL");
         individu1.setPrenom("Frédéric");
@@ -144,7 +147,7 @@ public class StubDataProvider implements DataProvider {
         res.add(individu1);
 
         final Individu individu2 = stubIndividu();
-        individu2.setId("abc-789");
+        individu2.setId("individu-789");
         individu2.setDateNaissance(localDateToDate(LocalDate.of(2010, Month.SEPTEMBER, 3)));
         individu2.setNom("DUPONTEL");
         individu2.setPrenom("Eléonore");
@@ -172,7 +175,7 @@ public class StubDataProvider implements DataProvider {
         results.setPageSize(pageSize);
         results.setTotalNumber(1);
 
-        results.getUtilisateurs().add(stubUtilisateur("azerty-123"));
+        results.getUtilisateurs().add(stubUtilisateur(USER_ID));
         return results;
     }
 
@@ -193,8 +196,7 @@ public class StubDataProvider implements DataProvider {
         pagination.setPageNumber(pageNumber);
         pagination.setTotalNumber(1);
 
-        final IntervenantSocial intervenantSocial = stubIntervenantSocial("is-123456");
-        intervenantSocial.setUtilisateur(stubUtilisateur("azerty-123"));
+        final IntervenantSocial intervenantSocial = stubIntervenantSocial(SOCIAL_WORKER_ID);
         pagination.getIntervenantsSociaux().add(intervenantSocial);
 
         return pagination;
@@ -214,6 +216,7 @@ public class StubDataProvider implements DataProvider {
         res.getSecteurs().add("secteur 2");
         res.setTelephone("0501020304");
         res.setGenre(IndividuGenre.FEMME);
+        res.setUtilisateur(stubUtilisateur(USER_ID));
 
         return res;
     }
@@ -244,7 +247,7 @@ public class StubDataProvider implements DataProvider {
     private Individu stubIndividu() {
         Individu individu = new Individu();
 
-        individu.setId("abc-123");
+        individu.setId(INDIVIDU_ID);
         individu.setNom("DUPONTEL");
         individu.setPrenom("Marie hélène");
         individu.setGenre(IndividuGenre.FEMME);
@@ -281,7 +284,7 @@ public class StubDataProvider implements DataProvider {
         res.setNom("DURAND");
         res.setPrenom("Amélie");
         res.setSecteur("PAU");
-        res.setIntervenantSocialId("sw-123456");
+        res.setIntervenantSocialId(SOCIAL_WORKER_ID);
         return res;
     }
 
@@ -328,7 +331,7 @@ public class StubDataProvider implements DataProvider {
         news.getDetails().add("détail 2");
         news.getDetails().add("détail 3");
         news.setSocialModule(SocialModule.ASG);
-        news.setIdIndividuConcerne("abc-123");
+        news.setIdIndividuConcerne(INDIVIDU_ID);
         news.setPrenomIndividuConcerne("Marie hélène");
         news.setNomIndividuConcerne("DUPONTEL");
         news.setGenreIndividuConcerne(IndividuGenre.FEMME);
@@ -390,7 +393,7 @@ public class StubDataProvider implements DataProvider {
      */
     @Override
     public ListeRendezVous getIndividualRendezVous(String individuId) {
-        return stubListeRendezVous("is-123456");
+        return stubListeRendezVous(SOCIAL_WORKER_ID);
     }
 
     /**
