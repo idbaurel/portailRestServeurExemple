@@ -20,13 +20,12 @@ public class ServeurControllerAdvice {
 
     @ResponseBody
     @ExceptionHandler(Exception.class)
-    public ResponseEntity handle(Exception exceptionHandled) {
+    public ResponseEntity<Exception> handle(Exception exceptionHandled) {
         return getResponseEntity(exceptionHandled, "Erreur web service", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private ResponseEntity getResponseEntity(Exception exceptionHandled, String message, HttpStatus httpStatus) {
+    private ResponseEntity<Exception> getResponseEntity(Exception exceptionHandled, String message, HttpStatus httpStatus) {
         LOGGER.error(message, exceptionHandled);
-        ResponseEntity responseEntity = new ResponseEntity(exceptionHandled, httpStatus);
-        return responseEntity;
+        return new ResponseEntity<>(exceptionHandled, httpStatus);
     }
 }

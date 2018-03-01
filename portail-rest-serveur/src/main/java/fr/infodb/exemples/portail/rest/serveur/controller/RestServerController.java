@@ -98,7 +98,7 @@ public class RestServerController implements DataProvider {
      * @param individuId Identifiant du bénéficiaire.
      * @return Un objet SocialExtBeneficiary.
      */
-    @GetMapping(RESTURL_FIND_BENEFICIARY)
+    @GetMapping(RESTURL_GET_BENEFICIARY)
     @ApiOperation("Récupérer un bénéficiaire à partir de son id.")
     public Individu findBeneficiary(
             @PathVariable(PATHPARAM_BENEFICIARYID) String individuId) {
@@ -111,7 +111,7 @@ public class RestServerController implements DataProvider {
      * @param userId Id de l'utilisateur.
      * @return Un objet SocialExtUser correspondant à l'utilisateur recherché.
      */
-    @GetMapping(RESTURL_FIND_SOCIAL_EXT_USER)
+    @GetMapping(RESTURL_GET_SOCIAL_EXT_USER)
     @ApiOperation("Récupérer un utilisateur à partir de son id.")
     public Utilisateur findSocialExtUser(
             @PathVariable(PATHPARAM_USERID) String userId) {
@@ -124,7 +124,7 @@ public class RestServerController implements DataProvider {
      * @param externalId Id de l'intervenant social.
      * @return Un objet SocialExtWorker correspondant à l'intervenant social recherché.
      */
-    @GetMapping(RESTURL_FIND_SOCIAL_WORKER)
+    @GetMapping(RESTURL_GET_SOCIAL_WORKER)
     @ApiOperation("Récupérer un intervenant social à partir de son id.")
     public IntervenantSocial findSocialWorker(@PathVariable(PATHPARAM_SOCIALWORKERID) String externalId) {
         return dataProvider.findSocialWorker(externalId);
