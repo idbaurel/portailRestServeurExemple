@@ -261,7 +261,7 @@ public class RestServerController implements DataProvider {
     @GetMapping(RESTURL_GET_REFERENTIAL)
     @ApiOperation("Récupérer les données d'un référentiel (nomenclature).")
     public ReferentialDTO getReferential(
-            @PathVariable(PATHPARAM_REFERENTIAL) String referential)
+            @PathVariable(PATHPARAM_REFERENTIAL) Referential referential)
             throws SocialExtException {
         return dataProvider.getReferential(referential);
     }

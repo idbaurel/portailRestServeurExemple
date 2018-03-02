@@ -506,15 +506,20 @@ public class StubDataProvider implements DataProvider {
      * @see Referential
      */
     @Override
-    public ReferentialDTO getReferential(String referential) {
+    public ReferentialDTO getReferential(Referential referential) {
         ReferentialDTO rDto = new ReferentialDTO();
-        rDto.setId(Referential.valueOf(referential));
-        rDto.setName(referential);
-        ReferentialEntryDTO reDto = new ReferentialEntryDTO();
-        rDto.getEntries().add(reDto);
-        reDto.setId("1");
-        reDto.setParentRef(rDto.getId());
-        reDto.setValue(referential + "1");
+        rDto.setId(referential);
+        rDto.setName(referential.name());
+        ReferentialEntryDTO entree1 = new ReferentialEntryDTO();
+        rDto.getEntries().add(entree1);
+        entree1.setId("1");
+        entree1.setParentRef(rDto.getId());
+        entree1.setValue(referential + "1");
+        ReferentialEntryDTO entree2 = new ReferentialEntryDTO();
+        rDto.getEntries().add(entree2);
+        entree2.setId("2");
+        entree2.setParentRef(rDto.getId());
+        entree2.setValue(referential + "2");
         return rDto;
     }
 

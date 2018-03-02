@@ -155,7 +155,7 @@ public interface DataProvider {
      * @return Un objet ReferentialDTO qui contient les valeurs du référentiel. Ce DTO contient une liste de ReferentialEntryDTO.
      * @see Referential
      */
-    ReferentialDTO getReferential(String referential);
+    ReferentialDTO getReferential(Referential referential);
 
     /**
      * Récupèrer les aides liées à un bénéficiaire.
