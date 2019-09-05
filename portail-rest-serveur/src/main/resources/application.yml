@@ -1,0 +1,16 @@
+spring:
+  # workaround: paramètre en lien avec les ressources jndi (doit être à false)
+  jmx.enabled: false
+  # json: ne pas serialiser les dates sous forme de timestamps
+  jackson.serialization.write_dates_as_timestamps: false
+  # upload http de fichiers (notion de pièce jointe)
+  http.multipart:
+    # taille maximale d'un fichier
+    max-file-size: 5MB
+    # taille maximale des fichiers sur une requête
+    max-request-size: 45MB
+
+# informations de sécurité
+security.user.name: externalLogin
+security.user.password: secret
+management.security.roles: USER

@@ -7,6 +7,8 @@ import fr.infodb.exemples.portail.rest.serveur.dto.constants.Referential;
 import fr.infodb.exemples.portail.rest.serveur.dto.constants.SocialModule;
 import fr.infodb.exemples.portail.rest.serveur.exceptions.SocialExtException;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Interface pour guider l'implémentation du controller ou du service.
  *
@@ -23,7 +25,7 @@ public interface DataProvider {
      * @param updto Représentation d'un utilisateur avec mot de passe
      * @return Résultat de l'authentification (enum correspondant aux différents statuts possibles
      */
-    AuthenticationResult authenticate(AuthenticationRequest updto);
+    AuthenticationResult authenticate(AuthenticationRequest updto, HttpServletRequest httpServletRequest);
 
     /**
      * Récupérer tous les individus. Cette méthode est utilisée uniquement dans le cadre de la reprise de données.

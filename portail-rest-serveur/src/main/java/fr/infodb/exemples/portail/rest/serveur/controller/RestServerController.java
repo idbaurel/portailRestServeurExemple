@@ -1,7 +1,26 @@
 package fr.infodb.exemples.portail.rest.serveur.controller;
 
 import fr.infodb.exemples.portail.rest.serveur.api.DataProvider;
-import fr.infodb.exemples.portail.rest.serveur.dto.*;
+import fr.infodb.exemples.portail.rest.serveur.dto.AuthenticationRequest;
+import fr.infodb.exemples.portail.rest.serveur.dto.DossierBeneficiaire;
+import fr.infodb.exemples.portail.rest.serveur.dto.Individu;
+import fr.infodb.exemples.portail.rest.serveur.dto.IntervenantSocial;
+import fr.infodb.exemples.portail.rest.serveur.dto.ListeRendezVous;
+import fr.infodb.exemples.portail.rest.serveur.dto.LoginHomepageMessages;
+import fr.infodb.exemples.portail.rest.serveur.dto.MesuresSociales;
+import fr.infodb.exemples.portail.rest.serveur.dto.PaginationIndividus;
+import fr.infodb.exemples.portail.rest.serveur.dto.PaginationIntervenantsSociaux;
+import fr.infodb.exemples.portail.rest.serveur.dto.PaginationUtilisateurs;
+import fr.infodb.exemples.portail.rest.serveur.dto.Profiles;
+import fr.infodb.exemples.portail.rest.serveur.dto.RechercheIndividusRequest;
+import fr.infodb.exemples.portail.rest.serveur.dto.ReferentialDTO;
+import fr.infodb.exemples.portail.rest.serveur.dto.SocialModules;
+import fr.infodb.exemples.portail.rest.serveur.dto.StringWrapperDTO;
+import fr.infodb.exemples.portail.rest.serveur.dto.TachesUtilisateur;
+import fr.infodb.exemples.portail.rest.serveur.dto.Utilisateur;
+import fr.infodb.exemples.portail.rest.serveur.dto.authorization.CD64AuthorizationRequest;
+import fr.infodb.exemples.portail.rest.serveur.dto.authorization.CD64AuthorizationResponse;
+import fr.infodb.exemples.portail.rest.serveur.dto.authorization.CD64Permissions;
 import fr.infodb.exemples.portail.rest.serveur.dto.constants.AuthenticationResult;
 import fr.infodb.exemples.portail.rest.serveur.dto.constants.ModuleIdentifierType;
 import fr.infodb.exemples.portail.rest.serveur.dto.constants.Referential;
@@ -11,17 +30,63 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.*;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.HEADERNAME_USERID;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.PATHPARAM_BENEFICIARYID;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.PATHPARAM_REFERENTIAL;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.PATHPARAM_SOCIALMODULE;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.PATHPARAM_SOCIALWORKERID;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.PATHPARAM_USERID;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.QUERYPARAM_DATEDEBUT;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.QUERYPARAM_DATEFIN;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.QUERYPARAM_INDIVIDUALID;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.QUERYPARAM_MODULEIDTYPE;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.QUERYPARAM_PAGENUMBER;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.QUERYPARAM_PAGESIZE;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.QUERYPARAM_SWUSERID;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_AUTHENTICATE;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_FIND_ALL_INDIVIDUALS;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_FIND_ALL_SOCIAL_WORKERS;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_FIND_ALL_USER;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_GET_ALL_LOGIN_HOMEPAGE_MESSAGES;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_GET_BENEFICIARY;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_GET_FILE_RECORD;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_GET_INDIVIDUAL_RENDEZ_VOUS;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_GET_MODULE_IDENTIFIER;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_GET_NEWS;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_GET_PROFILES;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_GET_REFERENTIAL;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_GET_SOCIAL_EXT_USER;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_GET_SOCIAL_FILE_MEASURES;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_GET_SOCIAL_MODULES;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_GET_SOCIAL_MODULES_FOR_LIFE_LINE;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_GET_SOCIAL_WORKER;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_GET_SOCIAL_WORKER_RENDEZ_VOUS;
+import static fr.infodb.exemples.portail.rest.serveur.helpers.RestUriHelper.RESTURL_SEARCH_INDIVIDUALS;
 
 /**
  * Web services REST exposés
  */
 @RestController
 @RequestMapping(value = "/portail/spi")
-@Api(tags = "InfoDB, services rest Portail Agent", value = "Concernant la gestion des erreurs : les conventions classiques REST sont appliquées, côté client seules les erreurs 404 seront remontées de façon différente.")
-public class RestServerController implements DataProvider {
+@Api(tags = "Up, services rest Portail Agent", value = "Concernant la gestion des erreurs : les conventions classiques REST sont appliquées, côté client seules les erreurs 404 seront remontées de façon différente.")
+public class RestServerController /*implements DataProvider*/ {
 
     //fournisseur de données
     private final DataProvider dataProvider;
@@ -32,15 +97,53 @@ public class RestServerController implements DataProvider {
     }
 
     /**
+     * Web service spécifique au CD64 pour l'authentification auprès de l'application ASA du département.
+     * 
+     * Le Portail Agent Solis doit donc s'authentifier via ce web service avant de pouvoir utiliser les les autres web services du CD64.
+     * 
+     * 
+     * 
+     * @param cd64AuthorizationRequest Objet attendu par l'application ASA pour authentifier le Portail Agent
+     * @param httpServletRequest Objet standard transmis lors d'un requête http
+     * @return Objet contenant un jeton d'authentification
+     */
+    @PostMapping("auth/login")
+    public CD64AuthorizationResponse cd64Authentication(
+            @RequestBody CD64AuthorizationRequest cd64AuthorizationRequest, HttpServletRequest httpServletRequest) {
+        CD64AuthorizationResponse response = new CD64AuthorizationResponse();
+        response.setId(UUID.randomUUID().toString());
+        response.setLogin(cd64AuthorizationRequest.getLogin());
+        response.setToken(UUID.randomUUID().toString());
+        response.setNom("dupont");
+        response.setPrenom("Marcel");
+        response.setRoles(Collections.singletonList(3L));
+        Map<String, List<CD64Permissions>> moduleMap = new HashMap<>();
+        List<CD64Permissions> permissionList = new ArrayList<>();
+        CD64Permissions permission1 = new CD64Permissions();
+        permission1.setId("ADMGESTROLE");
+        permission1.setVersion(0);
+        permission1.setMenu("ADMINISTRATION");
+        permission1.setSousMenu("GESTION DES ROLES");
+        permission1.setNomModule("ASH");
+        permissionList.add(permission1);
+        moduleMap.put("8887c847-3fac-4274-a5f7-9641e3acb2e4", permissionList);
+        response.setModules(moduleMap);
+
+        return response;
+    }
+
+    /**
      * Authentifier un utilisateur.
      *
+     * @param authenticationRequest Objet contenant les credentials pour l'authentification
+     * @param httpServletRequest    Objet standard transmis lors d'un requête http
      * @return Résultat de l'authentification (enum correspondant aux différents statuts possibles).
      * @see AuthenticationResult
      */
     @PostMapping(RESTURL_AUTHENTICATE)
     @ApiOperation("Authentifier un utilisateur.")
-    public AuthenticationResult authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
-        return dataProvider.authenticate(authenticationRequest);
+    public AuthenticationResult authenticate(@RequestBody AuthenticationRequest authenticationRequest, HttpServletRequest httpServletRequest) {
+        return dataProvider.authenticate(authenticationRequest, httpServletRequest);
     }
 
     /**
@@ -162,7 +265,7 @@ public class RestServerController implements DataProvider {
      */
     @GetMapping(RESTURL_GET_SOCIAL_MODULES)
     @ApiOperation("Retourner les modules métiers disponibles sur l'application.")
-    public SocialModules getAvailableSocialModules() {
+    public SocialModules getAvailableSocialModules(HttpServletRequest httpServletRequest) {
         return dataProvider.getAvailableSocialModules();
     }
 

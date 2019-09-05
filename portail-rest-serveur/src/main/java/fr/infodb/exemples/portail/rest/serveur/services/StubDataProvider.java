@@ -6,6 +6,7 @@ import fr.infodb.exemples.portail.rest.serveur.dto.constants.*;
 import fr.infodb.exemples.portail.rest.serveur.exceptions.SocialExtException;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -61,25 +62,59 @@ public class StubDataProvider implements DataProvider {
         groupe1.setModuleMetier(SocialModule.ASG);
         res.getGroupesMesuresSociales().add(groupe1);
 
-        MesureSociale mesure1 = new MesureSociale();
-        mesure1.setIndex("ms-001");
-        mesure1.setDateDebut(localDateToDate(LocalDate.of(2016, Month.APRIL, 23)));
-        mesure1.setDateFin(localDateToDate(LocalDate.of(2017, Month.APRIL, 22)));
-        mesure1.setLibelle("Mesure de soutien");
-        mesure1.setLibelleDateDebut(null);
-        mesure1.setLibelleDateFin(null);
-        mesure1.setStatut(SocialExtMeasureState.UNKNOWN);
-        groupe1.getMesuresSociales().add(mesure1);
+        MesureSociale mesure11 = new MesureSociale();
+        mesure11.setIndex("ms-011");
+        mesure11.setDateDebut(localDateToDate(LocalDate.of(2016, Month.APRIL, 23)));
+        mesure11.setDateFin(localDateToDate(LocalDate.of(2017, Month.APRIL, 22)));
+        mesure11.setLibelle("Mesure de soutien");
+        mesure11.setLibelleDateDebut(null);
+        mesure11.setLibelleDateFin(null);
+        mesure11.setStatut(SocialExtMeasureState.UNKNOWN);
+        groupe1.getMesuresSociales().add(mesure11);
 
-        MesureSociale mesure2 = new MesureSociale();
-        mesure2.setIndex("ms-002");
-        mesure2.setDateDebut(localDateToDate(LocalDate.of(2017, Month.APRIL, 23)));
-        mesure2.setDateFin(null);
-        mesure2.setLibelle("Mesure d'accompagnement");
-        mesure2.setLibelleDateDebut(null);
-        mesure2.setLibelleDateFin(null);
-        mesure2.setStatut(SocialExtMeasureState.IN_PROGRESS);
-        groupe1.getMesuresSociales().add(mesure2);
+        MesureSociale mesure12 = new MesureSociale();
+        mesure12.setIndex("ms-012");
+        mesure12.setDateDebut(localDateToDate(LocalDate.of(2017, Month.APRIL, 23)));
+        mesure12.setDateFin(null);
+        mesure12.setLibelle("Mesure d'accompagnement");
+        mesure12.setLibelleDateDebut(null);
+        mesure12.setLibelleDateFin(null);
+        mesure12.setStatut(SocialExtMeasureState.IN_PROGRESS);
+        groupe1.getMesuresSociales().add(mesure12);
+        
+        
+        //2ème regroupement
+        GroupeMesuresSociales groupe2 = new GroupeMesuresSociales();
+        //l'id du groupe provient du paramétrage stocké en BDD portail: LIFE_LINE_LABEL.LIFE_LINE_ID
+        groupe2.setId("FSL_AIDE");
+        groupe2.setModuleMetier(SocialModule.FSL);
+        res.getGroupesMesuresSociales().add(groupe2);
+
+        MesureSociale mesure21 = new MesureSociale();
+        mesure21.setIndex("ms-021");
+        mesure21.setDateDebut(localDateToDate(LocalDate.of(2017, Month.MAY, 16)));
+        mesure21.setDateFin(localDateToDate(LocalDate.now()));
+        mesure21.setLibelle("Aide logement");
+        mesure21.setLibelleDateDebut(null);
+        mesure21.setLibelleDateFin("fini au");
+//        mesure21.setStatut(SocialExtMeasureState.IN_PROGRESS);
+        groupe2.getMesuresSociales().add(mesure21);
+
+        //3ème regroupement
+        GroupeMesuresSociales groupe3 = new GroupeMesuresSociales();
+        //l'id du groupe provient du paramétrage stocké en BDD portail: LIFE_LINE_LABEL.LIFE_LINE_ID
+        groupe3.setId("MDPH");
+        groupe3.setModuleMetier(SocialModule.MDPH);
+        res.getGroupesMesuresSociales().add(groupe3);
+
+        MesureSociale mesure31 = new MesureSociale();
+        mesure31.setIndex("ms-031");
+        mesure31.setDateDebut(localDateToDate(LocalDate.of(2018, Month.SEPTEMBER, 30)));
+        mesure31.setLibelle("AAH");
+        mesure31.setLibelleDateDebut(" ");
+        mesure31.setLibelleDateFin(null);
+        mesure31.setStatut(SocialExtMeasureState.IN_PROGRESS);
+        groupe3.getMesuresSociales().add(mesure31);
 
         return res;
     }
@@ -95,7 +130,8 @@ public class StubDataProvider implements DataProvider {
     @Override
     public Profiles getProfiles(String userId) {
         Profiles res = new Profiles();
-        res.getProfiles().add("Administrateur");
+//        res.getProfiles().add("Administrateur");
+        res.getProfiles().add("Secrétaire");
         return res;
     }
 
@@ -266,6 +302,45 @@ public class StubDataProvider implements DataProvider {
         return individu;
     }
 
+//    private Individu stubIndividu() {
+//        Individu individu = new Individu();
+//
+//        individu.setId("indiv-" + 213478);
+//        individu.setNom("CASTET");
+//        individu.setPrenom("Marie Therese");
+//        individu.setGenre(IndividuGenre.FEMME);
+//        individu.setDecede(false);
+//        individu.setCaf("null");
+//        individu.setEmail("");
+//        individu.setDateNaissance(localDateToDate(LocalDate.of(1947, Month.JULY, 29)));
+//        individu.setMajeur(true);
+//        individu.setMobile("06-60-08-79-18");
+//        individu.setNomNaissance("LEGAGNOA");
+//        individu.setSecteurDossier(null);
+//        individu.setSecteurSuivi(null);
+//        individu.setTel("");
+//        individu.setTelTravail(null);
+//
+//        //adresse
+//        Adresse adresse = new Adresse();
+//        adresse.setComplementDestinataire("Res.Ravel");
+//        adresse.setNumero(null);
+//        adresse.setLibelleLieu("32 rue Pocalette");
+//        adresse.setComplementAdresse(null);
+//        adresse.setCodePostal("64500");
+//        adresse.setLibelleCommune("CIBOURE");
+//        adresse.setUniteTerritoriale(null);
+//        adresse.setCirconscription("SDSEI Nive Nivelle");
+//        adresse.setSecteur(null);
+//        adresse.setCodeDepartement("64");
+//        adresse.setCodeCommune("64189");
+//        adresse.setCodeLieu(null);
+//        adresse.setTelephoneSecteur(null);
+//        individu.setAdresse(adresse);
+//
+//        return individu;
+//    }
+
     /**
      * Récupérer un utilisateur à partir de son id.
      *
@@ -311,6 +386,7 @@ public class StubDataProvider implements DataProvider {
         res.getModules().add(SocialModule.ASG);
         res.getModules().add(SocialModule.AST);
         res.getModules().add(SocialModule.FSL);
+        res.getModules().add(SocialModule.MDPH);
         return res;
     }
 
@@ -351,6 +427,7 @@ public class StubDataProvider implements DataProvider {
         SocialModules res = new SocialModules();
         res.getModules().add(SocialModule.ASG);
         res.getModules().add(SocialModule.FSL);
+        res.getModules().add(SocialModule.MDPH);
         return res;
     }
 
@@ -361,7 +438,7 @@ public class StubDataProvider implements DataProvider {
      * @return Résultat de l'authentification (enum correspondant aux différents statuts possibles
      */
     @Override
-    public AuthenticationResult authenticate(AuthenticationRequest request) {
+    public AuthenticationResult authenticate(AuthenticationRequest request, HttpServletRequest httpServletRequest) {
         String login = request.getLogin();
         String password = request.getPassword();
         if (login == null || password == null) {
