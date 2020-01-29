@@ -47,8 +47,10 @@ public enum SocialModule implements Serializable {
     OS("Offre de Service", "OS", "acces-offre-service", "ofse", false),
     PAIE("Paiement ASE", "PAIE", "acces-paie", "paie", false),
     
-    DECLGRO("Declaration de grossesse", "DECLGRO", "acces-declgro", "acces", false);
+    DECLGRO("Declaration de grossesse", "DECLGRO", "acces-declgro", "acces", false),
 
+    MILLESIME("MILLESIME", "MILLESIME", "acces-millesime", "millesime", false)
+    ;
 
     private final String name;
     private final String reduceName;
